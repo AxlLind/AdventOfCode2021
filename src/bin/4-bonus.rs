@@ -7,8 +7,8 @@ fn main() {
         .chars()
         .map(|c| c as u8 - b'0')
         .collect::<Vec<_>>();
-      for i in 1..digits.len() {
-        if digits[i] < digits[i-1] { return false; }
+      if (1..digits.len()).any(|i| digits[i] < digits[i-1]) {
+        return false;
       }
       digits.iter()
         .group_by(|d| *d)
