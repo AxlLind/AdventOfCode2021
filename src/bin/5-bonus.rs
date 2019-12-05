@@ -19,47 +19,47 @@ fn main() {
   loop {
     let (opcode, imm1, imm2) = parse_inst(program[pc]);
     match opcode {
-      1 => {
+      1 => { // add
         let a = fetch(&program, pc+1, imm1);
         let b = fetch(&program, pc+2, imm2);
         let c = fetch(&program, pc+3, true) as usize;
         program[c] = a + b;
         pc += 4;
       },
-      2 => {
+      2 => { // mul
         let a = fetch(&program, pc+1, imm1);
         let b = fetch(&program, pc+2, imm2);
         let c = fetch(&program, pc+3, true) as usize;
         program[c] = a * b;
         pc += 4;
       },
-      3 => {
+      3 => { // input
         let a = fetch(&program, pc+1, true) as usize;
         program[a] = 5;
         pc += 2;
       },
-      4 => {
+      4 => { // output
         println!("{}", fetch(&program, pc+1, imm1));
         pc += 2;
       },
-      5 => {
+      5 => { // jnz
         let a = fetch(&program, pc+1, imm1);
         let b = fetch(&program, pc+2, imm2);
         pc = if a != 0 { b as usize } else { pc + 3 };
       },
-      6 => {
+      6 => { // jz
         let a = fetch(&program, pc+1, imm1);
         let b = fetch(&program, pc+2, imm2);
         pc = if a == 0 { b as usize } else { pc + 3 };
       },
-      7 => {
+      7 => { // slt
         let a = fetch(&program, pc+1, imm1);
         let b = fetch(&program, pc+2, imm2);
         let c = fetch(&program, pc+3, true) as usize;
         program[c] = (a < b) as i32;
         pc += 4;
       },
-      8 => {
+      8 => { // seq
         let a = fetch(&program, pc+1, imm1);
         let b = fetch(&program, pc+2, imm2);
         let c = fetch(&program, pc+3, true) as usize;
