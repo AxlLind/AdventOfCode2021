@@ -20,7 +20,7 @@ fn main() {
       let v = INPUT.iter()
         .filter(|(a,_)| *a == k)
         .map(|(_,b)| b)
-        .collect::<Vec<_>>();
+        .collect();
       (k,v)
     })
     .collect::<HashMap<_,_>>();

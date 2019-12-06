@@ -6,10 +6,14 @@ fn find_neighbors(node: &'static str) -> HashSet<&'static str> {
   INPUT.iter()
     .filter(|(a,b)| *a == node || *b == node)
     .map(|(a,b)| if *a == node { *b } else { *a })
-    .collect::<HashSet<_>>()
+    .collect()
 }
 
-fn find_path_len(here: &'static str, goal: &'static str, visited: &mut HashSet<&'static str>) -> Option<usize> {
+fn find_path_len(
+  here: &'static str,
+  goal: &'static str,
+  visited: &mut HashSet<&'static str>
+) -> Option<usize> {
   if visited.contains(here) { return None; }
   visited.insert(here);
 
@@ -26,6 +30,6 @@ fn find_path_len(here: &'static str, goal: &'static str, visited: &mut HashSet<&
 }
 
 fn main() {
-  let total_len = find_path_len("YOU", "SAN", &mut HashSet::new()).unwrap();
-  println!("{}", total_len - 3);
+  let total_len = find_path_len("YOU", "SAN", &mut HashSet::new());
+  println!("{}", total_len.unwrap() - 3);
 }
