@@ -1,10 +1,8 @@
 
-fn parse_inst(mut code: i32) -> (i32, bool, bool) {
+fn parse_inst(code: i32) -> (i32, bool, bool) {
   let opcode = code % 100;
-  code /= 100;
-  let imm1 = (code % 10) == 1;
-  code /= 10;
-  let imm2 = (code % 10) == 1;
+  let imm1 = (code / 100)  % 10 == 1;
+  let imm2 = (code / 1000) % 10 == 1;
   (opcode, imm1, imm2)
 }
 
