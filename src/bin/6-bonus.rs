@@ -10,14 +10,10 @@ fn find_neighbors(node: &'static str) -> HashSet<&'static str> {
 }
 
 fn find_path_len(here: &'static str, goal: &'static str, visited: &mut HashSet<&'static str>) -> Option<usize> {
-  if visited.contains(here) {
-    return None;
-  }
+  if visited.contains(here) { return None; }
   visited.insert(here);
 
-  if here == goal {
-    return Some(1);
-  }
+  if here == goal { return Some(1); }
 
   let o = find_neighbors(here).iter()
     .map(|v| find_path_len(v, goal, visited))
