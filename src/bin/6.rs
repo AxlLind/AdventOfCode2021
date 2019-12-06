@@ -5,8 +5,10 @@ static INPUT: [(&str,&str);1621] = [("WX9","CQ4"),("7LX","WVR"),("25Q","7HB"),("
 
 fn steps(g: &HashMap<&str,Vec<&&str>>, node: &str, rec: usize) -> usize {
   match g.get(node) {
-    Some(v) => v.len() * rec + v.iter().map(|k| steps(g, k, rec+1)).sum::<usize>(),
-    None => 0
+    Some(v) => v.len() * rec + v.iter()
+      .map(|k| steps(g, k, rec+1))
+      .sum::<usize>(),
+    None => 0,
   }
 }
 
