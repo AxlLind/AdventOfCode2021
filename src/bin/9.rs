@@ -22,7 +22,7 @@ impl IntCoder {
       .enumerate()
       .map(|(k,&v)| (k as i64, v))
       .collect();
-    Self { program, ..Default::default() }
+    Self { program, ..Self::default() }
   }
 
   fn get(&self, pos: i64) -> i64 {
@@ -45,7 +45,7 @@ impl IntCoder {
       0 => self.get(value),
       1 => value,
       2 => self.get(value + self.ptr_offset),
-      _ => unreachable!(format!("invalid mode {}", mode))
+      _ => unreachable!("invalid mode {}", mode)
     }
   }
 
@@ -54,7 +54,7 @@ impl IntCoder {
     match mode {
       0|1 => value,
       2   => value + self.ptr_offset,
-      _   => unreachable!(format!("invalid mode {}", mode)),
+      _   => unreachable!("invalid mode {}", mode),
     }
   }
 
@@ -64,7 +64,7 @@ impl IntCoder {
       4|9     => 2,
       5|6     => 3,
       3|99    => 0,
-      _ => unreachable!(format!("invalid opcode {}", opcode)),
+      _ => unreachable!("invalid opcode {}", opcode),
     }
   }
 
@@ -93,7 +93,7 @@ impl IntCoder {
           },
           None => { return ExitCode::AwaitInput; }
         }
-        _  => unreachable!(format!("invalid opcode {}", opcode))
+        _ => unreachable!("invalid opcode {}", opcode)
       }
     }
     ExitCode::Halted
