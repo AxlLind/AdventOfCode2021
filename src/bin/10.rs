@@ -49,15 +49,15 @@ fn map_to_astroid_coords() -> HashSet<(i64,i64)> {
       .map(|(i,_)| (i as i64, j as i64))
       .collect_vec()
     )
-    .collect::<HashSet<_>>()
+    .collect()
 }
 
-fn all_unique_line_slopes() -> Vec<(i64,i64)> {
+fn all_unique_lines() -> Vec<(i64,i64)> {
   let (x_max, y_max) = (W-1,H-1);
   (-x_max..x_max)
     .cartesian_product(-y_max..y_max)
     .filter(|&(x,y)| gcd(x,y) == 1)
-    .collect_vec()
+    .collect()
 }
 
 fn until_hit(
@@ -66,22 +66,21 @@ fn until_hit(
   (dx,dy): (i64,i64),
 ) -> Option<(i64,i64)> {
   let (mut new_x, mut new_y) = (x,y);
-  loop {
+  while (0..H).contains(&new_x) && (0..W).contains(&new_y) {
     new_x += dx;
     new_y += dy;
-    if new_x >= H || new_x < 0 { return None; }
-    if new_y >= W || new_y < 0 { return None; }
     if asteroids.contains(&(new_x, new_y)) {
       return Some((new_x, new_y));
     }
   }
+  None
 }
 
 fn main() {
   let asteroids = map_to_astroid_coords();
-  let slopes = all_unique_line_slopes();
+  let lines = all_unique_lines();
   let answer = asteroids.iter()
-    .map(|&asteroid| slopes.iter()
+    .map(|&asteroid| lines.iter()
       .filter_map(|&slope| until_hit(&asteroids, asteroid, slope))
       .count()
     )
