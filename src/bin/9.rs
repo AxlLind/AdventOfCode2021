@@ -28,21 +28,27 @@ impl IntCoder {
     Self { program, ..Self::default() }
   }
 
-  fn get(&self, pos: i64) -> i64 {
-    assert!(pos >= 0, "fetch from negative address");
-    *self.program.get(&pos).unwrap_or(&0)
+  fn get(&self, adr: i64) -> i64 {
+    assert!(adr >= 0, "read from negative address");
+    *self.program.get(&adr).unwrap_or(&0)
   }
 
-  fn parse_inst(&self) -> (i64, i64, i64, i64) {
-    let code = self.get(self.pc);
-    let opcode = code % 100;
-    let mode1 = (code / 100) % 10;
-    let mode2 = (code / 1000) % 10;
-    let mode3 = (code / 10000) % 10;
-    (opcode, mode1, mode2, mode3)
+  fn set<T>(&mut self, adr: i64, val: T) where i64: From<T> {
+    assert!(adr >= 0, "write to negative address");
+    self.program.insert(adr, val.into());
   }
 
-  fn fetch(&self, offset: i64, mode: i64) -> i64 {
+  fn inst_len(&self, opcode: i64) -> i64 {
+    match opcode {
+      1|2|7|8 => 4,
+      4|9     => 2,
+      5|6     => 3,
+      3|99    => 0,
+      _ => unreachable!("invalid opcode {}", opcode),
+    }
+  }
+
+  fn fetch_adr(&self, offset: i64, mode: i64) -> i64 {
     let value = self.get(self.pc + offset);
     match mode {
       0 => self.get(value),
@@ -61,39 +67,38 @@ impl IntCoder {
     }
   }
 
-  fn inst_len(&self, opcode: i64) -> i64 {
-    match opcode {
-      1|2|7|8 => 4,
-      4|9     => 2,
-      5|6     => 3,
-      3|99    => 0,
-      _ => unreachable!("invalid opcode {}", opcode),
-    }
+  fn fetch_inst(&mut self) -> (i64,i64,i64,i64,i64) {
+    let code = self.get(self.pc);
+    let opcode = code % 100;
+    let mode1 = (code / 100) % 10;
+    let mode2 = (code / 1000) % 10;
+    let mode3 = (code / 10000) % 10;
+    let a = self.fetch_adr(1, mode1);
+    let b = self.fetch_adr(2, mode2);
+    let c = self.fetch_set_adr(3, mode3);
+    self.pc += self.inst_len(opcode);
+    (opcode, a, b, c, mode1)
   }
 
   fn execute(&mut self) -> ExitCode {
     while !self.halted {
-      let (opcode, mode1, mode2, mode3) = self.parse_inst();
-      let a = self.fetch(1, mode1);
-      let b = self.fetch(2, mode2);
-      let c = self.fetch_set_adr(3, mode3);
-      self.pc += self.inst_len(opcode);
+      let (opcode, a, b, c, mode1) = self.fetch_inst();
       match opcode {
-        1  => { self.program.insert(c, a + b);           } // add
-        2  => { self.program.insert(c, a * b);           } // mul
-        4  => { return ExitCode::Output(a);              } // output
-        5  => { if a != 0 { self.pc = b }                } // jnz
-        6  => { if a == 0 { self.pc = b }                } // jz
-        7  => { self.program.insert(c, (a < b) as i64);  } // slt
-        8  => { self.program.insert(c, (a == b) as i64); } // seq
-        9  => { self.ptr_offset += a;                    } // ptr_offset
-        99 => { self.halted = true;                      } // halt
-        3  => match self.input.pop_front() {               // input
+        1  => { self.set(c, a + b);         } // add
+        2  => { self.set(c, a * b);         } // mul
+        4  => { return ExitCode::Output(a); } // output
+        5  => { if a != 0 { self.pc = b }   } // jnz
+        6  => { if a == 0 { self.pc = b }   } // jz
+        7  => { self.set(c, a < b);         } // slt
+        8  => { self.set(c, a == b);        } // seq
+        9  => { self.ptr_offset += a;       } // ptr_offset
+        99 => { self.halted = true;         } // halt
+        3  => match self.input.pop_front() {  // input
           Some(input) => {
             let a = self.fetch_set_adr(1, mode1);
-            self.program.insert(a, input);
+            self.set(a, input);
             self.pc += 2;
-          },
+          }
           None => { return ExitCode::AwaitInput; }
         }
         _ => unreachable!("invalid opcode {}", opcode)
