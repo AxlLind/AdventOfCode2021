@@ -132,9 +132,9 @@ fn print_map(map: &HashMap<(i64,i64),i64>) {
       let ymax = cmp::max(y, ymax);
       (xmin,ymin,xmax,ymax)
     });
-  for i in xmin..=xmax {
-    for j in ymin..=ymax {
-      let val = *map.get(&(i,j)).unwrap_or(&0);
+  for y in ymin..=ymax {
+    for x in xmin..=xmax {
+      let val = *map.get(&(x,y)).unwrap_or(&0);
       print!("{}", if val == 0 {' '} else {'■'});
     }
     println!("");
@@ -157,10 +157,10 @@ fn main() {
           map.insert((x,y), c);
           dir = turn(dir, i);
           match dir {
-            'U' => x -= 1,
-            'D' => x += 1,
-            'L' => y -= 1,
-            'R' => y += 1,
+            'U' => y -= 1,
+            'D' => y += 1,
+            'L' => x -= 1,
+            'R' => x += 1,
             _   => unreachable!()
           }
         }
