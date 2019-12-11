@@ -156,25 +156,21 @@ fn main() {
   let mut dir = 'U';
   loop {
     match cpu.execute() {
-      ExitCode::AwaitInput => {
-        cpu.push_input(*map.get(&(x,y)).unwrap_or(&0));
-      }
-      ExitCode::Output(c) => {
-        match cpu.execute() {
-          ExitCode::Output(i) => {
-            map.insert((x,y), c);
-            dir = turn(dir, i);
-            match dir {
-              'U' => x -= 1,
-              'D' => x += 1,
-              'L' => y -= 1,
-              'R' => y += 1,
-              _   => unreachable!()
-            }
+      ExitCode::Output(c) => match cpu.execute() {
+        ExitCode::Output(i) => {
+          map.insert((x,y), c);
+          dir = turn(dir, i);
+          match dir {
+            'U' => x -= 1,
+            'D' => x += 1,
+            'L' => y -= 1,
+            'R' => y += 1,
+            _   => unreachable!()
           }
-          _ => unreachable!()
         }
+        _ => unreachable!()
       }
+      ExitCode::AwaitInput => cpu.push_input(*map.get(&(x,y)).unwrap_or(&0)),
       ExitCode::Halted => break,
     }
   }
