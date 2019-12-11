@@ -124,14 +124,20 @@ fn turn(curr: char, dir: i64) -> char {
 }
 
 fn print_map(map: &HashMap<(i64,i64),i64>) {
+  let (xmin,ymin) = map.keys()
+    .fold((0,0), |(xmin,ymin), &(x,y)| {
+      let xmin = cmp::min(x,xmin);
+      let ymin = cmp::min(y,ymin);
+      (xmin, ymin)
+    });
   let (xmax,ymax) = map.keys()
     .fold((0,0), |(xmax,ymax), &(x,y)| {
       let xmax = cmp::max(x,xmax);
       let ymax = cmp::max(y,ymax);
       (xmax, ymax)
     });
-  for i in 0..=xmax {
-    for j in 0..=ymax {
+  for i in xmin..=xmax {
+    for j in ymin..=ymax {
       let val = *map.get(&(i,j)).unwrap_or(&0);
       print!("{}", if val == 0 {' '} else {'■'});
     }
