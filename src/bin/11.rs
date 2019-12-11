@@ -145,7 +145,7 @@ fn main() {
   let now = Instant::now();
   let mut cpu = IntCoder::new(&PROGRAM);
   let mut map = HashMap::new();
-  map.insert((0,0), 1);
+  map.insert((0,0), 1); // comment this out for part 1
 
   let mut x = 0;
   let mut y = 0;
@@ -171,5 +171,6 @@ fn main() {
     }
   }
   print_map(&map);
+  println!("Squares: {}", map.len());
   println!("Time: {}ms", now.elapsed().as_millis());
 }
