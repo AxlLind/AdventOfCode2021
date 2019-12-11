@@ -1,3 +1,4 @@
+use std::time::Instant;
 use std::collections::HashMap;
 use itertools::Itertools;
 
@@ -13,6 +14,7 @@ fn steps(g: &HashMap<&str,Vec<&&str>>, node: &str, rec: usize) -> usize {
 }
 
 fn main() {
+  let now = Instant::now();
   let g = INPUT.iter()
     .map(|(a,_)| *a)
     .unique()
@@ -25,4 +27,5 @@ fn main() {
     })
     .collect::<HashMap<_,_>>();
   println!("{}", steps(&g, "COM", 1));
+  println!("Time: {}ms", now.elapsed().as_millis());
 }

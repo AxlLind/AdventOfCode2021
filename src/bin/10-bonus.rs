@@ -1,3 +1,4 @@
+use std::time::Instant;
 use std::collections::HashSet;
 use std::f64::consts::PI;
 use itertools::Itertools;
@@ -88,6 +89,7 @@ fn until_hit(
 }
 
 fn main() {
+  let now = Instant::now();
   let mut asteroids = map_to_astroid_coords();
   let lines = unique_lines_sorted_by_angle();
 
@@ -103,4 +105,5 @@ fn main() {
       }
     }
   }
+  println!("Time: {}ms", now.elapsed().as_millis());
 }

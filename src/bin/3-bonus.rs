@@ -1,3 +1,4 @@
+use std::time::Instant;
 use std::collections::HashMap;
 use std::cmp;
 
@@ -48,6 +49,7 @@ fn place_wire(
 }
 
 fn main() {
+  let now = Instant::now();
   let mut board = HashMap::new();
   let mut steps_map1 = HashMap::new();
   let mut steps_map2 = HashMap::new();
@@ -63,4 +65,5 @@ fn main() {
       cmp::min(len, d1 + d2)
     });
   println!("Closest: dist={}", len);
+  println!("Time: {}ms", now.elapsed().as_millis());
 }

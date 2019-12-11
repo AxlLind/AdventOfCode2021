@@ -1,3 +1,4 @@
+use std::time::Instant;
 use itertools::Itertools;
 
 fn parse_inst(code: i32) -> (i32, bool, bool) {
@@ -75,6 +76,7 @@ fn execute(phase_setting: i32, input: i32) -> i32 {
 }
 
 fn main() {
+  let now = Instant::now();
   let max = [0,1,2,3,4].iter()
     .permutations(5)
     .map(|digits| digits.iter()
@@ -83,4 +85,5 @@ fn main() {
     .max()
     .unwrap();
   println!("{:?}", max);
+  println!("Time: {}ms", now.elapsed().as_millis());
 }

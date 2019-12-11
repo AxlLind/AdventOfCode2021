@@ -1,6 +1,8 @@
+use std::time::Instant;
 use itertools::Itertools;
 
 fn main() {
+  let now = Instant::now();
   let answer = (206938..679128)
     .filter(|n| {
       let digits = n.to_string()
@@ -17,4 +19,5 @@ fn main() {
     })
     .count();
   println!("{}", answer);
+  println!("Time: {}ms", now.elapsed().as_millis());
 }

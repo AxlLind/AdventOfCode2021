@@ -1,3 +1,4 @@
+use std::time::Instant;
 use std::collections::HashSet;
 use itertools::Itertools;
 use num_integer::gcd;
@@ -77,6 +78,7 @@ fn until_hit(
 }
 
 fn main() {
+  let now = Instant::now();
   let asteroids = map_to_astroid_coords();
   let lines = all_unique_lines();
   let answer = asteroids.iter()
@@ -86,4 +88,5 @@ fn main() {
     )
     .max();
   println!("{}", answer.unwrap());
+  println!("Time: {}ms", now.elapsed().as_millis());
 }
