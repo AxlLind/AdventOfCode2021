@@ -30,7 +30,6 @@ impl IntCoder {
   }
 
   fn get(&self, adr: i64) -> i64 {
-    // assert!(adr >= 0, "read from negative address");
     *self.program.get(&adr).unwrap_or(&0)
   }
 
@@ -108,6 +107,13 @@ impl IntCoder {
     ExitCode::Halted
   }
 
+  fn execute_until_output(&mut self) -> i64 {
+    match self.execute() {
+      ExitCode::Output(o) => o,
+      _ => unreachable!(),
+    }
+  }
+
   #[allow(dead_code)]
   fn push_input(&mut self, input: i64) {
     self.input.push_back(input);
@@ -123,19 +129,12 @@ fn main() {
   loop {
     match cpu.execute() {
       ExitCode::Output(x) => {
-        let y = match cpu.execute() {
-          ExitCode::Output(o) => o,
-          _ => unreachable!(),
-        };
-        let val = match cpu.execute() {
-          ExitCode::Output(o) => o,
-          _ => unreachable!(),
-        };
-        if x == -1 && y == 0 {
-          score = val;
-          continue;
+        let y = cpu.execute_until_output();
+        let v = cpu.execute_until_output();
+        match (x,y) {
+          (-1,0) => { score = v; }
+          _      => { map.insert((x,y), v); }
         }
-        map.insert((x,y), val);
       },
       ExitCode::AwaitInput => {
         let (bx,_) = map.iter().find(|(_, v)| **v == 4).unwrap().0;
