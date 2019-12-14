@@ -121,22 +121,21 @@ fn main() {
 
   let mut score = 0;
   loop {
-    let mut out = [0,0,0];
     match cpu.execute() {
-      ExitCode::Output(o) => {
-        out[0] = o;
-        for i in 1..3 {
-          match cpu.execute() {
-            ExitCode::Output(o) => out[i] = o,
-            _ => unreachable!(),
-          }
-        }
-        let (x,y,val) = (out[0], out[1], out[2]);
+      ExitCode::Output(x) => {
+        let y = match cpu.execute() {
+          ExitCode::Output(o) => o,
+          _ => unreachable!(),
+        };
+        let val = match cpu.execute() {
+          ExitCode::Output(o) => o,
+          _ => unreachable!(),
+        };
         if x == -1 && y == 0 {
           score = val;
-        } else {
-          map.insert((x,y), val);
+          continue;
         }
+        map.insert((x,y), val);
       },
       ExitCode::AwaitInput => {
         let (bx,_) = map.iter().find(|(_, v)| **v == 4).unwrap().0;
