@@ -107,6 +107,14 @@ impl IntCoder {
   }
 
   #[allow(dead_code)]
+  fn execute_until_output(&mut self) -> i64 {
+    match self.execute() {
+      ExitCode::Output(o) => o,
+      _ => unreachable!(),
+    }
+  }
+
+  #[allow(dead_code)]
   fn push_input(&mut self, input: i64) {
     self.input.push_back(input);
   }
@@ -116,16 +124,16 @@ fn main() {
   let now = Instant::now();
   let mut cpu = IntCoder::new(&PROGRAM);
   let mut map = HashMap::new();
-  while !cpu.halted {
-    let mut out = [0,0,0];
-    for i in 0..3 {
-      match cpu.execute() {
-        ExitCode::Output(o) => out[i] = o,
-        ExitCode::Halted => break,
-        ExitCode::AwaitInput => unreachable!(),
-      }
+  loop {
+    match cpu.execute() {
+      ExitCode::Output(x) => {
+        let y = cpu.execute_until_output();
+        let v = cpu.execute_until_output();
+        map.insert((x,y), v);
+      },
+      ExitCode::Halted => break,
+      ExitCode::AwaitInput => unreachable!(),
     }
-    map.insert((out[0],out[1]), out[2]);
   }
   let answer = map.iter()
     .filter(|&(_,v)| *v == 2)

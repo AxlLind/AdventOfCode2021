@@ -107,6 +107,7 @@ impl IntCoder {
     ExitCode::Halted
   }
 
+  #[allow(dead_code)]
   fn execute_until_output(&mut self) -> i64 {
     match self.execute() {
       ExitCode::Output(o) => o,
