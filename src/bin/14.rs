@@ -6,7 +6,7 @@ type Sstr = &'static str;
 
 struct Producer {
   store: HashMap<Sstr, usize>,
-  costs: HashMap<Sstr, (usize,Vec<(usize, Sstr)>)>,
+  costs: HashMap<Sstr, ( usize, Vec<(usize, Sstr)> )>,
   tot_ore: usize,
 }
 
@@ -15,9 +15,9 @@ impl Producer {
     let store = input.iter()
       .map(|((_,m),_)| (*m,0))
       .collect();
-    let costs = input.iter().map(|((amount,mat),ingredients)| {
-      (*mat, (*amount, ingredients.to_owned()))
-    }).collect();
+    let costs = input.iter()
+      .map(|((n,m),v)| (*m, (*n, v.to_owned())))
+      .collect();
     Self { store, costs, tot_ore: 0 }
   }
 
@@ -31,11 +31,11 @@ impl Producer {
       let num_produced = self.costs.get(material).unwrap().0;
       let mats = self.costs.get(material).unwrap().1.clone();
 
-      let steps = (amount - curr_amount + num_produced - 1) / num_produced;
+      let rounds = (amount - curr_amount + num_produced - 1) / num_produced;
       for (amount_needed, mat) in mats {
-        self.produce(mat, amount_needed * steps);
+        self.produce(mat, amount_needed * rounds);
       }
-      curr_amount += num_produced * steps
+      curr_amount += num_produced * rounds;
     }
     self.store.insert(material, curr_amount - amount);
     self.tot_ore
@@ -110,7 +110,7 @@ fn main() {
   let mut producer = Producer::new(&input);
   let part_one = producer.produce("FUEL", 1);
 
-  let mut min = 1;
+  let mut min = 0;
   let mut max = 4000000;
   let part_two = loop {
     producer.reset();
