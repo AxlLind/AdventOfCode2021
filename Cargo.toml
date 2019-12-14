@@ -5,6 +5,9 @@ authors = ["Axel Lindeberg <axel.ew.lindeberg@gmail.com>"]
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+name = "intcoder"
+path = "src/intcoder.rs"
 
 [dependencies]
 itertools = "0.8.2"
