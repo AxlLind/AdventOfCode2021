@@ -44,6 +44,7 @@ fn compute_paths(
   let mut dist = vertices.iter().map(|&pos| (pos, 9999)).collect::<HashMap<_,_>>();
   let mut prev = vertices.iter().map(|&pos| (pos, None)).collect::<HashMap<_,_>>();
   dist.insert((x,y), 0);
+
   let neighbors = [(0,-1), (0,1), (-1,0), (1,0)];
   while !q.is_empty() {
     let (ux,uy) = *q.iter().min_by_key(|pos| dist.get(pos).unwrap()).unwrap();
@@ -63,7 +64,11 @@ fn compute_paths(
   (dist, prev)
 }
 
-fn compute_answers(map: &HashMap<(i64, i64), (i64)>, x: i64, y: i64) -> (i64,i64) {
+fn compute_answers(
+  map: &HashMap<(i64, i64), (i64)>,
+  x: i64,
+  y: i64,
+) -> (i64,i64) {
   let (dist,prev) = compute_paths(map, x, y);
 
   let mut curr = (0,0);
@@ -75,15 +80,21 @@ fn compute_answers(map: &HashMap<(i64, i64), (i64)>, x: i64, y: i64) -> (i64,i64
     }
     part_one += 1
   }
+
   let part_two = *dist.values().max().unwrap();
   (part_one + 1, part_two + 1)
 }
 
-fn find_path(map: &HashMap<(i64, i64), (i64)>, x: i64, y: i64) -> Option<Vec<(i64,i64)>> {
+fn find_path_to_unexplored(
+  map: &HashMap<(i64, i64), (i64)>,
+  x: i64,
+  y: i64,
+) -> Option<VecDeque<(i64,i64)>> {
   let mut queue = VecDeque::new();
   let mut visited = HashSet::new();
   queue.push_back(vec![(x,y)]);
   visited.insert((x,y));
+
   let neighbors = [(0,-1), (0,1), (-1,0), (1,0)];
   let answer = loop {
     if queue.is_empty() {
@@ -107,6 +118,7 @@ fn find_path(map: &HashMap<(i64, i64), (i64)>, x: i64, y: i64) -> Option<Vec<(i6
         queue.push_back(new_path);
       });
   };
+
   answer.map(|path| path.iter()
     .tuples()
     .map(|((x1,y1),(x2,y2))| (x2-x1, y2-y1))
@@ -117,14 +129,16 @@ fn find_path(map: &HashMap<(i64, i64), (i64)>, x: i64, y: i64) -> Option<Vec<(i6
 fn explore_map() -> (HashMap<(i64,i64),i64>, (i64,i64)) {
   let mut cpu = IntCoder::new(&PROGRAM);
   let mut map = HashMap::new();
-  map.insert((0,0), 1);
-  let (mut x, mut y) = (0,0);
-  let mut inputs = VecDeque::from(vec![(0,-1)]);
+
+  let mut prev_input = (0,-1);
+  let mut inputs = VecDeque::from(vec![prev_input]);
+
   let mut goal = (0,0);
+  let (mut x, mut y) = (0,0);
   loop {
     match cpu.execute() {
       ExitCode::Output(v) => {
-        let (dx,dy) = inputs.pop_front().unwrap();
+        let (dx,dy) = prev_input;
         map.insert((x+dx, y+dy), v);
         if v == 0 {
           inputs.clear();
@@ -136,12 +150,13 @@ fn explore_map() -> (HashMap<(i64,i64),i64>, (i64,i64)) {
       }
       ExitCode::AwaitInput => {
         if inputs.is_empty() {
-          match find_path(&map, x, y) {
-            Some(p) => inputs = p.into(),
+          match find_path_to_unexplored(&map, x, y) {
+            Some(p) => inputs = p,
             None    => break,
           }
         }
-        cpu.push_input(match *inputs.front().unwrap() {
+        prev_input = inputs.pop_front().unwrap();
+        cpu.push_input(match prev_input {
           ( 0,-1) => 1,
           ( 0, 1) => 2,
           (-1, 0) => 3,
