@@ -31,25 +31,20 @@ fn print_map(map: &HashMap<(i64,i64),i64>) {
   }
 }
 
-fn compute_distances(
+fn compute_paths(
   map: &HashMap<(i64, i64), (i64)>,
   x: i64,
   y: i64
 ) -> (
   HashMap<(i64, i64), i64>,
-  HashMap<(i64, i64), std::option::Option<(i64, i64)>>
+  HashMap<(i64, i64), Option<(i64, i64)>>
 ) {
   let vertices = map.iter().filter(|&(_, v)| *v == 1).map(|(pos,_)| *pos).collect::<HashSet<_>>();
   let mut q = vertices.clone();
-  let mut dist = vertices.iter().map(|&pos| (pos, 1000000)).collect::<HashMap<_,_>>();
+  let mut dist = vertices.iter().map(|&pos| (pos, 9999)).collect::<HashMap<_,_>>();
   let mut prev = vertices.iter().map(|&pos| (pos, None)).collect::<HashMap<_,_>>();
   dist.insert((x,y), 0);
-  let neighbors = [
-    ( 0,-1),
-    ( 0, 1),
-    (-1, 0),
-    ( 1, 0),
-  ];
+  let neighbors = [(0,-1), (0,1), (-1,0), (1,0)];
   while !q.is_empty() {
     let (ux,uy) = *q.iter().min_by_key(|pos| dist.get(pos).unwrap()).unwrap();
     q.remove(&(ux,uy));
@@ -69,7 +64,7 @@ fn compute_distances(
 }
 
 fn compute_answers(map: &HashMap<(i64, i64), (i64)>, x: i64, y: i64) -> (i64,i64) {
-  let (dist,prev) = compute_distances(map, x, y);
+  let (dist,prev) = compute_paths(map, x, y);
 
   let mut curr = (0,0);
   let mut part_one = 0;
@@ -89,20 +84,16 @@ fn find_path(map: &HashMap<(i64, i64), (i64)>, x: i64, y: i64) -> Option<Vec<(i6
   let mut visited = HashSet::new();
   queue.push_back(vec![(x,y)]);
   visited.insert((x,y));
-  let neighbors = [
-    ( 0,-1),
-    ( 0, 1),
-    (-1, 0),
-    ( 1, 0),
-  ];
-  let mut answer = None;
-  while !queue.is_empty() {
+  let neighbors = [(0,-1), (0,1), (-1,0), (1,0)];
+  let answer = loop {
+    if queue.is_empty() {
+      break None;
+    }
     let path = queue.pop_front().unwrap();
     let (ux, uy) = *path.last().unwrap();
     visited.insert((ux,uy));
     if !map.contains_key(&(ux, uy)) {
-      answer = Some(path);
-      break;
+      break Some(path);
     }
     neighbors.iter()
       .map(|(dx,dy)| (ux + dx, uy + dy))
@@ -115,7 +106,7 @@ fn find_path(map: &HashMap<(i64, i64), (i64)>, x: i64, y: i64) -> Option<Vec<(i6
         new_path.push(pos);
         queue.push_back(new_path);
       });
-  }
+  };
   answer.map(|path| path.iter()
     .tuples()
     .map(|((x1,y1),(x2,y2))| (x2-x1, y2-y1))
@@ -167,8 +158,8 @@ fn explore_map() -> (HashMap<(i64,i64),i64>, (i64,i64)) {
 fn main() {
   let now = Instant::now();
   let (map, (gx, gy)) = explore_map();
-  print_map(&map);
   let (part_one, part_two) = compute_answers(&map, gx, gy);
+  print_map(&map);
   println!("Part one: {}", part_one);
   println!("Part two: {}", part_two);
   println!("Time: {}ms", now.elapsed().as_millis());
