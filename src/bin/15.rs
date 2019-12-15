@@ -71,6 +71,38 @@ fn find_goal_path_len(map: &HashMap<(i64, i64), (i64)>, x: i64, y: i64, ex: i64,
   answer
 }
 
+
+fn find_longest_path(map: &HashMap<(i64, i64), (i64)>, x: i64, y: i64) -> i64 {
+  let vertices = map.iter().filter(|&(_, v)| *v == 1).map(|(pos,_)| *pos).collect::<HashSet<_>>();
+  let mut q = vertices.clone();
+  let mut dist = vertices.iter().map(|&pos| (pos, 1000000)).collect::<HashMap<_,_>>();
+  let mut prev = vertices.iter().map(|&pos| (pos, None)).collect::<HashMap<_,_>>();
+  dist.insert((x,y), 0);
+  let neighbors = [
+    ( 0,-1),
+    ( 0, 1),
+    (-1, 0),
+    ( 1, 0),
+  ];
+  while !q.is_empty() {
+    let (ux,uy) = *q.iter().min_by_key(|pos| dist.get(pos).unwrap()).unwrap();
+    q.remove(&(ux,uy));
+
+    neighbors.iter()
+      .map(|(dx,dy)| (ux + dx, uy + dy))
+      .filter(|v| q.contains(v))
+      .for_each(|v| {
+        let d = dist.get(&(ux,uy)).unwrap() + 1;
+        if d < *dist.get(&v).unwrap() {
+          dist.insert(v, d);
+          prev.insert(v, Some((ux,uy)));
+        }
+      });
+  };
+
+  *dist.values().max().unwrap()
+}
+
 fn find_path(map: &HashMap<(i64, i64), (i64)>, x: i64, y: i64) -> Option<Vec<(i64,i64)>> {
   let mut queue = VecDeque::new();
   let mut visited = HashSet::new();
@@ -155,7 +187,9 @@ fn main() {
   let now = Instant::now();
   let (map, (gx, gy)) = explore_map();
   print_map(&map);
-  let answer = find_goal_path_len(&map, 0, 0, gx, gy);
-  println!("Answer: {}", answer);
+  let part_one = find_goal_path_len(&map, 0, 0, gx, gy);
+  let part_two = find_longest_path(&map, gx, gy) + 1;
+  println!("Part one: {}", part_one);
+  println!("Part two: {}", part_two);
   println!("Time: {}ms", now.elapsed().as_millis());
 }
