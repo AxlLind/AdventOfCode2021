@@ -31,48 +31,14 @@ fn print_map(map: &HashMap<(i64,i64),i64>) {
   }
 }
 
-fn find_goal_path_len(map: &HashMap<(i64, i64), (i64)>, x: i64, y: i64, ex: i64, ey: i64) -> i64 {
-  let vertices = map.iter()
-    .filter(|&(_, v)| *v == 1)
-    .map(|(pos,_)| *pos)
-    .collect::<HashSet<_>>();
-  let mut q = vertices.clone();
-  let mut dist = vertices.iter().map(|&pos| (pos, 1000)).collect::<HashMap<_,_>>();
-  let mut prev = vertices.iter().map(|&pos| (pos, None)).collect::<HashMap<_,_>>();
-  dist.insert((x,y),0);
-  let neighbors = [(0,-1), (0,1), (-1,0), (1,0)];
-  loop {
-    let (ux,uy) = *q.iter().min_by_key(|pos| dist.get(pos).unwrap()).unwrap();
-    q.remove(&(ux,uy));
-
-    if ux == ex && uy == ey { break; }
-
-    neighbors.iter()
-      .map(|(dx,dy)| (ux + dx, uy + dy))
-      .filter(|v| q.contains(v))
-      .for_each(|v| {
-        let d = dist.get(&(ux,uy)).unwrap() + 1;
-        if d < *dist.get(&v).unwrap() {
-          dist.insert(v, d);
-          prev.insert(v, Some((ux,uy)));
-        }
-      });
-  };
-
-  let mut curr = (ex, ey);
-  let mut answer = 1;
-  loop {
-    match prev.get(&curr).unwrap() {
-      Some(val) => curr = *val,
-      None => break,
-    }
-    answer += 1
-  }
-  answer
-}
-
-
-fn find_longest_path(map: &HashMap<(i64, i64), (i64)>, x: i64, y: i64) -> i64 {
+fn compute_distances(
+  map: &HashMap<(i64, i64), (i64)>,
+  x: i64,
+  y: i64
+) -> (
+  HashMap<(i64, i64), i64>,
+  HashMap<(i64, i64), std::option::Option<(i64, i64)>>
+) {
   let vertices = map.iter().filter(|&(_, v)| *v == 1).map(|(pos,_)| *pos).collect::<HashSet<_>>();
   let mut q = vertices.clone();
   let mut dist = vertices.iter().map(|&pos| (pos, 1000000)).collect::<HashMap<_,_>>();
@@ -99,8 +65,23 @@ fn find_longest_path(map: &HashMap<(i64, i64), (i64)>, x: i64, y: i64) -> i64 {
         }
       });
   };
+  (dist, prev)
+}
 
-  *dist.values().max().unwrap()
+fn compute_answers(map: &HashMap<(i64, i64), (i64)>, x: i64, y: i64) -> (i64,i64) {
+  let (dist,prev) = compute_distances(map, x, y);
+
+  let mut curr = (0,0);
+  let mut part_one = 0;
+  loop {
+    match prev.get(&curr).unwrap() {
+      Some(val) => curr = *val,
+      None => break,
+    }
+    part_one += 1
+  }
+  let part_two = *dist.values().max().unwrap();
+  (part_one + 1, part_two + 1)
 }
 
 fn find_path(map: &HashMap<(i64, i64), (i64)>, x: i64, y: i64) -> Option<Vec<(i64,i64)>> {
@@ -187,8 +168,7 @@ fn main() {
   let now = Instant::now();
   let (map, (gx, gy)) = explore_map();
   print_map(&map);
-  let part_one = find_goal_path_len(&map, 0, 0, gx, gy);
-  let part_two = find_longest_path(&map, gx, gy) + 1;
+  let (part_one, part_two) = compute_answers(&map, gx, gy);
   println!("Part one: {}", part_one);
   println!("Part two: {}", part_two);
   println!("Time: {}ms", now.elapsed().as_millis());
