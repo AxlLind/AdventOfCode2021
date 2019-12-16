@@ -18,7 +18,7 @@ fn simulate_one_axis(positions: [i64;4]) -> usize {
     (positions[2],0),
     (positions[3],0),
   ];
-  let init = moons.clone();
+  let init = moons;
   let steps = iter::repeat(()).take_while(|_| {
     for i in 0..4 {
       for j in (i+1)..4 {
