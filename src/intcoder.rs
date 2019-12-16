@@ -1,7 +1,7 @@
 #![allow(dead_code)]
 use std::collections::{HashMap, VecDeque};
 
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Eq, PartialEq)]
 pub enum ExitCode {
   Output(i64),
   AwaitInput,
@@ -11,7 +11,7 @@ pub enum ExitCode {
 #[derive(Clone, Default)]
 pub struct IntCoder {
   program: HashMap<i64,i64>,
-  input: VecDeque<i64>,
+  inputs: VecDeque<i64>,
   halted: bool,
   ptr_offset: i64,
   pc: i64,
@@ -41,7 +41,7 @@ impl IntCoder {
         8  => { self.set(c, a == b);        } // seq
         9  => { self.ptr_offset += a;       } // ptr_offset
         99 => { self.halted = true;         } // halt
-        3  => match self.input.pop_front() {  // input
+        3  => match self.inputs.pop_front() { // input
           Some(input) => {
             let a = self.fetch_set_adr(1, mode1);
             self.set(a, input);
@@ -58,12 +58,12 @@ impl IntCoder {
   pub fn execute_until_output(&mut self) -> i64 {
     match self.execute() {
       ExitCode::Output(o) => o,
-      _ => unreachable!(),
+      _ => unreachable!("Assumed CPU would exit with output"),
     }
   }
 
   pub fn push_input(&mut self, input: i64) {
-    self.input.push_back(input);
+    self.inputs.push_back(input);
   }
 }
 
@@ -76,16 +76,6 @@ impl IntCoder {
   fn set<T>(&mut self, adr: i64, val: T) where i64: From<T> {
     assert!(adr >= 0, "write to negative address");
     self.program.insert(adr, val.into());
-  }
-
-  fn inst_len(&self, opcode: i64) -> i64 {
-    match opcode {
-      1|2|7|8 => 4,
-      4|9     => 2,
-      5|6     => 3,
-      3|99    => 0,
-      _ => unreachable!("invalid opcode {}", opcode),
-    }
   }
 
   fn fetch_adr(&self, offset: i64, mode: i64) -> i64 {
@@ -113,10 +103,19 @@ impl IntCoder {
     let mode1 = (code / 100) % 10;
     let mode2 = (code / 1000) % 10;
     let mode3 = (code / 10000) % 10;
+
     let a = self.fetch_adr(1, mode1);
     let b = self.fetch_adr(2, mode2);
     let c = self.fetch_set_adr(3, mode3);
-    self.pc += self.inst_len(opcode);
+
+    self.pc += match opcode {
+      1|2|7|8 => 4,
+      4|9     => 2,
+      5|6     => 3,
+      3|99    => 0,
+      _ => unreachable!("invalid opcode {}", opcode),
+    };
+
     (opcode, a, b, c, mode1)
   }
 }
