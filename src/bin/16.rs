@@ -10,19 +10,19 @@ fn main() {
     .collect_vec();
   for _ in 0..100 {
     for i in 1..=phase.len() {
-      let mut out = [0,0];
       let mut index = i-1;
+      let mut out = [0,0];
       while index < phase.len() {
-        for k in 0..2 {
+        for o in 0..2 {
           for _ in 0..i {
             if index >= phase.len() { break; }
-            out[k] += phase[index];
+            out[o] += phase[index];
             index += 1;
           }
           index += i;
         }
       }
-      phase[i-1] = (out[0] - out[1]).abs() % 10
+      phase[i-1] = (out[0] - out[1]).abs() % 10;
     }
   }
   let answer = phase[..8].iter()
