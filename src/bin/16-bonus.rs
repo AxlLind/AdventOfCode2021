@@ -5,27 +5,21 @@ static INPUT: &str = "5972351789869034233608561902792111126000066741705252943389
 
 fn main() {
   let now = Instant::now();
+  let offset = INPUT[0..7].parse().unwrap();
   let mut phase = INPUT.chars()
+    .cycle()
+    .skip(offset)
+    .take(INPUT.len() * 10000 - offset)
     .map(|c| (c as u8 - b'0') as i32)
     .collect_vec();
+  phase.reverse();
   for _ in 0..100 {
-    for i in 1..=phase.len() {
-      let mut out = [0,0];
-      let mut index = i-1;
-      while index < phase.len() {
-        for k in 0..2 {
-          for _ in 0..i {
-            if index >= phase.len() { break; }
-            out[k] += phase[index];
-            index += 1;
-          }
-          index += i;
-        }
-      }
-      phase[i-1] = (out[0] - out[1]).abs() % 10
+    for i in 1..phase.len() {
+      phase[i] = (phase[i-1] + phase[i]).abs() % 10;
     }
   }
-  let answer = phase[..8].iter()
+  let answer = phase[(phase.len() - 8)..].iter()
+    .rev()
     .map(|&i| (i as u8 + b'0') as char)
     .collect::<String>();
   println!("Answer: {}", answer);
