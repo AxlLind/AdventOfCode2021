@@ -1,4 +1,5 @@
 #![allow(non_snake_case)]
+#![allow(dead_code)]
 use std::time::Instant;
 use intcoder::{IntCoder, ExitCode};
 
@@ -6,7 +7,6 @@ static PROGRAM: [i64; 1439] = [2,330,331,332,109,3546,1101,1182,0,15,1101,1439,0
 
 type Map = [[char; 49]; 43];
 
-#[allow(dead_code)]
 fn turn(curr: char, dir: char) -> char {
   match curr {
     'U' => if dir == 'L' {'L'} else {'R'},
@@ -17,7 +17,6 @@ fn turn(curr: char, dir: char) -> char {
   }
 }
 
-#[allow(dead_code)]
 fn to_check(dir: char) -> ((i64,i64),(i64,i64)) {
   match dir {
     'U' => ((-1,0),( 1,0)),
@@ -28,12 +27,12 @@ fn to_check(dir: char) -> ((i64,i64),(i64,i64)) {
   }
 }
 
-#[allow(dead_code)]
 fn scaffold_at(map: &Map, x:i64, y:i64) -> bool {
-  (0..49).contains(&x) && (0..43).contains(&y) && map[y as usize][x as usize] == '#'
+  (0..49).contains(&x) &&
+  (0..43).contains(&y) &&
+  map[y as usize][x as usize] == '#'
 }
 
-#[allow(dead_code)]
 fn get_paths(map: &Map) -> Vec<(i64, char)> {
   let mut x: i64 = 22;
   let mut y: i64 = 42;
@@ -69,29 +68,27 @@ fn get_paths(map: &Map) -> Vec<(i64, char)> {
   instructions
 }
 
-fn fetch_map(cpu: &mut IntCoder) -> Map {
-  let mut map = [[' '; 49]; 43];
-  for i in 0..43 {
-    for j in 0..49 {
+fn print_map(cpu: &mut IntCoder) {
+  for _ in 0..43 {
+    for _ in 0..49 {
       let o = cpu.execute_until_output();
-      map[i][j] = (o as u8) as char;
-      print!("{}", map[i][j]);
+      print!("{}", (o as u8) as char);
     }
     cpu.execute_until_output();
     println!("");
   }
-  map
 }
 
 fn main() {
   let now = Instant::now();
   let mut cpu = IntCoder::new(&PROGRAM);
-  let map = fetch_map(&mut cpu);
+  print_map(&mut cpu);
 
-  // Total instruction needed calculated via the 'get_paths' function
-  // this gives: L6R12L6R12L10L4L6L6R12L6R12L10L4L6L6R12L6L10L10L4L6R12L10L4L6L10L10L4L6L6R12L6L10L10L4L6
+  // Total instruction needed calculated via the 'get_paths' function this gives:
+  // L6R12L6R12L10L4L6L6R12L6R12L10L4L6L6R12L6L10L10L4L6R12L10L4L6L10L10L4L6L6R12L6L10L10L4L6
   //
-  // By hand we can easily find the following:
+  // Then we need to find three substrings that together can make the string above.
+  // We can easily do this by hand and find the following:
   // A: L6R12L6
   // B: R12L10L4L6
   // C: L10L10L4L6
