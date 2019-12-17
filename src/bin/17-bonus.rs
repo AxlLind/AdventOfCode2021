@@ -1,5 +1,4 @@
 #![allow(non_snake_case)]
-#![allow(dead_code)]
 use std::time::Instant;
 use intcoder::{IntCoder, ExitCode};
 
@@ -33,11 +32,11 @@ fn scaffold_at(map: &Map, x:i64, y:i64) -> bool {
   map[y as usize][x as usize] == '#'
 }
 
-fn get_paths(map: &Map) -> Vec<(i64, char)> {
+fn get_instructions(map: &Map) -> String {
   let mut x: i64 = 22;
   let mut y: i64 = 42;
-  let mut instructions = vec![];
-  let mut dir = 'L';
+  let mut dir = 'U';
+  let mut s = "".to_string();
   loop {
     let (dx,dy) = match dir {
       'U' => ( 0,-1),
@@ -52,39 +51,45 @@ fn get_paths(map: &Map) -> Vec<(i64, char)> {
       y += dy;
       dist += 1;
     }
+    s += &dist.to_string();
+
     let ((lx,ly),(rx,ry)) = to_check(dir);
     if scaffold_at(&map, x+lx, y+ly) {
       dir = turn(dir, 'L');
-      instructions.push((dist, 'L'));
+      s.push('L');
       continue;
     }
     if scaffold_at(&map, x+rx, y+ry) {
       dir = turn(dir, 'R');
-      instructions.push((dist, 'R'));
+      s.push('R');
       continue;
     }
     break;
   }
-  instructions
+  s[1..].to_string()
 }
 
-fn print_map(cpu: &mut IntCoder) {
-  for _ in 0..43 {
-    for _ in 0..49 {
+fn fetch_print_map(cpu: &mut IntCoder) -> Map {
+  let mut map = [[' '; 49]; 43];
+  for i in 0..43 {
+    for j in 0..49 {
       let o = cpu.execute_until_output();
-      print!("{}", (o as u8) as char);
+      map[i][j] = (o as u8) as char;
+      print!("{}", map[i][j]);
     }
     cpu.execute_until_output();
     println!("");
   }
+  map
 }
 
 fn main() {
   let now = Instant::now();
   let mut cpu = IntCoder::new(&PROGRAM);
-  print_map(&mut cpu);
+  let map = fetch_print_map(&mut cpu);
+  let instructions = get_instructions(&map);
 
-  // Total instruction needed calculated via the 'get_paths' function this gives:
+  // Total instruction needed calculated via the 'get_instructions' function this gives:
   // L6R12L6R12L10L4L6L6R12L6R12L10L4L6L6R12L6L10L10L4L6R12L10L4L6L10L10L4L6L6R12L6L10L10L4L6
   //
   // Then we need to find three substrings that together can make the string above.
@@ -110,6 +115,7 @@ fn main() {
       ExitCode::AwaitInput => unreachable!(),
     }
   }
+  println!("Instructions needed:\n{}", instructions);
   println!("Answer: {}", answer);
   println!("Time: {}ms", now.elapsed().as_millis());
 }
