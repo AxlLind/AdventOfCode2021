@@ -26,8 +26,6 @@ impl IntCoder {
     Self { program, ..Self::default() }
   }
 
-  pub fn has_halted(&self) -> bool { self.halted }
-
   pub fn execute(&mut self) -> ExitCode {
     while !self.halted {
       let (opcode, a, b, c, mode1) = self.fetch_inst();
@@ -62,9 +60,11 @@ impl IntCoder {
     }
   }
 
-  pub fn push_input(&mut self, input: i64) {
-    self.inputs.push_back(input);
+  pub fn push_input<T>(&mut self, input: T) where i64: From<T> {
+    self.inputs.push_back(input.into());
   }
+
+  pub fn has_halted(&self) -> bool { self.halted }
 }
 
 // private methods
@@ -99,15 +99,14 @@ impl IntCoder {
 
   fn fetch_inst(&mut self) -> (i64,i64,i64,i64,i64) {
     let code = self.get(self.pc);
-    let opcode = code % 100;
     let mode1 = (code / 100) % 10;
     let mode2 = (code / 1000) % 10;
     let mode3 = (code / 10000) % 10;
-
     let a = self.fetch_adr(1, mode1);
     let b = self.fetch_adr(2, mode2);
     let c = self.fetch_set_adr(3, mode3);
 
+    let opcode = code % 100;
     self.pc += match opcode {
       1|2|7|8 => 4,
       4|9     => 2,
@@ -115,7 +114,6 @@ impl IntCoder {
       3|99    => 0,
       _ => unreachable!("invalid opcode {}", opcode),
     };
-
     (opcode, a, b, c, mode1)
   }
 }
