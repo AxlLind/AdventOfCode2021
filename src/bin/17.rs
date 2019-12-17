@@ -8,23 +8,12 @@ const H: usize = 43;
 const W: usize = 49;
 type Map = [[char; W]; H];
 
-
-fn turn(curr: char, dir: char) -> char {
-  match curr {
-    'U' => if dir == 'L' {'L'} else {'R'}
-    'D' => if dir == 'L' {'R'} else {'L'}
-    'L' => if dir == 'L' {'D'} else {'U'}
-    'R' => if dir == 'L' {'U'} else {'D'}
-    _ => unreachable!()
-  }
-}
-
-fn to_check(dir: char) -> ((i64,i64),(i64,i64)) {
+fn turn(dir: char, turn: char) -> char {
   match dir {
-    'U' => ((-1, 0),( 1, 0)),
-    'D' => (( 1, 0),(-1, 0)),
-    'L' => (( 0, 1),( 0,-1)),
-    'R' => (( 0,-1),( 0, 1)),
+    'U' => if turn == 'L' {'L'} else {'R'}
+    'D' => if turn == 'L' {'R'} else {'L'}
+    'L' => if turn == 'L' {'D'} else {'U'}
+    'R' => if turn == 'L' {'U'} else {'D'}
     _ => unreachable!()
   }
 }
@@ -37,17 +26,18 @@ fn scaffold_at(map: &Map, x:i64, y:i64) -> bool {
 }
 
 fn get_instructions(map: &Map) -> String {
-  let (mut x, mut y): (i64,i64) = (22,42);
   let mut instructions = String::new();
+  let (mut x, mut y) = (22,42);
   let mut dir = 'U';
   loop {
-    let (dx,dy) = match dir {
-      'U' => ( 0,-1),
-      'D' => ( 0, 1),
-      'L' => (-1, 0),
-      'R' => ( 1, 0),
+    let ( (dx,dy), (tx,ty) ) = match dir {
+      'U' => ( ( 0,-1), (-1, 0) ),
+      'D' => ( ( 0, 1), ( 1, 0) ),
+      'L' => ( (-1, 0), ( 0, 1) ),
+      'R' => ( ( 1, 0), ( 0,-1) ),
       _ => unreachable!()
     };
+
     let mut dist = 0;
     while scaffold_at(&map, x+dx, y+dy) {
       x += dx;
@@ -56,18 +46,17 @@ fn get_instructions(map: &Map) -> String {
     }
     instructions += &dist.to_string();
 
-    let ( (lx,ly), (rx,ry) ) = to_check(dir);
-    if scaffold_at(&map, x + lx, y + ly) {
-      dir = turn(dir, 'L');
-      instructions += "L";
-      continue;
+    let mut turn_dir = None;
+    if scaffold_at(&map, x+tx, y+ty) { turn_dir = Some('L'); }
+    if scaffold_at(&map, x-tx, y-ty) { turn_dir = Some('R'); }
+
+    match turn_dir {
+      Some(c) => {
+        dir = turn(dir, c);
+        instructions.push(c);
+      }
+      None => break,
     }
-    if scaffold_at(&map, x + rx, y + ry) {
-      dir = turn(dir, 'R');
-      instructions += "R";
-      continue;
-    }
-    break;
   }
   instructions[1..].to_string()
 }
