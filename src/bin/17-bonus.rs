@@ -36,7 +36,7 @@ fn get_instructions(map: &Map) -> String {
   let mut x: i64 = 22;
   let mut y: i64 = 42;
   let mut dir = 'U';
-  let mut s = "".to_string();
+  let mut instructions = String::new();
   loop {
     let (dx,dy) = match dir {
       'U' => ( 0,-1),
@@ -51,22 +51,22 @@ fn get_instructions(map: &Map) -> String {
       y += dy;
       dist += 1;
     }
-    s += &dist.to_string();
+    instructions += &dist.to_string();
 
     let ((lx,ly),(rx,ry)) = to_check(dir);
     if scaffold_at(&map, x+lx, y+ly) {
       dir = turn(dir, 'L');
-      s.push('L');
+      instructions.push('L');
       continue;
     }
     if scaffold_at(&map, x+rx, y+ry) {
       dir = turn(dir, 'R');
-      s.push('R');
+      instructions.push('R');
       continue;
     }
     break;
   }
-  s[1..].to_string()
+  instructions[1..].to_string()
 }
 
 fn fetch_print_map(cpu: &mut IntCoder) -> Map {
@@ -89,7 +89,7 @@ fn main() {
   let map = fetch_print_map(&mut cpu);
   let instructions = get_instructions(&map);
 
-  // Total instruction needed calculated via the 'get_instructions' function this gives:
+  // Total instructions needed calculated via the 'get_instructions' function:
   // L6R12L6R12L10L4L6L6R12L6R12L10L4L6L6R12L6L10L10L4L6R12L10L4L6L10L10L4L6L6R12L6L10L10L4L6
   //
   // Then we need to find three substrings that together can make the string above.
@@ -103,10 +103,10 @@ fn main() {
   let A = "L,6,R,12,L,6";
   let B = "R,12,L,10,L,4,L,6";
   let C = "L,10,L,10,L,4,L,6";
-
   format!("{}\n{}\n{}\n{}\nn\n", main, A, B, C)
     .chars()
     .for_each(|c| cpu.push_input(c as u8));
+
   let mut answer = 0;
   loop {
     match cpu.execute() {
