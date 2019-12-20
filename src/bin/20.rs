@@ -169,18 +169,17 @@ fn path_len(
     match q.iter().min_by_key(|pos| dist[pos]) {
       Some(&u) => {
         q.remove(&u);
-        if u == end { break; }
+        if u == end { break dist[&end]; }
 
         for v in &g[&u] {
           if !q.contains(&v) { continue; }
-          let d = dist.get(&u).unwrap() + 1;
-          if d < *dist.get(&v).unwrap() { dist.insert(*v, d); }
+          let d = dist[&u] + 1;
+          if d < dist[&v] { dist.insert(*v, d); }
         }
       }
       None => unreachable!(),
     }
   }
-  dist[&end]
 }
 
 fn main() {

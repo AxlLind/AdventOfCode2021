@@ -26,10 +26,10 @@ impl Producer {
       self.tot_ore += amount;
       return self.tot_ore;
     }
-    let mut curr_amount = *self.store.get(material).unwrap();
+    let mut curr_amount = self.store[material];
     if curr_amount < amount {
-      let num_produced = self.costs.get(material).unwrap().0;
-      let mats = self.costs.get(material).unwrap().1.clone();
+      let num_produced = self.costs[material].0;
+      let mats = self.costs[material].1.clone();
 
       let rounds = (amount - curr_amount + num_produced - 1) / num_produced;
       for (amount_needed, mat) in mats {

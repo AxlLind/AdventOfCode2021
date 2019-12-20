@@ -47,15 +47,15 @@ fn compute_paths(
 
   let neighbors = [(0,-1), (0,1), (-1,0), (1,0)];
   while !q.is_empty() {
-    let (ux,uy) = *q.iter().min_by_key(|pos| dist.get(pos).unwrap()).unwrap();
+    let (ux,uy) = *q.iter().min_by_key(|pos| dist[pos]).unwrap();
     q.remove(&(ux,uy));
 
     neighbors.iter()
       .map(|(dx,dy)| (ux + dx, uy + dy))
       .filter(|v| q.contains(v))
       .for_each(|v| {
-        let d = dist.get(&(ux,uy)).unwrap() + 1;
-        if d < *dist.get(&v).unwrap() {
+        let d = dist[&(ux,uy)] + 1;
+        if d < dist[&v] {
           dist.insert(v, d);
           prev.insert(v, Some((ux,uy)));
         }
@@ -74,14 +74,14 @@ fn compute_answers(
   let mut curr = (0,0);
   let mut part_one = 0;
   loop {
-    match prev.get(&curr).unwrap() {
-      Some(val) => curr = *val,
+    match prev[&curr] {
+      Some(val) => curr = val,
       None => break,
     }
     part_one += 1
   }
 
-  let part_two = *dist.values().max().unwrap();
+  let part_two = dist.values().max().unwrap();
   (part_one + 1, part_two + 1)
 }
 
