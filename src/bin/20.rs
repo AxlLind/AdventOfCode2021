@@ -1,5 +1,5 @@
 use std::time::Instant;
-use std::collections::{HashMap, HashSet};
+use std::collections::{HashMap, HashSet, VecDeque};
 use itertools::Itertools;
 
 static INPUT: [&str; 129] = [
@@ -134,6 +134,8 @@ static INPUT: [&str; 129] = [
   "                                                 Q       S     T         R       A M T                                                 ",
 ];
 
+type Graph = HashMap<(usize,usize), Vec<(usize,usize)>>;
+
 fn find_portals(map: &[Vec<char>]) -> Vec<(String, usize, usize)> {
   let mut portals = Vec::new();
   for i in 1..(map.len()-1) {
@@ -156,36 +158,7 @@ fn find_portals(map: &[Vec<char>]) -> Vec<(String, usize, usize)> {
   portals
 }
 
-fn path_len(
-  g: &HashMap<(usize,usize), Vec<(usize,usize)>>,
-  (x, y): (usize,usize),
-  end: (usize,usize),
-) -> usize {
-  let mut q = g.iter().map(|(pos,_)| *pos).collect::<HashSet<_>>();
-  let mut dist = q.iter().map(|&pos| (pos, 9999)).collect::<HashMap<_,_>>();
-  dist.insert((x,y), 0);
-
-  loop {
-    match q.iter().min_by_key(|pos| dist[pos]) {
-      Some(&u) => {
-        q.remove(&u);
-        if u == end { break dist[&end]; }
-
-        for v in &g[&u] {
-          if !q.contains(&v) { continue; }
-          let d = dist[&u] + 1;
-          if d < dist[&v] { dist.insert(*v, d); }
-        }
-      }
-      None => unreachable!(),
-    }
-  }
-}
-
-fn main() {
-  let now = Instant::now();
-  let map = INPUT.iter().map(|s| s.chars().collect_vec()).collect_vec();
-
+fn create_graph(map: &[Vec<char>]) -> Graph {
   let mut g = HashMap::new();
   for i in 0..map.len() {
     for j in 0..map[0].len() {
@@ -198,13 +171,43 @@ fn main() {
       g.insert((i,j), neighbours);
     }
   }
+  g
+}
+
+fn path_len(
+  graph: &Graph,
+  (x, y): (usize,usize),
+  (ex, ey): (usize,usize),
+) -> usize {
+  let mut queue = VecDeque::new();
+  let mut visited = HashSet::new();
+  queue.push_back((x,y,0));
+  visited.insert((x,y));
+
+  loop {
+    let (ux, uy, len) = queue.pop_front().unwrap();
+    visited.insert((ux,uy));
+
+    if ux == ex && uy == ey { return len; }
+
+    graph[&(ux,uy)].iter()
+      .filter(|pos| !visited.contains(pos))
+      .for_each(|&(x,y)| queue.push_back((x,y,len+1)));
+  }
+}
+
+fn main() {
+  let now = Instant::now();
+  let map = INPUT.iter().map(|s| s.chars().collect_vec()).collect_vec();
+  let mut g = create_graph(&map);
 
   let portals = find_portals(&map);
   for index in 0..portals.len() {
     let (p1, x, y) = &portals[index];
-    if p1 == "AA" || p1 == "ZZ" { continue; }
-    let (_,i,j) = *portals.iter().find(|(p2,x2,y2)| p1 == p2 && x != x2 && y != y2).unwrap();
-    g.get_mut(&(*x,*y)).unwrap().push((i,j));
+    let o = portals.iter().find(|(p2,x2,y2)| p1 == p2 && x != x2 && y != y2);
+    if let Some(&(_,i,j)) = o {
+      g.get_mut(&(*x,*y)).unwrap().push((i,j));
+    }
   }
 
   let (_,x1,y1) = *portals.iter().find(|(p,_,_)| p == "AA").unwrap();
