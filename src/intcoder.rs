@@ -1,5 +1,5 @@
 #![allow(dead_code)]
-use std::collections::{HashMap, VecDeque};
+use std::collections::VecDeque;
 
 #[derive(Eq, PartialEq)]
 pub enum ExitCode {
@@ -10,7 +10,7 @@ pub enum ExitCode {
 
 #[derive(Clone, Default)]
 pub struct IntCoder {
-  program: HashMap<i64,i64>,
+  program: Vec<i64>,
   inputs: VecDeque<i64>,
   halted: bool,
   ptr_offset: i64,
@@ -19,11 +19,7 @@ pub struct IntCoder {
 
 impl IntCoder {
   pub fn new(p: &[i64]) -> Self {
-    let program = p.iter()
-      .enumerate()
-      .map(|(k,&v)| (k as i64, v))
-      .collect();
-    Self { program, ..Self::default() }
+    Self { program: p.into(), ..Self::default() }
   }
 
   pub fn execute(&mut self) -> ExitCode {
@@ -70,12 +66,16 @@ impl IntCoder {
 // private methods
 impl IntCoder {
   fn get(&self, adr: i64) -> i64 {
-    *self.program.get(&adr).unwrap_or(&0)
+    *self.program.get(adr as usize).unwrap_or(&0)
   }
 
   fn set<T>(&mut self, adr: i64, val: T) where i64: From<T> {
     assert!(adr >= 0, "write to negative address");
-    self.program.insert(adr, val.into());
+    let adr = adr as usize;
+    if adr >= self.program.len() {
+      self.program.resize(adr + 1, 0);
+    }
+    self.program[adr] = val.into();
   }
 
   fn fetch_adr(&self, offset: i64, mode: i64) -> i64 {
