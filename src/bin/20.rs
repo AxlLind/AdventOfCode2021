@@ -136,6 +136,22 @@ static INPUT: [&str; 129] = [
 
 type Graph = HashMap<(usize,usize), Vec<(usize,usize)>>;
 
+fn create_graph(map: &[Vec<char>]) -> Graph {
+  let mut g = HashMap::new();
+  for i in 0..map.len() {
+    for j in 0..map[0].len() {
+      if map[i][j] != '.' { continue; }
+      let mut neighbours = Vec::new();
+      if map[i-1][j] == '.' { neighbours.push((i-1, j)); }
+      if map[i+1][j] == '.' { neighbours.push((i+1, j)); }
+      if map[i][j-1] == '.' { neighbours.push((i, j-1)); }
+      if map[i][j+1] == '.' { neighbours.push((i, j+1)); }
+      g.insert((i,j), neighbours);
+    }
+  }
+  g
+}
+
 fn find_portals(map: &[Vec<char>]) -> Vec<(String, usize, usize)> {
   let mut portals = Vec::new();
   for i in 1..(map.len()-1) {
@@ -158,23 +174,17 @@ fn find_portals(map: &[Vec<char>]) -> Vec<(String, usize, usize)> {
   portals
 }
 
-fn create_graph(map: &[Vec<char>]) -> Graph {
-  let mut g = HashMap::new();
-  for i in 0..map.len() {
-    for j in 0..map[0].len() {
-      if map[i][j] != '.' { continue; }
-      let mut neighbours = Vec::new();
-      if map[i-1][j] == '.' { neighbours.push((i-1, j)); }
-      if map[i+1][j] == '.' { neighbours.push((i+1, j)); }
-      if map[i][j-1] == '.' { neighbours.push((i, j-1)); }
-      if map[i][j+1] == '.' { neighbours.push((i, j+1)); }
-      g.insert((i,j), neighbours);
+fn connect_portals(g: &mut Graph, portals: &Vec<(String, usize, usize)>) {
+  for index in 0..portals.len() {
+    let (p1, x, y) = &portals[index];
+    let o = portals.iter().find(|(p2,x2,y2)| p1 == p2 && x != x2 && y != y2);
+    if let Some(&(_,i,j)) = o {
+      g.get_mut(&(*x,*y)).unwrap().push((i,j));
     }
   }
-  g
 }
 
-fn path_len(
+fn bfs(
   graph: &Graph,
   (x, y): (usize,usize),
   (ex, ey): (usize,usize),
@@ -200,20 +210,13 @@ fn main() {
   let now = Instant::now();
   let map = INPUT.iter().map(|s| s.chars().collect_vec()).collect_vec();
   let mut g = create_graph(&map);
-
   let portals = find_portals(&map);
-  for index in 0..portals.len() {
-    let (p1, x, y) = &portals[index];
-    let o = portals.iter().find(|(p2,x2,y2)| p1 == p2 && x != x2 && y != y2);
-    if let Some(&(_,i,j)) = o {
-      g.get_mut(&(*x,*y)).unwrap().push((i,j));
-    }
-  }
+  connect_portals(&mut g, &portals);
 
   let (_,x1,y1) = *portals.iter().find(|(p,_,_)| p == "AA").unwrap();
   let (_,x2,y2) = *portals.iter().find(|(p,_,_)| p == "ZZ").unwrap();
 
-  let answer = path_len(&g, (x1,y1), (x2,y2));
+  let answer = bfs(&g, (x1,y1), (x2,y2));
 
   println!("Answer: {}", answer);
   println!("Time: {}ms", now.elapsed().as_millis());
