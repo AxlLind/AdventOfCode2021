@@ -12,3 +12,4 @@ path = "src/intcoder.rs"
 [dependencies]
 itertools = "0.8.2"
 num-integer = "0.1.41"
+mod_exp = "1.0.1"
