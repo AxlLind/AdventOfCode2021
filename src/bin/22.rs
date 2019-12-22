@@ -42,9 +42,7 @@ fn part_one() -> i128 {
 
 fn main() {
   let now = Instant::now();
-  let part_one = part_one();
-  let part_two = part_two();
-  println!("Part one: {}", part_one);
-  println!("Part two: {}", part_two);
+  println!("Part one: {}", part_one());
+  println!("Part two: {}", part_two());
   println!("Time: {}ms", now.elapsed().as_millis());
 }
