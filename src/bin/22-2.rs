@@ -8,20 +8,6 @@ static INPUT: [Cmd; 100] = [Cmd::Deal(34), Cmd::Cut(9781), Cmd::Deal(20), Cmd::C
 const LEN:   i128 = 119_315_717_514_047;
 const TIMES: i128 = 101_741_582_076_661;
 
-// from: https://rosettacode.org/wiki/Modular_inverse#Rust
-fn mod_inv(a: i128) -> i128 {
-  let mut mn = (LEN, a);
-  let mut xy = (0, 1);
-
-  while mn.1 != 0 {
-    xy = (xy.1, xy.0 - (mn.0 / mn.1) * xy.1);
-    mn = (mn.1, mn.0 % mn.1);
-  }
-
-  while xy.0 < 0 { xy.0 += LEN; }
-  xy.0
-}
-
 // Convert to a linear equation ax + b
 fn to_linear_equation(input: &[Cmd]) -> (i128, i128) {
   let mut a = 1;
@@ -29,14 +15,14 @@ fn to_linear_equation(input: &[Cmd]) -> (i128, i128) {
   for &cmd in input.iter().rev() {
     match cmd {
       Cmd::Deal(n) => {
-        let n = mod_inv(n);
+        let n = mod_exp(n, LEN-2, LEN);
         a *= n;
         b *= n;
       },
-      Cmd::Cut(n)  => {
+      Cmd::Cut(n) => {
         b += n + if n < 0 {LEN} else {0};
       }
-      Cmd::Stack   => {
+      Cmd::Stack => {
         a *= -1;
         b = LEN - 1 - b;
       }
@@ -54,7 +40,7 @@ fn main() {
   // Applying the function n times simplifies to:
   // x * a^n + b * (a^n - 1) / (a-1)
   let term1 = 2020 * mod_exp(a, TIMES, LEN) % LEN;
-  let term2 = b * ((mod_exp(a, TIMES, LEN) - 1) * mod_inv(a - 1) % LEN) % LEN;
+  let term2 = b * ((mod_exp(a, TIMES, LEN) - 1) * mod_exp(a - 1, LEN-2, LEN) % LEN) % LEN;
   let ans = (term1 + term2) % LEN;
   println!("Answer: {}", ans);
   println!("Time: {}ms", now.elapsed().as_millis());
