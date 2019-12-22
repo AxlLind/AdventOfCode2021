@@ -13,8 +13,8 @@ fn part_two() -> i128 {
   // Convert the whole process to a linear equation: ax + b
   let (a,b) = INPUT.iter().rev().fold((1,0), |(a,b), &cmd| {
     let (a_new, b_new) = match cmd {
-      Cmd::Stack   => (-a, M - 1 - b),
-      Cmd::Cut(n)  => (a, b + n + M),
+      Cmd::Stack   => (-a, -b - 1),
+      Cmd::Cut(n)  => ( a,  b + n),
       Cmd::Deal(n) => {
         let n = mod_exp(n, M-2, M);
         (a * n, b * n)
