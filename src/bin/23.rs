@@ -15,7 +15,6 @@ fn part_one() -> i64 {
       network[adr as usize].push_input(x);
       network[adr as usize].push_input(y);
     }
-
     for cpu in &mut network {
       match cpu.execute() {
         ExitCode::Output(adr) => {
@@ -24,7 +23,7 @@ fn part_one() -> i64 {
           packets.push_back((adr,x,y));
         }
         ExitCode::AwaitInput => cpu.push_input(-1),
-        ExitCode::Halted => continue,
+        ExitCode::Halted => unreachable!(),
       }
     }
   };
@@ -35,12 +34,12 @@ fn part_two() -> i64 {
   let mut packets = VecDeque::new();
   for i in 0..50 { network[i].push_input(i as i64); }
 
-  let mut last_nat = (0,0);
-  let mut last_sent = (1,1);
+  let (mut last_x, mut last_y, mut last_sent) = (0,0,1);
   loop {
     for (adr,x,y) in packets.drain(..) {
       if adr == 255 {
-        last_nat = (x,y);
+        last_x = x;
+        last_y = y;
         continue;
       }
       network[adr as usize].push_input(x);
@@ -62,12 +61,12 @@ fn part_two() -> i64 {
     }
 
     if nothing_sent {
-      if last_sent.1 == last_nat.1 {
-        return last_sent.1;
+      if last_sent == last_y {
+        return last_y;
       }
-      network[0].push_input(last_nat.0);
-      network[0].push_input(last_nat.1);
-      last_sent = last_nat;
+      network[0].push_input(last_x);
+      network[0].push_input(last_y);
+      last_sent = last_y;
     }
   };
 }
