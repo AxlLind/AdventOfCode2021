@@ -182,7 +182,7 @@ fn find_portals(map: &[Vec<char>]) -> Vec<(String, usize, usize)> {
 
 fn connect_portals(
   g: &mut Graph,
-  portals: &Vec<(String, usize, usize)>,
+  portals: &[(String, usize, usize)],
   max_x: usize,
   max_y: usize
 ) {

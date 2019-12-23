@@ -70,7 +70,7 @@ fn fetch_print_map(cpu: &mut IntCoder) -> Map {
       print!("{}", map[i][j]);
     }
     cpu.execute_until_output();
-    println!("");
+    println!();
   }
   map
 }

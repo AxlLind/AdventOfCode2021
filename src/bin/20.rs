@@ -174,7 +174,7 @@ fn find_portals(map: &[Vec<char>]) -> Vec<(String, usize, usize)> {
   portals
 }
 
-fn connect_portals(g: &mut Graph, portals: &Vec<(String, usize, usize)>) {
+fn connect_portals(g: &mut Graph, portals: &[(String, usize, usize)]) {
   for index in 0..portals.len() {
     let (p1, x, y) = &portals[index];
     let o = portals.iter().find(|(p2,x2,y2)| p1 == p2 && x != x2 && y != y2);
