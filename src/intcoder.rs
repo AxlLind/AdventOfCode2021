@@ -11,9 +11,9 @@ pub enum ExitCode {
 #[derive(Clone, Default)]
 pub struct IntCoder {
   program: Vec<i64>,
-  inputs: VecDeque<i64>,
+  input: VecDeque<i64>,
   halted: bool,
-  ptr_offset: i64,
+  rel_base: i64,
   pc: i64,
 }
 
@@ -26,22 +26,22 @@ impl IntCoder {
     while !self.halted {
       let (opcode, a, b, c, mode1) = self.fetch_inst();
       match opcode {
-        1  => { self.set(c, a + b);         } // add
-        2  => { self.set(c, a * b);         } // mul
-        4  => { return ExitCode::Output(a); } // output
-        5  => { if a != 0 { self.pc = b }   } // jnz
-        6  => { if a == 0 { self.pc = b }   } // jz
-        7  => { self.set(c, a < b);         } // slt
-        8  => { self.set(c, a == b);        } // seq
-        9  => { self.ptr_offset += a;       } // ptr_offset
-        99 => { self.halted = true;         } // halt
-        3  => match self.inputs.pop_front() { // input
+        1  => self.set(c, a + b),            // add
+        2  => self.set(c, a * b),            // mul
+        4  => return ExitCode::Output(a),    // output
+        5  => if a != 0 { self.pc = b; },    // jnz
+        6  => if a == 0 { self.pc = b; },    // jz
+        7  => self.set(c, a < b),            // slt
+        8  => self.set(c, a == b),           // seq
+        9  => self.rel_base += a,            // rel_base
+        99 => self.halted = true,            // halt
+        3  => match self.input.pop_front() { // input
           Some(input) => {
             let a = self.fetch_set_adr(1, mode1);
             self.set(a, input);
             self.pc += 2;
           }
-          None => { return ExitCode::AwaitInput; }
+          None => return ExitCode::AwaitInput,
         }
         _ => unreachable!("invalid opcode {}", opcode)
       }
@@ -56,8 +56,8 @@ impl IntCoder {
     }
   }
 
-  pub fn push_input<T>(&mut self, input: T) where i64: From<T> {
-    self.inputs.push_back(input.into());
+  pub fn push_input<T: Into<i64>>(&mut self, input: T) {
+    self.input.push_back(input.into());
   }
 
   pub fn has_halted(&self) -> bool { self.halted }
@@ -69,7 +69,7 @@ impl IntCoder {
     *self.program.get(adr as usize).unwrap_or(&0)
   }
 
-  fn set<T>(&mut self, adr: i64, val: T) where i64: From<T> {
+  fn set<T: Into<i64>>(&mut self, adr: i64, val: T) {
     assert!(adr >= 0, "write to negative address");
     let adr = adr as usize;
     if adr >= self.program.len() {
@@ -83,7 +83,7 @@ impl IntCoder {
     match mode {
       0 => self.get(value),
       1 => value,
-      2 => self.get(value + self.ptr_offset),
+      2 => self.get(value + self.rel_base),
       _ => unreachable!("invalid mode {}", mode)
     }
   }
@@ -92,7 +92,7 @@ impl IntCoder {
     let value = self.get(self.pc + offset);
     match mode {
       0|1 => value,
-      2   => value + self.ptr_offset,
+      2   => value + self.rel_base,
       _   => unreachable!("invalid mode {}", mode),
     }
   }
