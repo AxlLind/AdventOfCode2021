@@ -22,7 +22,6 @@ fn count_neighbours(bugs: &HashSet<(u8,u8,i32)>) -> HashMap<(u8,u8,i32),usize> {
   }
 
   for &(x,y,z) in bugs {
-    // Neighbours above
     match x {
       0 => add_us!(2, 1, z-1),
       4 => add_us!(2, 3, z-1),
@@ -33,8 +32,6 @@ fn count_neighbours(bugs: &HashSet<(u8,u8,i32)>) -> HashMap<(u8,u8,i32),usize> {
       4 => add_us!(3, 2, z-1),
       _ => {},
     }
-
-    // Neighbours below
     match (x,y) {
       (1,2) => for x in 0..5 { add_us!(x, 0, z+1); }
       (3,2) => for x in 0..5 { add_us!(x, 4, z+1); }
@@ -42,8 +39,6 @@ fn count_neighbours(bugs: &HashSet<(u8,u8,i32)>) -> HashMap<(u8,u8,i32),usize> {
       (2,3) => for y in 0..5 { add_us!(4, y, z+1); }
       _     => {},
     }
-
-    // Neighbours at current. No out of bounds, skip (2,2)
     if x != 0 && (x-1 != 2 || y != 2) { add_us!(x-1, y, z); }
     if x != 4 && (x+1 != 2 || y != 2) { add_us!(x+1, y, z); }
     if y != 0 && (x != 2 || y-1 != 2) { add_us!(x, y-1, z); }

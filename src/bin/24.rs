@@ -26,18 +26,15 @@ fn main() {
   let neighbors = [(0,-1), (0,1), (-1,0), (1,0)];
 
   let mut seen = HashSet::new();
-  seen.insert(cells);
   loop {
-    let mut new_cells = cells.clone();
-    for x in 0..5 {
-      for y in 0..5 {
-        let n = neighbors.iter()
-          .filter(|&&diff| bug_at(&cells, (x,y), diff))
-          .count();
-        let is_bug = cells[x][y] == '#';
-        if is_bug && n != 1 { new_cells[x][y] = '.'; }
-        if !is_bug && (n == 1 || n == 2) { new_cells[x][y] = '#'; }
-      }
+    let mut new_cells = cells;
+    for (x,y) in (0..5).cartesian_product(0..5) {
+      let n = neighbors.iter()
+        .filter(|&&diff| bug_at(&cells, (x,y), diff))
+        .count();
+      let is_bug = cells[x][y] == '#';
+      if is_bug && n != 1 { new_cells[x][y] = '.'; }
+      if !is_bug && (n == 1 || n == 2) { new_cells[x][y] = '#'; }
     }
     cells = new_cells;
     if seen.contains(&cells) { break; }
