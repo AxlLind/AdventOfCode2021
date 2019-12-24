@@ -61,13 +61,11 @@ fn main() {
     .collect::<HashSet<_>>();
 
   for _ in 0..200 {
-    let mut new_bugs = bugs.clone();
     for (&pos, &n) in &count_neighbours(&bugs) {
       let is_bug = bugs.contains(&pos);
-      if is_bug && n != 1 { new_bugs.remove(&pos); }
-      if !is_bug && (n == 1 || n == 2) { new_bugs.insert(pos); }
+      if is_bug && n != 1 { bugs.remove(&pos); }
+      if !is_bug && (n == 1 || n == 2) { bugs.insert(pos); }
     }
-    bugs = new_bugs;
   }
   println!("Answer: {}", bugs.len());
   println!("Time: {}ms", now.elapsed().as_millis());
