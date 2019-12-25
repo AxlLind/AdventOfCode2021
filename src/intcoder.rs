@@ -60,6 +60,10 @@ impl IntCoder {
     self.input.push_back(input.into());
   }
 
+  pub fn push_str(&mut self, s: &str) {
+    s.chars().for_each(|c| self.push_input(c as u8));
+  }
+
   pub fn has_halted(&self) -> bool { self.halted }
 }
 
