@@ -1,4 +1,3 @@
-#![allow(non_snake_case)]
 use std::time::Instant;
 use intcoder::{IntCoder, ExitCode};
 
