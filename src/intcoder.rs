@@ -12,7 +12,6 @@ pub enum ExitCode {
 pub struct IntCoder {
   program: Vec<i64>,
   input: VecDeque<i64>,
-  halted: bool,
   rel_base: i64,
   pc: i64,
 }
@@ -23,7 +22,7 @@ impl IntCoder {
   }
 
   pub fn execute(&mut self) -> ExitCode {
-    while !self.halted {
+    loop {
       let (opcode, a, b, c, mode1) = self.fetch_inst();
       match opcode {
         1  => self.set(c, a + b),            // add
@@ -34,7 +33,7 @@ impl IntCoder {
         7  => self.set(c, a < b),            // slt
         8  => self.set(c, a == b),           // seq
         9  => self.rel_base += a,            // rel_base
-        99 => self.halted = true,            // halt
+        99 => return ExitCode::Halted,       // halt
         3  => match self.input.pop_front() { // input
           Some(input) => {
             let a = self.fetch_set_adr(1, mode1);
@@ -46,7 +45,6 @@ impl IntCoder {
         _ => unreachable!("invalid opcode {}", opcode)
       }
     }
-    ExitCode::Halted
   }
 
   pub fn execute_until_output(&mut self) -> i64 {
@@ -63,8 +61,6 @@ impl IntCoder {
   pub fn push_str(&mut self, s: &str) {
     s.chars().for_each(|c| self.push_input(c as u8));
   }
-
-  pub fn has_halted(&self) -> bool { self.halted }
 }
 
 // private methods

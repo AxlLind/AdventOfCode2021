@@ -7,9 +7,10 @@ fn main() {
   let now = Instant::now();
   let mut cpu = IntCoder::new(&PROGRAM);
   cpu.push_input(2);
-  while !cpu.has_halted() {
-    if let ExitCode::Output(i) = cpu.execute() {
-      println!("{}", i);
+  loop {
+    match cpu.execute() {
+      ExitCode::Output(i) => println!("{}", i),
+      _ => break,
     }
   }
   println!("Time: {}ms", now.elapsed().as_millis());
