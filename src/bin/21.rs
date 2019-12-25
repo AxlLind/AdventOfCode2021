@@ -26,10 +26,7 @@ static PART_TWO: [&str; 9] = [
 
 fn run_droid(insts: &[&str]) -> i64 {
   let mut cpu = IntCoder::new(&PROGRAM);
-  for c in insts.join("\n").chars() {
-    cpu.push_input(c as u8);
-  }
-
+  cpu.push_str(&insts.join("\n"));
   let mut answer = 0;
   loop {
     match cpu.execute() {

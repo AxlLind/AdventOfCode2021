@@ -96,13 +96,11 @@ fn part_two(cpu: &mut IntCoder) -> i64 {
   //
   // Then we need to find three substrings that together can make the string above.
   // We can easily do this by hand and find the following:
-  let main = "A,B,A,B,A,C,B,C,A,C";
-  let A = "L,6,R,12,L,6";
-  let B = "R,12,L,10,L,4,L,6";
-  let C = "L,10,L,10,L,4,L,6";
-  format!("{}\n{}\n{}\n{}\nn\n", main, A, B, C)
-    .chars()
-    .for_each(|c| cpu.push_input(c as u8));
+  cpu.push_str("A,B,A,B,A,C,B,C,A,C\n");
+  cpu.push_str("L,6,R,12,L,6\n");
+  cpu.push_str("R,12,L,10,L,4,L,6\n");
+  cpu.push_str("L,10,L,10,L,4,L,6\n");
+  cpu.push_str("n\n");
 
   let mut part_two = 0;
   loop {
