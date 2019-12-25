@@ -17,9 +17,9 @@ fn main() {
 
       let mut input = 0;
       loop {
-        for i in 0..5 {
-          coders[i].push_input(input);
-          match coders[i].execute() {
+        for cpu in &mut coders {
+          cpu.push_input(input);
+          match cpu.execute() {
             ExitCode::Output(tmp) => input = tmp,
             ExitCode::Halted      => return input,
             ExitCode::AwaitInput  => unreachable!(),
