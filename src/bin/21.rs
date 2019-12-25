@@ -39,11 +39,7 @@ fn run_droid(insts: &[&str]) -> i64 {
 
 fn main() {
   let now = Instant::now();
-
-  let part_one = run_droid(&PART_ONE);
-  let part_two = run_droid(&PART_TWO);
-
-  println!("Part one {}", part_one);
-  println!("Part two {}", part_two);
+  println!("Part one: {}", run_droid(&PART_ONE));
+  println!("Part two: {}", run_droid(&PART_TWO));
   println!("Time: {}ms", now.elapsed().as_millis());
 }
