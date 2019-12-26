@@ -112,7 +112,7 @@ fn remove_dead_ends(nodes: &mut HashSet<Pos>, map: &Map) {
 }
 
 // Contract nodes that are empty spaces and only functions as bridges between other nodes.
-// This does not "change" the graph, simply removes all uninteresting nodes,
+// This does not "change" the graph, it simply removes all uninteresting nodes,
 // leaving only 3/4-way intersections and doors/keys as nodes in the graph.
 fn contract_corridors(g: &mut Graph, map: &Map) {
   let to_contract = g.iter()
@@ -137,27 +137,23 @@ fn contract_corridors(g: &mut Graph, map: &Map) {
 
 // This process reduces the huge maze above to just 79 nodes.
 fn to_minimized_graph(map: &Map) -> Graph {
-  let mut nodes = HashSet::new();
-  for i in 0..map.len() {
-    for j in 0..map[0].len() {
-      if map[i][j] != '#' { nodes.insert((i,j)); }
-    }
-  }
+  let mut nodes = (0..map.len()).cartesian_product(0..map[0].len())
+    .filter(|&(x,y)| map[x][y] != '#')
+    .collect::<HashSet<_>>();
   remove_dead_ends(&mut nodes, &map);
 
-  let mut g = nodes.iter()
-    .map(|&(i,j)| {
-      let n = [(i-1,j), (i+1,j), (i,j-1), (i,j+1)].iter()
-        .filter(|p| nodes.contains(p))
-        .map(|&p| (p,1))
-        .collect();
-      ((i,j), n)
-    })
-    .collect();
+  let mut g = nodes.iter().map(|&(i,j)| {
+    let n = [(i-1,j), (i+1,j), (i,j-1), (i,j+1)].iter()
+      .filter(|p| nodes.contains(p))
+      .map(|&p| (p,1))
+      .collect();
+    ((i,j), n)
+  }).collect();
   contract_corridors(&mut g, &map);
   g
 }
 
+// Store keys as bits instead so we can speed up computations via bitmasks
 fn char_to_bit(c: char, offset: u8) -> usize {
   match c {
     '@' => 1 << 26,
@@ -172,34 +168,33 @@ fn bfs(g: &Graph, map: &Map, start: Pos, end: Pos) -> Option<Path> {
   let mut queue = VecDeque::new();
   let mut visited = HashSet::new();
   queue.push_back(vec![(start,0)]);
-  visited.insert(start);
 
   let path = loop {
     let path = match queue.pop_front() {
       Some(path) => path,
-      None       => break None,
+      None       => return None,
     };
     let (u, _) = *path.last().unwrap();
-    if u == end { break Some(path); }
+    if u == end { break path; }
 
     visited.insert(u);
-    for &(v,d) in &g[&u] {
-      if visited.contains(&v) { continue; }
-      let mut new_path = path.clone();
-      new_path.push((v,d));
-      queue.push_back(new_path);
-    }
+    g[&u].iter()
+      .filter(|&(v,_)| !visited.contains(v))
+      .for_each(|&(v,d)| {
+        let mut new_path = path.clone();
+        new_path.push((v,d));
+        queue.push_back(new_path);
+      })
   };
-  path.map(|path| {
-    let doors = path.iter().map(|&((x,y),_)| map[x][y]).filter(|c| c.is_ascii_uppercase()).fold(0, |mask, c| mask | char_to_bit(c, b'A'));
-    let keys  = path.iter().map(|&((x,y),_)| map[x][y]).filter(|c| c.is_ascii_lowercase()).fold(0, |mask, c| mask | char_to_bit(c, b'a'));
-    let len   = path.iter().map(|(_,d)| d).sum();
-    (doors, keys, len)
-  })
+
+  let doors = path.iter().map(|&((x,y),_)| map[x][y]).filter(|c| c.is_ascii_uppercase()).fold(0, |mask, c| mask | char_to_bit(c, b'A'));
+  let keys  = path.iter().map(|&((x,y),_)| map[x][y]).filter(|c| c.is_ascii_lowercase()).fold(0, |mask, c| mask | char_to_bit(c, b'a'));
+  let len   = path.iter().map(|(_,d)| d).sum();
+  Some((doors, keys, len))
 }
 
 // Compute the length of path between all key pairs,
-// as well as what the keys picked up along the way
+// what keys are picked up along the way,
 // and what doors are required to get there.
 fn compute_paths(g: &Graph, map: &Map) -> HashMap<usize, HashMap<usize, Path>> {
   let keys = g.keys()
@@ -247,27 +242,9 @@ fn shortest_path(
 fn part_one(map: &Map) -> usize {
   let g = to_minimized_graph(&map);
   let paths = compute_paths(&g, &map);
-  let start_key = char_to_bit('@',0);
-  let all_keys = ((1 << 26) - 1) | start_key;
-  shortest_path(&g, &paths, &mut HashMap::new(), all_keys, start_key, start_key)
-}
-
-// For part two: any doors this robot cannot open will be opened
-// by another robot at some point so we can just ignore those doors.
-fn remove_ignorable_doors(paths: &mut HashMap<usize, HashMap<usize, Path>>) -> Vec<(usize,usize)> {
-  let mut v = Vec::new();
-  for k in ['@','%','!','€'].iter().map(|&c| char_to_bit(c,0)) {
-    let reachable_keys = paths[&k].keys().fold(k, |ks, k| ks | k);
-    let keys = paths[&k].keys().cloned().collect_vec();
-    for k in keys {
-      paths.entry(k).and_modify(|p|
-        p.iter_mut()
-          .for_each(|(_, (doors,_,_))| *doors &= reachable_keys)
-      );
-    }
-    v.push((k, reachable_keys));
-  }
-  v
+  let start = char_to_bit('@',0);
+  let all_keys = (1 << 27) - 1;
+  shortest_path(&g, &paths, &mut HashMap::new(), all_keys, start, start)
 }
 
 fn part_two(map: &mut Map) -> usize {
@@ -277,11 +254,21 @@ fn part_two(map: &mut Map) -> usize {
 
   let g = to_minimized_graph(&map);
   let mut paths = compute_paths(&g, &map);
-  let v = remove_ignorable_doors(&mut paths);
 
-  v.iter()
-    .map(|&(k, all_doors)| shortest_path(&g, &paths, &mut HashMap::new(), all_doors, k, k))
-    .sum::<usize>()
+  // Any doors this robot cannot open will be opened by
+  // another robot at some point so we can just remove
+  // those doors before calculating the shortest path.
+  ['@','%','!','€'].iter().map(|&c| {
+    let k = char_to_bit(c,0);
+    let keys = paths[&k].keys().cloned().collect_vec();
+    let reachable_keys = keys.iter().fold(k, |ks, k| ks | k);
+    for k in keys {
+      paths.entry(k).and_modify(|p| {
+        for (_, (doors,_,_)) in p.iter_mut() { *doors &= reachable_keys; }
+      });
+    }
+    shortest_path(&g, &paths, &mut HashMap::new(), reachable_keys, k, k)
+  }).sum()
 }
 
 fn main() {
