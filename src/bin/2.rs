@@ -29,8 +29,8 @@ fn main() {
       }
     }
     if program[0] == 19690720 {
-      println!("{} {} {}", i, j, 100 * i + j);
-      return;
+      println!("Answer: {}", 100 * i + j);
+      break;
     }
   }
   println!("Time: {}ms", now.elapsed().as_millis());

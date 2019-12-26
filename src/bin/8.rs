@@ -24,7 +24,7 @@ fn part_two() {
       .collect::<Vec<_>>()
     );
   image.iter()
-    .map(|i| if *i == 0 { ' ' } else { '#' })
+    .map(|i| if *i == 0 {' '} else {'■'})
     .chunks(25)
     .into_iter()
     .for_each(|c| println!("{}", c.collect::<String>()));
