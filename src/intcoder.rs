@@ -10,15 +10,15 @@ pub enum ExitCode {
 
 #[derive(Clone, Default)]
 pub struct IntCoder {
-  program: Vec<i64>,
+  memory: Vec<i64>,
   input: VecDeque<i64>,
   rel_base: i64,
   pc: i64,
 }
 
 impl IntCoder {
-  pub fn new(p: &[i64]) -> Self {
-    Self { program: p.into(), ..Self::default() }
+  pub fn new(program: &[i64]) -> Self {
+    Self { memory: program.into(), ..Self::default() }
   }
 
   pub fn execute(&mut self) -> ExitCode {
@@ -65,17 +65,17 @@ impl IntCoder {
 
 // private methods
 impl IntCoder {
-  fn get(&self, adr: i64) -> i64 {
-    *self.program.get(adr as usize).unwrap_or(&0)
-  }
-
   fn set<T: Into<i64>>(&mut self, adr: i64, val: T) {
     assert!(adr >= 0, "write to negative address");
     let adr = adr as usize;
-    if adr >= self.program.len() {
-      self.program.resize(adr + 1, 0);
+    if adr >= self.memory.len() {
+      self.memory.resize(adr + 1, 0);
     }
-    self.program[adr] = val.into();
+    self.memory[adr] = val.into();
+  }
+
+  fn get(&self, adr: i64) -> i64 {
+    *self.memory.get(adr as usize).unwrap_or(&0)
   }
 
   fn fetch_adr(&self, offset: i64, mode: i64) -> i64 {
