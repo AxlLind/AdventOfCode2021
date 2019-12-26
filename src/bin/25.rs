@@ -41,7 +41,6 @@ fn play_manually() {
   }
 }
 
-
 fn main() {
   let now = Instant::now();
   brute_force_solution();
