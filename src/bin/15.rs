@@ -27,7 +27,7 @@ fn print_map(map: &HashMap<(i64,i64),i64>) {
       };
       print!("{}", if x == 0 && y == 0 {'%'} else {c});
     }
-    println!("");
+    println!();
   }
 }
 

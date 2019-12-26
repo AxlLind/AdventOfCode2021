@@ -104,7 +104,7 @@ fn remove_dead_ends(nodes: &mut HashSet<Pos>, map: &Map) {
         if nodes.contains(&(i,j+1)) { n += 1; }
         n == 1
       })
-      .map(|x| *x)
+      .cloned()
       .collect_vec();
     if to_remove.is_empty() { return; }
     for pos in &to_remove { nodes.remove(pos); }
