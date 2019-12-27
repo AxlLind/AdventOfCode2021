@@ -1,7 +1,5 @@
 # Output
-This file contains the output of all solutions. All of them are timed. The timing is just wall clock time so things like other processes running can affect it.
-
-All solutions finish in under `150ms` on my machine. The total running time of all 50 stars is under `500ms`, which I'm very happy with.
+This file contains the output of all solutions. All of them are timed. The timing is just wall clock time so things like other processes running can affect it. All solutions finish in under `100ms` on my machine and the total running time of all 50 stars is under `500ms`!
 
 ## Day 1
 ```
@@ -308,7 +306,7 @@ Time: 1ms
 ```
 Part one: 3918
 Part two: 2004
-Time: 105ms
+Time: 86ms
 ```
 
 ## Day 19

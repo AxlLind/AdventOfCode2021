@@ -203,14 +203,16 @@ fn compute_paths(g: &Graph, map: &Map) -> HashMap<usize, HashMap<usize, Path>> {
     .collect_vec();
   let mut paths = HashMap::new();
   for i in 0..keys.len() {
-    let (x,y) = keys[i];
-    let key = char_to_bit(map[x][y], b'a');
-    paths.insert(key, HashMap::new());
-    for j in 0..keys.len() {
-      let (x,y) = keys[j];
-      let key2 = char_to_bit(map[x][y], b'a');
+    let (x1,y1) = keys[i];
+    let key1 = char_to_bit(map[x1][y1], b'a');
+    for j in i..keys.len() {
+      let (x2,y2) = keys[j];
+      let key2 = char_to_bit(map[x2][y2], b'a');
       if let Some(path) = bfs(&g, &map, keys[i], keys[j]) {
-        paths.entry(key).and_modify(|v| { v.insert(key2, path); });
+        paths.entry(key1).or_insert(HashMap::new());
+        paths.entry(key2).or_insert(HashMap::new());
+        paths.entry(key1).and_modify(|v| { v.insert(key2, path); });
+        paths.entry(key2).and_modify(|v| { v.insert(key1, path); });
       }
     }
   }
@@ -264,7 +266,9 @@ fn part_two(map: &mut Map) -> usize {
     let reachable_keys = keys.iter().fold(k, |ks, k| ks | k);
     for k in keys {
       paths.entry(k).and_modify(|p| {
-        for (_, (doors,_,_)) in p.iter_mut() { *doors &= reachable_keys; }
+        for (_, (doors,_,_)) in p.iter_mut() {
+          *doors &= reachable_keys;
+        }
       });
     }
     shortest_path(&g, &paths, &mut HashMap::new(), reachable_keys, k, k)
