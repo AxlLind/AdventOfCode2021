@@ -40,7 +40,7 @@ impl IntCoder {
             self.set(a, input);
             self.pc += 2;
           }
-          None => return ExitCode::AwaitInput,
+          None => return ExitCode::AwaitInput
         }
         _ => unreachable!("invalid opcode {}", opcode)
       }
@@ -50,7 +50,7 @@ impl IntCoder {
   pub fn execute_until_output(&mut self) -> i64 {
     match self.execute() {
       ExitCode::Output(o) => o,
-      _ => unreachable!("Assumed CPU would exit with output"),
+      _ => unreachable!("assumed CPU would exit with output"),
     }
   }
 
@@ -59,7 +59,7 @@ impl IntCoder {
   }
 
   pub fn push_str(&mut self, s: &str) {
-    s.chars().for_each(|c| self.push_input(c as u8));
+    for b in s.bytes() { self.push_input(b); }
   }
 }
 
