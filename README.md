@@ -3,7 +3,7 @@ My solutions to all [Advent of Code 2019](https://adventofcode.com/2019) problem
 
 Huge thanks to everyone who makes AoC possible!
 
-To run any of the solutions use the command `cargo run --release --bin DAY_NUMBER`.
+To run any of the solutions use the command `cargo run --release --bin DAY_NUMBER`. You can see the output for each solution [here](./Output.md).
 
 ![all stars](./screenshots/all_stars.png)
 

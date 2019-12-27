@@ -7,7 +7,6 @@ const JNZ: i64 = 5; const JZ:  i64 = 6;
 const SLT: i64 = 7; const SEQ: i64 = 8;
 const BSE: i64 = 9; const HLT: i64 = 99;
 
-#[derive(Eq, PartialEq)]
 pub enum ExitCode {
   Output(i64),
   AwaitInput,
