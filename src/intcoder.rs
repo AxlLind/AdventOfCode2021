@@ -1,6 +1,12 @@
 #![allow(dead_code)]
 use std::collections::VecDeque;
 
+const ADD: i64 = 1; const MUL: i64 = 2;
+const IN:  i64 = 3; const OUT: i64 = 4;
+const JNZ: i64 = 5; const JZ:  i64 = 6;
+const SLT: i64 = 7; const SEQ: i64 = 8;
+const BSE: i64 = 9; const HLT: i64 = 99;
+
 #[derive(Eq, PartialEq)]
 pub enum ExitCode {
   Output(i64),
@@ -25,16 +31,16 @@ impl IntCoder {
     loop {
       let (opcode, a, b, c, mode1) = self.fetch_inst();
       match opcode {
-        1  => self.set(c, a + b),            // add
-        2  => self.set(c, a * b),            // mul
-        4  => return ExitCode::Output(a),    // output
-        5  => if a != 0 { self.pc = b; },    // jnz
-        6  => if a == 0 { self.pc = b; },    // jz
-        7  => self.set(c, a < b),            // slt
-        8  => self.set(c, a == b),           // seq
-        9  => self.rel_base += a,            // rel_base
-        99 => return ExitCode::Halted,       // halt
-        3  => match self.input.pop_front() { // input
+        ADD => self.set(c, a + b),
+        MUL => self.set(c, a * b),
+        OUT => return ExitCode::Output(a),
+        JNZ => if a != 0 { self.pc = b; },
+        JZ  => if a == 0 { self.pc = b; },
+        SLT => self.set(c, a < b),
+        SEQ => self.set(c, a == b),
+        BSE => self.rel_base += a,
+        HLT => return ExitCode::Halted,
+        IN  => match self.input.pop_front() {
           Some(input) => {
             let a = self.fetch_set_adr(1, mode1);
             self.set(a, input);
@@ -108,10 +114,10 @@ impl IntCoder {
 
     let opcode = code % 100;
     self.pc += match opcode {
-      1|2|7|8 => 4,
-      4|9     => 2,
-      5|6     => 3,
-      3|99    => 0,
+      ADD|MUL|SLT|SEQ => 4,
+      OUT|BSE         => 2,
+      JNZ|JZ          => 3,
+      HLT|IN          => 0,
       _ => unreachable!("invalid opcode {}", opcode),
     };
     (opcode, a, b, c, mode1)
