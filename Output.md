@@ -1,6 +1,8 @@
 # Output
 This file contains the output of all solutions. All of them are timed. The timing is just wall clock time so things like other processes running can affect it.
 
+All solutions finish in under `150ms` on my machine. The total running time of all 50 stars is under `500ms`, which I'm very happy with.
+
 ## Day 1
 ```
 Part one: 3303995
@@ -18,14 +20,14 @@ Time: 0ms
 ```
 Part one: 721
 Part two: 7388
-Time: 59ms
+Time: 55ms
 ```
 
 ## Day 4
 ```
 Part one: 1653
 Part two: 1133
-Time: 251ms
+Time: 5ms
 ```
 
 ## Day 5
@@ -49,7 +51,7 @@ Time: 0ms
 ```
 Part one: 251208
 Part two: 397
-Time: 22ms
+Time: 20ms
 ```
 
 ## Day 7
@@ -83,7 +85,7 @@ Time: 4ms
 ```
 Part one: 314
 Part two: 1513
-Time: 43ms
+Time: 35ms
 ```
 
 ## Day 11
@@ -165,7 +167,7 @@ Time: 43ms
                                   ■■                                     ■■■ ■   ■■  ■■
                                                                             ■■    ■■
 Squares: 2539
-Time: 4ms
+Time: 3ms
 ```
 
 ### Part two
@@ -184,24 +186,24 @@ Time: 0ms
 ```
 Part one: 6678
 Part two: 496734501382552
-Time: 3ms
+Time: 2ms
 ```
 
 ## Day 13
 ```
 Part one: 193
 Part two: 10547
-Time: 20ms
+Time: 14ms
 ```
 
 ## Day 14
 ```
 Part one: 365768
 Part two: 3756877
-Time: 10ms
+Time: 8ms
 ```
 
-## Day 16
+## Day 15
 ```
 #■■■#■■■#■■■■■■■■■■■■■#■■■■■#■■■■■■■#■■■#
 ■   ■   ■             ■     ■       ■   ■
@@ -246,14 +248,14 @@ Time: 10ms
 #■■■■■■■#■■■■■■■■■■■■■#■■■#■■■■■■■■■#■■■#
 Part one: 318
 Part two: 390
-Time: 24ms
+Time: 19ms
 ```
 
 ## Day 16
 ```
 Part one: 17978331
 Part two: 19422575
-Time: 108ms
+Time: 72ms
 ```
 
 ## Day 17
@@ -305,41 +307,41 @@ Instructions needed:
 L6R12L6R12L10L4L6L6R12L6R12L10L4L6L6R12L6L10L10L4L6R12L10L4L6L10L10L4L6L6R12L6L10L10L4L6
 Part one: 8928
 Part two: 880360
-Time: 2ms
+Time: 1ms
 ```
 
 ## Day 18
 ```
 Part one: 3918
 Part two: 2004
-Time: 122ms
+Time: 105ms
 ```
 
 ## Day 19
 ```
 Part one: 138
 Part two: 13530764
-Time: 31ms
+Time: 23ms
 ```
 
 ## Day 20
 ### Part one
 ```
 Answer: 668
-Time: 3ms
+Time: 2ms
 ```
 
 ### Part two
 ```
 Answer: 7778
-Time: 32ms
+Time: 29ms
 ```
 
 ## Day 21
 ```
 Part one: 19361414
 Part two: 1139205618
-Time: 9ms
+Time: 7ms
 ```
 
 ## Day 22
@@ -353,14 +355,14 @@ Time: 0ms
 ```
 Part one: 18192
 Part two: 10738
-Time: 6ms
+Time: 4ms
 ```
 
 ## Day 24
 ```
 Part one: 18404913
 Part two: 1989
-Time: 70ms
+Time: 60ms
 ```
 
 ## Day 25
@@ -375,5 +377,5 @@ A loud, robotic voice says "Analysis complete! You may proceed." and you enter t
 Santa notices your small droid, looks puzzled for a moment, realizes what has happened, and radios your ship directly.
 "Oh, hello! You should be able to get in by typing 352325632 on the keypad at the main airlock."
 
-Time: 34ms
+Time: 30ms
 ```
