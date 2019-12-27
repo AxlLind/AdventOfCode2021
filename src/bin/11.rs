@@ -33,36 +33,50 @@ fn print_map(map: &HashMap<(i64,i64),i64>) {
   }
 }
 
-fn main() {
-  let now = Instant::now();
+fn run(map: &mut HashMap<(i64,i64), i64>) -> usize {
   let mut cpu = IntCoder::new(&PROGRAM);
-  let mut map = HashMap::new();
-  map.insert((0,0), 1); // comment this out for part 1
 
-  let mut x = 0;
-  let mut y = 0;
   let mut dir = 'U';
+  let (mut x, mut y) = (0,0);
   loop {
     match cpu.execute() {
-      ExitCode::Output(c) => match cpu.execute() {
-        ExitCode::Output(i) => {
-          map.insert((x,y), c);
-          dir = turn(dir, i);
-          match dir {
-            'U' => y -= 1,
-            'D' => y += 1,
-            'L' => x -= 1,
-            'R' => x += 1,
-            _   => unreachable!()
-          }
+      ExitCode::Output(c) => {
+        let i = cpu.execute_until_output();
+        map.insert((x,y), c);
+        dir = turn(dir, i);
+        match dir {
+          'U' => y -= 1,
+          'D' => y += 1,
+          'L' => x -= 1,
+          'R' => x += 1,
+          _   => unreachable!()
         }
-        _ => unreachable!()
       }
       ExitCode::AwaitInput => cpu.push_input(*map.get(&(x,y)).unwrap_or(&0)),
       ExitCode::Halted => break,
     }
   }
+  map.len()
+}
+
+fn part_one() {
+  let mut map = HashMap::new();
+  let part_one = run(&mut map);
   print_map(&map);
-  println!("Squares: {}", map.len());
+  println!("Part one: {}", part_one);
+}
+
+fn part_two() {
+  let mut map = HashMap::new();
+  map.insert((0,0), 1);
+  run(&mut map);
+  println!("Part two:");
+  print_map(&map);
+}
+
+fn main() {
+  let now = Instant::now();
+  part_one();
+  part_two();
   println!("Time: {}ms", now.elapsed().as_millis());
 }
