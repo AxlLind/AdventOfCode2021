@@ -242,8 +242,13 @@ Time: 31ms
 
 ## Day 20
 ```
+// Part one:
 Answer: 668
 Time: 3ms
+
+// Part two:
+Answer: 7778
+Time: 32ms
 ```
 
 ## Day 21
