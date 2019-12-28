@@ -14,3 +14,9 @@ itertools = "0.8.2"
 num-integer = "0.1.41"
 mod_exp = "1.0.1"
 easy_io = "0.2.2"
+criterion = "0.3.0"
+
+[[bench]]
+name = "intcode-benchmark"
+harness = false
+path = "./src/intcode_benchmark.rs"

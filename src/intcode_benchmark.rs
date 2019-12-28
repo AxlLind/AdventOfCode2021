@@ -1,4 +1,4 @@
-use std::time::Instant;
+use criterion::{Criterion, criterion_group, criterion_main};
 use intcoder::{IntCoder, ExitCode};
 
 // reddit thread: https://redd.it/egq9xn
@@ -8,17 +8,9 @@ static ISQRT:         [i64; 149] = [3,1,109,149,21101,0,15,0,20101,0,1,1,1105,1,
 static DIV_MOD:       [i64; 166] = [109,366,21101,0,13,0,203,1,203,2,1105,1,18,204,1,204,2,99,1105,0,63,101,166,19,26,1107,-1,366,30,1106,-1,59,101,166,19,39,102,1,58,-1,102,2,58,58,1007,58,0,49,1105,-1,63,101,1,19,19,1105,1,21,1,101,-1,19,19,101,166,19,69,207,1,-1,72,1106,-1,-1,22101,0,1,3,2102,1,2,146,2102,-1,2,152,22102,0,1,1,22102,0,2,2,101,1,19,103,101,-1,103,103,1107,-1,0,107,2105,-1,0,22102,2,2,2,101,166,103,119,207,3,-1,122,1105,-1,144,22101,1,2,2,22102,-1,3,3,101,166,103,137,22001,-1,3,3,22102,-1,3,3,1207,2,-1,149,1105,-1,98,22101,-1,2,2,101,166,103,160,22001,-1,1,1,1105,1,98];
 static PRIME_FACTOR:  [i64; 383] = [3,1,109,583,108,0,1,9,1106,-1,14,4,1,99,107,0,1,19,1105,-1,27,104,-1,102,-1,1,1,21101,0,38,0,20101,0,1,1,1105,1,138,2101,1,1,41,101,596,41,45,1101,1,596,77,1101,0,1,53,101,1,77,77,101,1,53,53,7,45,77,67,1105,-1,128,108,1,1,74,1105,-1,128,1005,-1,54,1,53,77,93,7,45,93,88,1105,-1,101,1101,0,1,-1,1,53,93,93,1105,1,83,21101,0,116,0,20101,0,1,1,20101,0,53,2,1105,1,235,1205,2,54,4,53,2101,0,1,1,1105,1,101,108,1,1,133,1105,-1,137,4,1,99,22101,0,1,2,22101,0,1,1,21101,0,163,3,22101,0,1,4,22101,0,2,5,109,3,1105,1,198,109,-3,22102,-1,1,1,22201,1,4,3,22102,-1,1,1,1208,3,0,182,2105,-1,0,1208,3,1,189,2105,-1,0,22101,0,4,1,1105,1,146,1207,1,1,203,2105,-1,0,21101,0,222,3,22101,0,2,4,22101,0,1,5,109,3,1105,1,235,109,-3,22201,1,4,1,21101,0,2,2,1105,1,235,1105,0,280,101,383,236,243,1107,-1,583,247,1106,-1,276,101,383,236,256,102,1,275,-1,102,2,275,275,1007,275,0,266,1105,-1,280,101,1,236,236,1105,1,238,1,101,-1,236,236,101,383,236,286,207,1,-1,289,1106,-1,-1,22101,0,1,3,2102,1,2,363,2102,-1,2,369,22102,0,1,1,22102,0,2,2,101,1,236,320,101,-1,320,320,1107,-1,0,324,2105,-1,0,22102,2,2,2,101,383,320,336,207,3,-1,339,1105,-1,361,22101,1,2,2,22102,-1,3,3,101,383,320,354,22001,-1,3,3,22102,-1,3,3,1207,2,-1,366,1105,-1,315,22101,-1,2,2,101,383,320,377,22001,-1,1,1,1105,1,315];
 
-// join with space for piping into mdtable
-// https://github.com/AxlLind/mdtable-cli
-fn v_to_str(v: &[i64]) -> String {
-  v.iter().map(|i| i.to_string()).collect::<Vec<_>>().join(" ")
-}
-
-fn run_test(name: &str, program: &[i64], input: &[i64]) {
-  let now = Instant::now();
+fn run_test(program: &[i64], input: &[i64]) -> Vec<i64> {
   let mut cpu = IntCoder::new(program);
   for &i in input { cpu.push_input(i); }
-
   let mut output = Vec::new();
   loop {
     match cpu.execute() {
@@ -27,17 +19,21 @@ fn run_test(name: &str, program: &[i64], input: &[i64]) {
       ExitCode::AwaitInput => unreachable!(),
     }
   }
-
-  let time = now.elapsed().as_millis();
-  println!("{}, {}, {}, {}ms", name, v_to_str(input), v_to_str(&output), time);
+  output
 }
 
-fn main() {
-  println!("Problem, In, Out, Time");
-  run_test("Sum of primes", &SUM_OF_PRIMES, &[100000]);
-  run_test("Ackermann"    , &ACKERMANN    , &[3,6]);
-  run_test("Isqrt"        , &ISQRT        , &[130]);
-  run_test("DivMod"       , &DIV_MOD      , &[1024,3]);
-  run_test("Prime factors", &PRIME_FACTOR , &[2147483647]);
-  run_test("Prime factors", &PRIME_FACTOR , &[19201644899]);
+macro_rules! test {
+  ($c:expr, $name:expr, $program:expr, $input:expr) => {
+    $c.bench_function($name, |b| b.iter(|| run_test(&$program, &$input)));
+  }
 }
+
+fn t1(c: &mut Criterion) { test!(c, "Sum of primes", SUM_OF_PRIMES, [100000]);      }
+fn t2(c: &mut Criterion) { test!(c, "Ackermann"    , ACKERMANN    , [3,6]);         }
+fn t3(c: &mut Criterion) { test!(c, "Isqrt"        , ISQRT        , [130]);         }
+fn t4(c: &mut Criterion) { test!(c, "DivMod"       , DIV_MOD      , [1024,3]);      }
+fn t5(c: &mut Criterion) { test!(c, "Prime factors", PRIME_FACTOR , [2147483647]);  }
+fn t6(c: &mut Criterion) { test!(c, "Prime factors", PRIME_FACTOR , [19201644899]); }
+
+criterion_group!(benches, t1, t2, t3, t4, t5, t6);
+criterion_main!(benches);
