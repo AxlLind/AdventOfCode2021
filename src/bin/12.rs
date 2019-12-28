@@ -5,18 +5,21 @@ use num_integer::lcm;
 #[derive(Default)]
 struct Vec3 { x:i64, y:i64, z:i64 }
 
+impl Vec3 {
+  fn to_val(&self) -> i64 {
+    let Vec3{x,y,z} = self;
+    x.abs() + y.abs() + z.abs()
+  }
+}
+
 struct Moon { pos: Vec3, v: Vec3 }
 
 impl Moon {
   fn from_pos(x: i64, y: i64, z: i64) -> Self {
-    Self { pos: Vec3{ x,y,z }, v: Vec3::default() }
+    Self { pos: Vec3{x,y,z}, v: Vec3::default() }
   }
 
-  fn energy(&self) -> i64 {
-    let pot = self.pos.x.abs() + self.pos.y.abs() + self.pos.z.abs();
-    let kin = self.v.x.abs() + self.v.y.abs() + self.v.z.abs();
-    pot * kin
-  }
+  fn energy(&self) -> i64 { self.pos.to_val() * self.v.to_val() }
 }
 
 fn cmp_axis(a: i64, b: i64) -> i64 {
@@ -63,7 +66,7 @@ fn simulate_one_axis(positions: [i64;4]) -> usize {
     (positions[3],0),
   ];
   let init = moons;
-  let steps = std::iter::repeat(()).take_while(|_| {
+  for c in 1.. {
     for i in 0..4 {
       for j in (i+1)..4 {
         let d = cmp_axis(moons[i].0, moons[j].0);
@@ -72,9 +75,9 @@ fn simulate_one_axis(positions: [i64;4]) -> usize {
       }
       moons[i].0 += moons[i].1;
     }
-    moons != init
-  }).count();
-  steps + 1
+    if moons == init { return c; }
+  }
+  unreachable!()
 }
 
 fn part_two() -> usize {

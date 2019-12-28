@@ -33,16 +33,17 @@ fn print_map(map: &HashMap<(i64,i64),i64>) {
 
 fn compute_paths(
   map: &HashMap<(i64, i64), (i64)>,
-  x: i64,
-  y: i64
+  (x,y): (i64,i64),
 ) -> (
   HashMap<(i64, i64), i64>,
   HashMap<(i64, i64), Option<(i64, i64)>>
 ) {
-  let vertices = map.iter().filter(|&(_, v)| *v == 1).map(|(pos,_)| *pos).collect::<HashSet<_>>();
-  let mut q = vertices.clone();
-  let mut dist = vertices.iter().map(|&pos| (pos, 9999)).collect::<HashMap<_,_>>();
-  let mut prev = vertices.iter().map(|&pos| (pos, None)).collect::<HashMap<_,_>>();
+  let mut q = map.iter()
+    .filter(|&(_, v)| *v == 1)
+    .map(|(pos,_)| *pos)
+    .collect::<HashSet<_>>();
+  let mut dist = q.iter().map(|&pos| (pos, 9999)).collect::<HashMap<_,_>>();
+  let mut prev = q.iter().map(|&pos| (pos, None)).collect::<HashMap<_,_>>();
   dist.insert((x,y), 0);
 
   let neighbors = [(0,-1), (0,1), (-1,0), (1,0)];
@@ -66,10 +67,9 @@ fn compute_paths(
 
 fn compute_answers(
   map: &HashMap<(i64, i64), (i64)>,
-  x: i64,
-  y: i64,
+  (x,y): (i64,i64),
 ) -> (i64,i64) {
-  let (dist,prev) = compute_paths(map, x, y);
+  let (dist,prev) = compute_paths(map, (x, y));
 
   let mut curr = (0,0);
   let mut part_one = 0;
@@ -87,25 +87,22 @@ fn compute_answers(
 
 fn find_path_to_unexplored(
   map: &HashMap<(i64, i64), (i64)>,
-  x: i64,
-  y: i64,
+  start: (i64,i64),
 ) -> Option<VecDeque<(i64,i64)>> {
   let mut queue = VecDeque::new();
   let mut visited = HashSet::new();
-  queue.push_back(vec![(x,y)]);
-  visited.insert((x,y));
+  queue.push_back(vec![start]);
+  visited.insert(start);
 
   let neighbors = [(0,-1), (0,1), (-1,0), (1,0)];
-  let answer = loop {
-    if queue.is_empty() {
-      break None;
-    }
+  let path = loop {
+    if queue.is_empty() { return None; }
     let path = queue.pop_front().unwrap();
     let (ux, uy) = *path.last().unwrap();
+
     visited.insert((ux,uy));
-    if !map.contains_key(&(ux, uy)) {
-      break Some(path);
-    }
+    if !map.contains_key(&(ux, uy)) { break path; }
+
     neighbors.iter()
       .map(|(dx,dy)| (ux + dx, uy + dy))
       .filter(|pos| match map.get(pos) {
@@ -119,11 +116,11 @@ fn find_path_to_unexplored(
       });
   };
 
-  answer.map(|path| path.iter()
+  let answer = path.iter()
     .tuples()
     .map(|((x1,y1),(x2,y2))| (x2-x1, y2-y1))
-    .collect()
-  )
+    .collect();
+  Some(answer)
 }
 
 fn explore_map() -> (HashMap<(i64,i64),i64>, (i64,i64)) {
@@ -150,7 +147,7 @@ fn explore_map() -> (HashMap<(i64,i64),i64>, (i64,i64)) {
       }
       ExitCode::AwaitInput => {
         if inputs.is_empty() {
-          match find_path_to_unexplored(&map, x, y) {
+          match find_path_to_unexplored(&map, (x, y)) {
             Some(p) => inputs = p,
             None    => break,
           }
@@ -172,8 +169,8 @@ fn explore_map() -> (HashMap<(i64,i64),i64>, (i64,i64)) {
 
 fn main() {
   let now = Instant::now();
-  let (map, (gx, gy)) = explore_map();
-  let (part_one, part_two) = compute_answers(&map, gx, gy);
+  let (map, goal) = explore_map();
+  let (part_one, part_two) = compute_answers(&map, goal);
   print_map(&map);
   println!("Part one: {}", part_one);
   println!("Part two: {}", part_two);

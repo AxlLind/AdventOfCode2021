@@ -13,16 +13,14 @@ fn to_digits(n: usize) -> [usize; 6] {
 }
 
 fn part_one() -> usize {
-  (206938..679128)
-    .map(to_digits)
+  (206938..679128).map(to_digits)
     .filter(|&digits| (1..digits.len()).all(|i| digits[i-1] <= digits[i]))
     .filter(|&digits| (1..digits.len()).any(|i| digits[i-1] == digits[i]))
     .count()
 }
 
 fn part_two() -> usize {
-  (206938..679128)
-    .map(to_digits)
+  (206938..679128).map(to_digits)
     .filter(|&digits| (1..digits.len()).all(|i| digits[i-1] <= digits[i]))
     .filter(|&digits| digits.iter()
       .group_by(|d| *d)

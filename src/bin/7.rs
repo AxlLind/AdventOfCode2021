@@ -8,9 +8,9 @@ fn part_one() -> i64 {
   [0,1,2,3,4].iter()
     .permutations(5)
     .map(|digits| digits.iter()
-      .fold(0, |prev, &i| {
+      .fold(0, |prev, &&i| {
         let mut cpu = IntCoder::new(&PROGRAM);
-        cpu.push_input(*i);
+        cpu.push_input(i);
         cpu.push_input(prev);
         cpu.execute_until_output()
       })
@@ -30,7 +30,7 @@ fn part_two() -> i64 {
         for cpu in &mut coders {
           cpu.push_input(input);
           match cpu.execute() {
-            ExitCode::Output(tmp) => input = tmp,
+            ExitCode::Output(o) => input = o,
             ExitCode::Halted      => return input,
             ExitCode::AwaitInput  => unreachable!(),
           }

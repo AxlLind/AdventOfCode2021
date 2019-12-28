@@ -21,13 +21,12 @@ fn part_two() {
     .fold(vec![2;150], |image, c| c.iter()
       .zip(image.iter())
       .map(|(a,b)| if *b == 2 { *a } else { *b })
-      .collect::<Vec<_>>()
+      .collect()
     );
-  image.iter()
+  let lines = image.iter()
     .map(|i| if *i == 0 {' '} else {'■'})
-    .chunks(25)
-    .into_iter()
-    .for_each(|c| println!("{}", c.collect::<String>()));
+    .chunks(25);
+  for l in &lines { println!("{}", l.collect::<String>()); }
 }
 
 fn main() {

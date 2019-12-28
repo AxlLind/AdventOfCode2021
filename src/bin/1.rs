@@ -7,16 +7,14 @@ fn part_one() -> i32 {
 }
 
 fn part_two() -> i32 {
-  let mut ans = 0;
-  for i in INPUT.iter() {
-    let mut mass = *i;
+  INPUT.iter().map(|&i| {
+    let (mut ans, mut mass) = (0, i);
     loop {
       mass = (mass / 3) - 2;
-      if mass <= 0 { break; }
+      if mass <= 0 { break ans; }
       ans += mass;
     }
-  }
-  ans
+  }).sum::<i32>()
 }
 
 fn main() {

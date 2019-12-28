@@ -95,8 +95,8 @@ type Path = (usize, usize, usize);
 fn remove_dead_ends(nodes: &mut HashSet<Pos>, map: &Map) {
   loop {
     let to_remove = nodes.iter()
+      .filter(|&&(i,j)| map[i][j] == '.')
       .filter(|&&(i,j)| {
-        if map[i][j] != '.' { return false; }
         let mut n = 0;
         if nodes.contains(&(i-1,j)) { n += 1; }
         if nodes.contains(&(i+1,j)) { n += 1; }
@@ -153,7 +153,7 @@ fn to_minimized_graph(map: &Map) -> Graph {
   g
 }
 
-// Store keys as bits instead so we can speed up computations via bitmasks
+// Store keys as bits instead so we can speed up computations via bitwise operations
 fn char_to_bit(c: char, offset: u8) -> usize {
   match c {
     '@' => 1 << 26,

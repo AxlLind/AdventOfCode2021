@@ -47,7 +47,7 @@ fn count_neighbours(bugs: &HashSet<(u8,u8,i32)>) -> HashMap<(u8,u8,i32),usize> {
     .map(|&pos| (pos,0))
     .collect::<HashMap<_,_>>();
 
-  macro_rules! add_us {
+  macro_rules! neighbour_to {
     ($x:expr, $y:expr, $z:expr) => {
       *count.entry(($x,$y,$z)).or_insert(0) += 1;
     }
@@ -55,26 +55,26 @@ fn count_neighbours(bugs: &HashSet<(u8,u8,i32)>) -> HashMap<(u8,u8,i32),usize> {
 
   for &(x,y,z) in bugs {
     match x {
-      0 => add_us!(2, 1, z-1),
-      4 => add_us!(2, 3, z-1),
+      0 => neighbour_to!(2, 1, z-1),
+      4 => neighbour_to!(2, 3, z-1),
       _ => {},
     }
     match y {
-      0 => add_us!(1, 2, z-1),
-      4 => add_us!(3, 2, z-1),
+      0 => neighbour_to!(1, 2, z-1),
+      4 => neighbour_to!(3, 2, z-1),
       _ => {},
     }
     match (x,y) {
-      (1,2) => for x in 0..5 { add_us!(x, 0, z+1); }
-      (3,2) => for x in 0..5 { add_us!(x, 4, z+1); }
-      (2,1) => for y in 0..5 { add_us!(0, y, z+1); }
-      (2,3) => for y in 0..5 { add_us!(4, y, z+1); }
+      (1,2) => for x in 0..5 { neighbour_to!(x, 0, z+1); }
+      (3,2) => for x in 0..5 { neighbour_to!(x, 4, z+1); }
+      (2,1) => for y in 0..5 { neighbour_to!(0, y, z+1); }
+      (2,3) => for y in 0..5 { neighbour_to!(4, y, z+1); }
       _     => {},
     }
-    if x != 0 && (x-1 != 2 || y != 2) { add_us!(x-1, y, z); }
-    if x != 4 && (x+1 != 2 || y != 2) { add_us!(x+1, y, z); }
-    if y != 0 && (x != 2 || y-1 != 2) { add_us!(x, y-1, z); }
-    if y != 4 && (x != 2 || y+1 != 2) { add_us!(x, y+1, z); }
+    if x != 0 && (x-1 != 2 || y != 2) { neighbour_to!(x-1, y, z); }
+    if x != 4 && (x+1 != 2 || y != 2) { neighbour_to!(x+1, y, z); }
+    if y != 0 && (x != 2 || y-1 != 2) { neighbour_to!(x, y-1, z); }
+    if y != 4 && (x != 2 || y+1 != 2) { neighbour_to!(x, y+1, z); }
   }
   count
 }

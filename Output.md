@@ -19,7 +19,7 @@ Time: 0ms
 ```
 Part one: 721
 Part two: 7388
-Time: 55ms
+Time: 54ms
 ```
 
 ## Day 4
@@ -50,7 +50,7 @@ Time: 0ms
 ```
 Part one: 251208
 Part two: 397
-Time: 20ms
+Time: 18ms
 ```
 
 ## Day 7
@@ -84,7 +84,7 @@ Time: 4ms
 ```
 Part one: 314
 Part two: 1513
-Time: 35ms
+Time: 33ms
 ```
 
 ## Day 11
@@ -186,7 +186,7 @@ Time: 2ms
 ```
 Part one: 193
 Part two: 10547
-Time: 14ms
+Time: 7ms
 ```
 
 ## Day 14

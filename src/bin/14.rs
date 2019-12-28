@@ -4,9 +4,11 @@ use std::cmp::Ordering;
 
 type Sstr = &'static str;
 
+fn div_round_up(a: usize, b: usize) -> usize { (a + b - 1) / b }
+
 struct Producer {
   store: HashMap<Sstr, usize>,
-  costs: HashMap<Sstr, ( usize, Vec<(usize, Sstr)> )>,
+  costs: HashMap<Sstr, (usize, Vec<(usize, Sstr)>)>,
   tot_ore: usize,
 }
 
@@ -16,33 +18,33 @@ impl Producer {
       .map(|((_,m),_)| (*m,0))
       .collect();
     let costs = input.iter()
-      .map(|((n,m),v)| (*m, (*n, v.to_owned())))
+      .map(|((n,m),v)| (*m, (*n, v.clone())))
       .collect();
     Self { store, costs, tot_ore: 0 }
   }
 
-  fn produce(&mut self, material: Sstr, amount: usize) -> usize {
+  fn produce(&mut self, material: Sstr, needed: usize) -> usize {
     if material == "ORE" {
-      self.tot_ore += amount;
+      self.tot_ore += needed;
       return self.tot_ore;
     }
-    let mut curr_amount = self.store[material];
-    if curr_amount < amount {
-      let num_produced = self.costs[material].0;
-      let mats = self.costs[material].1.clone();
 
-      let rounds = (amount - curr_amount + num_produced - 1) / num_produced;
+    let mut curr_amount = self.store[material];
+    if curr_amount < needed {
+      let (num_produced, mats) = self.costs[material].clone();
+      let rounds = div_round_up(needed - curr_amount, num_produced);
       for (amount_needed, mat) in mats {
         self.produce(mat, amount_needed * rounds);
       }
       curr_amount += num_produced * rounds;
     }
-    self.store.insert(material, curr_amount - amount);
+
+    self.store.insert(material, curr_amount - needed);
     self.tot_ore
   }
 
   fn reset(&mut self) {
-    self.store.iter_mut().for_each(|(_,amount)| *amount = 0);
+    for (_,amount) in &mut self.store { *amount = 0; }
     self.tot_ore = 0;
   }
 }
@@ -110,13 +112,12 @@ fn main() {
   let mut producer = Producer::new(&input);
   let part_one = producer.produce("FUEL", 1);
 
-  let mut min = 0;
-  let mut max = 4000000;
+  let (mut min, mut max) = (0,4000000);
   let part_two = loop {
     producer.reset();
     let mid = (max + min) / 2;
     let ore = producer.produce("FUEL", mid);
-    match ore.cmp(&1000000000000usize) {
+    match ore.cmp(&1000000000000) {
       Ordering::Less    => min = mid + 1,
       Ordering::Greater => max = mid - 1,
       Ordering::Equal   => unreachable!(),
