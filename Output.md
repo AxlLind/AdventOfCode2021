@@ -10,7 +10,8 @@ Time: 0ms
 
 ## Day 2
 ```
-Answer: 3146
+Part one: 8017076
+Part two: 3146
 Time: 0ms
 ```
 
