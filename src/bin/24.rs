@@ -2,7 +2,7 @@ use std::time::Instant;
 use std::collections::{HashSet, HashMap};
 use itertools::Itertools;
 
-static INPUT: [[char;5]; 5] = [
+const INPUT: [[char;5]; 5] = [
   ['#','#','#','#','#'],
   ['.','.','.','#','#'],
   ['#','.','.','#','.'],

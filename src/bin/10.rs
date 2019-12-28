@@ -4,7 +4,7 @@ use std::f64::consts::PI;
 use itertools::Itertools;
 use num_integer::gcd;
 
-static INPUT: [&str; 33] = [
+const INPUT: [&str; 33] = [
   "..#..###....#####....###........#",
   ".##.##...#.#.......#......##....#",
   "#..#..##.#..###...##....#......##",
@@ -39,8 +39,8 @@ static INPUT: [&str; 33] = [
   "............#...#...#.......#.#..",
   ".........###.#.....#..##..#.##...",
 ];
-static H: i64 = INPUT.len() as i64;
-static W: i64 = INPUT[0].len() as i64;
+const H: i64 = INPUT.len() as i64;
+const W: i64 = INPUT[0].len() as i64;
 
 type Pos = (i64,i64);
 

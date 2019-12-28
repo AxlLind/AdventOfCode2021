@@ -2,7 +2,7 @@ use std::time::Instant;
 use std::collections::{HashMap, HashSet, VecDeque};
 use itertools::Itertools;
 
-static INPUT: [&str; 129] = [
+const INPUT: [&str; 129] = [
   "                                               A U       K     C   I         L   Q           W                                         ",
   "                                               V H       F     D   F         Z   S           E                                         ",
   "  #############################################.#.#######.#####.###.#########.###.###########.#######################################  ",
