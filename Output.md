@@ -19,7 +19,7 @@ Time: 0ms
 ```
 Part one: 721
 Part two: 7388
-Time: 54ms
+Time: 44ms
 ```
 
 ## Day 4
