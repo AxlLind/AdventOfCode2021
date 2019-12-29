@@ -87,7 +87,7 @@ const INPUT: [&str; 81] = [
 ];
 
 type Pos = (usize, usize);
-type Graph = HashMap<Pos, HashSet<(Pos,usize)>>;
+type Graph = HashMap<Pos, Vec<(Pos,usize)>>;
 type Map = [Vec<char>];
 type Path = (usize, usize, usize);
 
@@ -116,20 +116,20 @@ fn remove_dead_ends(nodes: &mut HashSet<Pos>, map: &Map) {
 // leaving only 3/4-way intersections and doors/keys as nodes in the graph.
 fn contract_corridors(g: &mut Graph, map: &Map) {
   let to_contract = g.iter()
-    .filter(|&((x,y), n)| n.len() == 2 && map[*x][*y] == '.')
+    .filter(|&((x,y), _)| map[*x][*y] == '.')
+    .filter(|&(_, n)| n.len() == 2)
     .map(|(k,_)| *k)
     .collect_vec();
-  for p in to_contract {
-    let mut n = g[&p].iter();
-    let (p1, d1) = *n.next().unwrap();
-    let (p2, d2) = *n.next().unwrap();
+  for p in &to_contract {
+    let (p1, d1) = g[p][0];
+    let (p2, d2) = g[p][1];
     g.entry(p1).and_modify(|n| {
-      n.remove(&(p,d1));
-      n.insert((p2,d1+d2));
+      let index = n.iter().position(|(pos,_)| pos == p).unwrap();
+      n[index] = (p2,d1+d2);
     });
     g.entry(p2).and_modify(|n| {
-      n.remove(&(p,d2));
-      n.insert((p1,d1+d2));
+      let index = n.iter().position(|(pos,_)| pos == p).unwrap();
+      n[index] = (p1,d1+d2);
     });
     g.remove(&p);
   }
@@ -209,10 +209,8 @@ fn compute_paths(g: &Graph, map: &Map) -> HashMap<usize, HashMap<usize, Path>> {
       let (x2,y2) = keys[j];
       let key2 = char_to_bit(map[x2][y2], b'a');
       if let Some(path) = bfs(&g, &map, keys[i], keys[j]) {
-        paths.entry(key1).or_insert(HashMap::new());
-        paths.entry(key2).or_insert(HashMap::new());
-        paths.entry(key1).and_modify(|v| { v.insert(key2, path); });
-        paths.entry(key2).and_modify(|v| { v.insert(key1, path); });
+        paths.entry(key1).or_insert(HashMap::new()).insert(key2, path);
+        paths.entry(key2).or_insert(HashMap::new()).insert(key1, path);
       }
     }
   }
