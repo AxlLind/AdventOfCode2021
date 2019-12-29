@@ -193,7 +193,7 @@ Time: 7ms
 ```
 Part one: 365768
 Part two: 3756877
-Time: 8ms
+Time: 7ms
 ```
 
 ## Day 15

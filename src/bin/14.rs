@@ -9,7 +9,6 @@ fn div_round_up(a: usize, b: usize) -> usize { (a + b - 1) / b }
 struct Producer {
   store: HashMap<Sstr, usize>,
   costs: HashMap<Sstr, (usize, Vec<(usize, Sstr)>)>,
-  tot_ore: usize,
 }
 
 impl Producer {
@@ -20,32 +19,29 @@ impl Producer {
     let costs = input.iter()
       .map(|((n,m),v)| (*m, (*n, v.clone())))
       .collect();
-    Self { store, costs, tot_ore: 0 }
+    Self { store, costs }
   }
 
   fn produce(&mut self, material: Sstr, needed: usize) -> usize {
-    if material == "ORE" {
-      self.tot_ore += needed;
-      return self.tot_ore;
-    }
+    if material == "ORE" { return needed; }
 
+    let mut ore = 0;
     let mut curr_amount = self.store[material];
     if curr_amount < needed {
       let (num_produced, mats) = self.costs[material].clone();
       let rounds = div_round_up(needed - curr_amount, num_produced);
-      for (amount_needed, mat) in mats {
-        self.produce(mat, amount_needed * rounds);
-      }
+      ore += mats.iter()
+        .map(|(needed, mat)| self.produce(mat, needed * rounds))
+        .sum::<usize>();
       curr_amount += num_produced * rounds;
     }
 
     self.store.insert(material, curr_amount - needed);
-    self.tot_ore
+    ore
   }
 
   fn reset(&mut self) {
-    for (_,amount) in &mut self.store { *amount = 0; }
-    self.tot_ore = 0;
+    for i in self.store.values_mut() { *i = 0; }
   }
 }
 
