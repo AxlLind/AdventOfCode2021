@@ -248,7 +248,7 @@ Time: 19ms
 ```
 Part one: 17978331
 Part two: 19422575
-Time: 72ms
+Time: 66ms
 ```
 
 ## Day 17

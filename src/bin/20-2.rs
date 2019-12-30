@@ -133,35 +133,30 @@ const INPUT: [&str; 129] = [
   "                                                 A       L     N         E       A E E                                                 ",
   "                                                 Q       S     T         R       A M T                                                 ",
 ];
+const W: usize = INPUT.len();
+const H: usize = INPUT[0].len();
 
-enum EdgeType {
-  OuterPortal,
-  InnerPortal,
-  Normal,
-}
+enum EdgeType { Outer, Inner, Normal }
 
 type Graph = HashMap<(usize,usize), Vec<((usize,usize), EdgeType)>>;
 
 fn create_graph(map: &[Vec<char>]) -> Graph {
-  let mut g = HashMap::new();
-  for i in 0..map.len() {
-    for j in 0..map[0].len() {
-      if map[i][j] != '.' { continue; }
-      let mut neighbours = Vec::new();
-      if map[i-1][j] == '.' { neighbours.push( ((i-1, j), EdgeType::Normal) ); }
-      if map[i+1][j] == '.' { neighbours.push( ((i+1, j), EdgeType::Normal) ); }
-      if map[i][j-1] == '.' { neighbours.push( ((i, j-1), EdgeType::Normal) ); }
-      if map[i][j+1] == '.' { neighbours.push( ((i, j+1), EdgeType::Normal) ); }
-      g.insert((i,j), neighbours);
-    }
-  }
-  g
+  (0..W).cartesian_product(0..H)
+    .filter(|&(i,j)| map[i][j] == '.')
+    .map(|(i,j)| {
+      let neighbours = [(i-1,j), (i+1,j), (i,j-1), (i,j+1)].iter()
+        .filter(|&&(x,y)| map[x][y] == '.')
+        .map(|&pos| (pos, EdgeType::Normal))
+        .collect();
+      ((i,j), neighbours)
+    })
+    .collect()
 }
 
 fn find_portals(map: &[Vec<char>]) -> Vec<(String, usize, usize)> {
   let mut portals = Vec::new();
-  for i in 1..(map.len()-1) {
-    for j in 1..(map[0].len() - 1) {
+  for i in 1..(W-1) {
+    for j in 1..(H-1) {
       let from = map[i][j];
       if !from.is_ascii_uppercase() { continue; }
       let neighbours = [
@@ -191,11 +186,11 @@ fn connect_portals(
     let o = portals.iter().find(|(p2,x2,y2)| p1 == p2 && x != x2 && y != y2);
     if let Some(&(_,i,j)) = o {
       let t = if i == 2 || j == 2 {
-        EdgeType::InnerPortal
+        EdgeType::Inner
       } else if i == max_x || j == max_y {
-        EdgeType::InnerPortal
+        EdgeType::Inner
       } else {
-        EdgeType::OuterPortal
+        EdgeType::Outer
       };
       g.get_mut(&(*x,*y)).unwrap().push(((i,j), t));
     }
@@ -217,11 +212,11 @@ fn bfs(
 
     for ((x,y), t) in &graph[&(ux,uy)] {
       let new_level = match t {
-        EdgeType::OuterPortal => {
+        EdgeType::Outer => {
           if level == 0 { continue; }
           level - 1
         },
-        EdgeType::InnerPortal => {
+        EdgeType::Inner => {
           if level > 25 { continue; }
           level + 1
         },
@@ -239,7 +234,7 @@ fn main() {
   let map = INPUT.iter().map(|s| s.chars().collect_vec()).collect_vec();
   let mut g = create_graph(&map);
   let portals = find_portals(&map);
-  connect_portals(&mut g, &portals, map.len() - 3, map[0].len() - 3);
+  connect_portals(&mut g, &portals, W-3, H-3);
 
   let (_,x1,y1) = *portals.iter().find(|(p,_,_)| p == "AA").unwrap();
   let (_,x2,y2) = *portals.iter().find(|(p,_,_)| p == "ZZ").unwrap();

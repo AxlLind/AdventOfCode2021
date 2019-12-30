@@ -11,19 +11,16 @@ const ITEMS: [&str; 8] = ["ornament", "loom", "spool of cat6", "wreath", "fixed 
 fn brute_force_solution() {
   let mut cpu = IntCoder::new(&PROGRAM);
   cpu.push_str(TAKE_ALL_ITEMS);
-  for i in 0..8 {
-    for items in ITEMS.iter().combinations(i) {
-      for i in &items { cpu.push_str(&format!("drop {}\n", i)); }
-      cpu.push_str("south\n");
-      for i in &items { cpu.push_str(&format!("take {}\n", i)); }
-
-      let mut s = String::new();
-      loop {
-        match cpu.execute() {
-          ExitCode::Output(o)  => s.push((o as u8) as char),
-          ExitCode::AwaitInput => break,
-          ExitCode::Halted     => return println!("{}", s),
-        }
+  for items in (0..8).flat_map(|i| ITEMS.iter().combinations(i)) {
+    for i in &items { cpu.push_str(&format!("drop {}\n", i)); }
+    cpu.push_str("south\n");
+    for i in &items { cpu.push_str(&format!("take {}\n", i)); }
+    let mut s = String::new();
+    loop {
+      match cpu.execute() {
+        ExitCode::Output(o)  => s.push((o as u8) as char),
+        ExitCode::AwaitInput => break,
+        ExitCode::Halted     => return println!("{}", s),
       }
     }
   }

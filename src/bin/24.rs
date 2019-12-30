@@ -85,8 +85,7 @@ fn part_two() -> usize {
     .flat_map(|(y,s)| s.iter()
       .enumerate()
       .filter(|&(_,tile)| *tile == '#')
-      .map(|(x,_)| (x as u8, y as u8, 0))
-      .collect_vec()
+      .map(move |(x,_)| (x as u8, y as u8, 0))
     )
     .collect::<HashSet<_>>();
   for _ in 0..200 {

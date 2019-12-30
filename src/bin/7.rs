@@ -30,9 +30,9 @@ fn part_two() -> i64 {
         for cpu in &mut coders {
           cpu.push_input(input);
           match cpu.execute() {
-            ExitCode::Output(o) => input = o,
-            ExitCode::Halted      => return input,
-            ExitCode::AwaitInput  => unreachable!(),
+            ExitCode::Output(o)  => input = o,
+            ExitCode::Halted     => return input,
+            ExitCode::AwaitInput => unreachable!(),
           }
         }
       }

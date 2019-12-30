@@ -133,29 +133,28 @@ const INPUT: [&str; 129] = [
   "                                                 A       L     N         E       A E E                                                 ",
   "                                                 Q       S     T         R       A M T                                                 ",
 ];
+const W: usize = INPUT.len();
+const H: usize = INPUT[0].len();
 
 type Graph = HashMap<(usize,usize), Vec<(usize,usize)>>;
 
 fn create_graph(map: &[Vec<char>]) -> Graph {
-  let mut g = HashMap::new();
-  for i in 0..map.len() {
-    for j in 0..map[0].len() {
-      if map[i][j] != '.' { continue; }
-      let mut neighbours = Vec::new();
-      if map[i-1][j] == '.' { neighbours.push((i-1, j)); }
-      if map[i+1][j] == '.' { neighbours.push((i+1, j)); }
-      if map[i][j-1] == '.' { neighbours.push((i, j-1)); }
-      if map[i][j+1] == '.' { neighbours.push((i, j+1)); }
-      g.insert((i,j), neighbours);
-    }
-  }
-  g
+  (0..W).cartesian_product(0..H)
+    .filter(|&(i,j)| map[i][j] == '.')
+    .map(|(i,j)| {
+      let neighbours = [(i-1,j), (i+1,j), (i,j-1), (i,j+1)].iter()
+        .filter(|&&(x,y)| map[x][y] == '.')
+        .cloned()
+        .collect();
+      ((i,j), neighbours)
+    })
+    .collect()
 }
 
 fn find_portals(map: &[Vec<char>]) -> Vec<(String, usize, usize)> {
   let mut portals = Vec::new();
-  for i in 1..(map.len()-1) {
-    for j in 1..(map[0].len() - 1) {
+  for i in 1..(W-1) {
+    for j in 1..(H-1) {
       let from = map[i][j];
       if !from.is_ascii_uppercase() { continue; }
       let neighbours = [

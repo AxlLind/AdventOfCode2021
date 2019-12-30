@@ -50,8 +50,7 @@ fn map_to_astroid_coords() -> HashSet<Pos> {
     .flat_map(|(j,s)| s.chars()
       .enumerate()
       .filter(|&(_,c)| c != '.')
-      .map(|(i,_)| (i as i64, j as i64))
-      .collect_vec()
+      .map(move |(i,_)| (i as i64, j as i64))
     )
     .collect()
 }

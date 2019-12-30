@@ -30,8 +30,8 @@ fn run_droid(insts: &[&str]) -> i64 {
   let mut answer = 0;
   loop {
     match cpu.execute() {
-      ExitCode::Output(o) => answer = o,
-      ExitCode::Halted => return answer,
+      ExitCode::Output(o)  => answer = o,
+      ExitCode::Halted     => return answer,
       ExitCode::AwaitInput => unreachable!(),
     }
   }

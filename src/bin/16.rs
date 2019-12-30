@@ -42,7 +42,7 @@ fn part_two() -> String {
     let mut acc = 0;
     for i in 0..phase.len() {
       acc += phase[i];
-      phase[i] = acc.abs() % 10;
+      phase[i] = acc % 10;
     }
   }
   phase.iter()

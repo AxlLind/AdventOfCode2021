@@ -22,13 +22,10 @@ fn part_two() -> i64 {
   let (mut x, mut y) = (0, SIZE);
   loop {
     while !in_beam(x,y) { x += 1; }
-    if in_beam(x + SIZE, y - SIZE) {
-      y -= SIZE;
-      break;
-    }
+    if in_beam(x + SIZE, y - SIZE) { break; }
     y += 1;
   }
-  x * 10000 + y
+  x * 10000 + (y - SIZE)
 }
 
 fn main() {
