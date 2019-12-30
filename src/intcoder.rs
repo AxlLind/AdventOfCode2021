@@ -65,6 +65,7 @@ impl IntCoder {
 
   pub fn push_str(&mut self, s: &str) {
     for b in s.bytes() { self.push_input(b); }
+    self.push_input(b'\n');
   }
 }
 

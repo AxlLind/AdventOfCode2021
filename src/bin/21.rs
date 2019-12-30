@@ -9,7 +9,7 @@ const PART_ONE: [&str; 6] = [
   "AND C J", // J = A & B & C
   "NOT J J", // J = !(A & B & C)
   "AND D J", // J = !(A & B & C) & D
-  "WALK\n",
+  "WALK",
 ];
 
 const PART_TWO: [&str; 9] = [
@@ -21,12 +21,12 @@ const PART_TWO: [&str; 9] = [
   "OR E T",  // T = E
   "OR H T",  // T = E | H
   "AND T J", // J = !(A & B & C) & D & (E | H)
-  "RUN\n",
+  "RUN",
 ];
 
 fn run_droid(insts: &[&str]) -> i64 {
   let mut cpu = IntCoder::new(&PROGRAM);
-  cpu.push_str(&insts.join("\n"));
+  for inst in &insts { cpu.push_str(inst); }
   let mut answer = 0;
   loop {
     match cpu.execute() {

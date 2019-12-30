@@ -334,7 +334,7 @@ Time: 29ms
 ```
 Part one: 19361414
 Part two: 1139205618
-Time: 7ms
+Time: 4ms
 ```
 
 ## Day 22
