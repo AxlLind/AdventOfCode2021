@@ -17,22 +17,18 @@ fn print_map(map: &HashMap<(i64,i64),i64>) {
   for y in ymin..=ymax {
     for x in xmin..=xmax {
       let c = match map.get(&(x,y)) {
-        Some(&val) => match val {
-          0 => '■',
-          1 => ' ',
-          2 => '$',
-          _ => unreachable!(),
-        },
-        None => '#',
+        Some(&1) => ' ',
+        Some(&2) => '$',
+        _        => '█'
       };
-      print!("{}", if x == 0 && y == 0 {'%'} else {c});
+      print!("{}", if x == 0 && y == 0 {'#'} else {c});
     }
     println!();
   }
 }
 
 fn compute_paths(
-  map: &HashMap<(i64, i64), (i64)>,
+  map: &HashMap<(i64, i64), i64>,
   (x,y): (i64,i64),
 ) -> (
   HashMap<(i64, i64), i64>,
@@ -66,7 +62,7 @@ fn compute_paths(
 }
 
 fn compute_answers(
-  map: &HashMap<(i64, i64), (i64)>,
+  map: &HashMap<(i64, i64), i64>,
   (x,y): (i64,i64),
 ) -> (i64,i64) {
   let (dist,prev) = compute_paths(map, (x, y));
@@ -86,7 +82,7 @@ fn compute_answers(
 }
 
 fn find_path_to_unexplored(
-  map: &HashMap<(i64, i64), (i64)>,
+  map: &HashMap<(i64, i64), i64>,
   start: (i64,i64),
 ) -> Option<VecDeque<(i64,i64)>> {
   let mut queue = VecDeque::new();

@@ -20,11 +20,11 @@ fn part_two() {
   let image = INPUT.iter()
     .fold(vec![2;150], |image, c| c.iter()
       .zip(image.iter())
-      .map(|(a,b)| if *b == 2 { *a } else { *b })
+      .map(|(&a,&b)| if b == 2 {a} else {b})
       .collect()
     );
   let lines = image.iter()
-    .map(|i| if *i == 0 {' '} else {'■'})
+    .map(|&i| if i == 0 {' '} else {'█'})
     .chunks(25);
   for l in &lines { println!("{}", l.collect::<String>()); }
 }

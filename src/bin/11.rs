@@ -17,7 +17,7 @@ fn print_map(map: &HashMap<(i64,i64),i64>) {
   for y in ymin..=ymax {
     for x in xmin..=xmax {
       let val = *map.get(&(x,y)).unwrap_or(&0);
-      print!("{}", if val == 0 {' '} else {'■'});
+      print!("{}", if val == 0 {' '} else {'█'});
     }
     println!();
   }
