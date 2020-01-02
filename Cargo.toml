@@ -13,7 +13,7 @@ path = "src/intcoder.rs"
 itertools = "0.8.2"
 num-integer = "0.1.41"
 mod_exp = "1.0.1"
-easy_io = "0.2.2"
+easy_io = "0.3.0"
 criterion = "0.3.0"
 
 [[bench]]

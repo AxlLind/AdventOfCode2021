@@ -32,7 +32,7 @@ fn play_manually() {
   loop {
     match cpu.execute() {
       ExitCode::Output(o)  => print!("{}", (o as u8) as char),
-      ExitCode::AwaitInput => cpu.push_str(&format!("{}\n", input.next_line())),
+      ExitCode::AwaitInput => cpu.push_str(&input.next_line()),
       ExitCode::Halted     => break,
     }
   }
