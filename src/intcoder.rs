@@ -15,7 +15,7 @@ pub enum ExitCode {
 
 #[derive(Clone, Default)]
 pub struct IntCoder {
-  memory: Vec<i64>,
+  ram: Vec<i64>,
   input: VecDeque<i64>,
   rel_base: i64,
   pc: i64,
@@ -23,13 +23,13 @@ pub struct IntCoder {
 
 impl IntCoder {
   pub fn new(program: &[i64]) -> Self {
-    Self { memory: program.into(), ..Self::default() }
+    Self { ram: program.into(), ..Self::default() }
   }
 
   pub fn execute(&mut self) -> ExitCode {
     loop {
-      let (opcode, a, b, c, mode1) = self.fetch_inst();
-      match opcode {
+      let (op,a,b,c) = self.fetch_inst();
+      match op {
         ADD => self.set(c, a + b),
         MUL => self.set(c, a * b),
         OUT => return ExitCode::Output(a),
@@ -40,14 +40,14 @@ impl IntCoder {
         BSE => self.rel_base += a,
         HLT => return ExitCode::Halted,
         IN  => match self.input.pop_front() {
-          Some(input) => {
-            let a = self.fetch_set_adr(1, mode1);
-            self.set(a, input);
+          Some(i) => {
+            let a = self.fetch_write_adr(1);
+            self.set(a, i);
             self.pc += 2;
           }
           None => return ExitCode::AwaitInput
         }
-        _ => unreachable!("invalid opcode {}", opcode)
+        _ => unreachable!("invalid opcode {}", op)
       }
     }
   }
@@ -74,52 +74,55 @@ impl IntCoder {
   fn set<T: Into<i64>>(&mut self, adr: i64, val: T) {
     assert!(adr >= 0, "write to negative address");
     let adr = adr as usize;
-    if adr >= self.memory.len() {
-      self.memory.resize(adr + 1, 0);
-    }
-    self.memory[adr] = val.into();
+    if adr >= self.ram.len() { self.ram.resize(adr + 1, 0); }
+    self.ram[adr] = val.into();
   }
 
   fn get(&self, adr: i64) -> i64 {
-    *self.memory.get(adr as usize).unwrap_or(&0)
+    *self.ram.get(adr as usize).unwrap_or(&0)
   }
 
-  fn fetch_adr(&self, offset: i64, mode: i64) -> i64 {
+  fn get_mode(&self, offset: i64) -> i64 {
+    let d = match offset {
+      1 => 100,
+      2 => 1000,
+      3 => 10000,
+      _ => unreachable!(),
+    };
+    self.get(self.pc) / d % 10
+  }
+
+  fn fetch_adr(&self, offset: i64) -> i64 {
     let value = self.get(self.pc + offset);
-    match mode {
+    match self.get_mode(offset) {
       0 => self.get(value),
       1 => value,
       2 => self.get(value + self.rel_base),
-      _ => unreachable!("invalid mode {}", mode)
+      _ => unreachable!("invalid mode")
     }
   }
 
-  fn fetch_set_adr(&self, offset: i64, mode: i64) -> i64 {
+  fn fetch_write_adr(&self, offset: i64) -> i64 {
     let value = self.get(self.pc + offset);
-    match mode {
+    match self.get_mode(offset) {
       0|1 => value,
       2   => value + self.rel_base,
-      _   => unreachable!("invalid mode {}", mode),
+      _   => unreachable!("invalid mode"),
     }
   }
 
-  fn fetch_inst(&mut self) -> (i64,i64,i64,i64,i64) {
-    let code = self.get(self.pc);
-    let mode1 = (code / 100) % 10;
-    let mode2 = (code / 1000) % 10;
-    let mode3 = (code / 10000) % 10;
-    let a = self.fetch_adr(1, mode1);
-    let b = self.fetch_adr(2, mode2);
-    let c = self.fetch_set_adr(3, mode3);
-
-    let opcode = code % 100;
-    self.pc += match opcode {
+  fn fetch_inst(&mut self) -> (i64,i64,i64,i64) {
+    let a = self.fetch_adr(1);
+    let b = self.fetch_adr(2);
+    let c = self.fetch_write_adr(3);
+    let op = self.get(self.pc) % 100;
+    self.pc += match op {
       ADD|MUL|SLT|SEQ => 4,
       OUT|BSE         => 2,
       JNZ|JZ          => 3,
       HLT|IN          => 0,
-      _ => unreachable!("invalid opcode {}", opcode),
+      _ => unreachable!("invalid opcode {}", op),
     };
-    (opcode, a, b, c, mode1)
+    (op,a,b,c)
   }
 }
