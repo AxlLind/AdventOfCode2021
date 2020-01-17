@@ -26,12 +26,12 @@ const PART_TWO: [&str; 9] = [
 
 fn run_droid(insts: &[&str]) -> i64 {
   let mut cpu = IntCoder::new(&PROGRAM);
-  for inst in &insts { cpu.push_str(inst); }
+  for inst in insts { cpu.push_str(inst); }
   let mut answer = 0;
   loop {
     match cpu.execute() {
       ExitCode::Output(o)  => answer = o,
-      ExitCode::Halted     => return answer,
+      ExitCode::Halted     => break answer,
       ExitCode::AwaitInput => unreachable!(),
     }
   }

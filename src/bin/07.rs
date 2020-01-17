@@ -23,19 +23,18 @@ fn part_two() -> i64 {
   [5,6,7,8,9].iter()
     .permutations(5)
     .map(|digits| {
-      let mut coders = vec![IntCoder::new(&PROGRAM); 5];
-      for i in 0..5 { coders[i].push_input(*digits[i]); }
+      let mut cpus = vec![IntCoder::new(&PROGRAM); 5];
+      for i in 0..5 { cpus[i].push_input(*digits[i]); }
       let mut input = 0;
-      loop {
-        for cpu in &mut coders {
-          cpu.push_input(input);
-          match cpu.execute() {
-            ExitCode::Output(o)  => input = o,
-            ExitCode::Halted     => return input,
-            ExitCode::AwaitInput => unreachable!(),
-          }
+      for i in (0..5).cycle() {
+        cpus[i].push_input(input);
+        match cpus[i].execute() {
+          ExitCode::Output(o)  => input = o,
+          ExitCode::Halted     => return input,
+          ExitCode::AwaitInput => unreachable!(),
         }
       }
+      unreachable!()
     })
     .max()
     .unwrap()

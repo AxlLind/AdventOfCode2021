@@ -2,52 +2,8 @@ use std::time::Instant;
 use std::collections::HashMap;
 use std::cmp::Ordering;
 
-type Sstr = &'static str;
-
-fn div_round_up(a: usize, b: usize) -> usize { (a + b - 1) / b }
-
-struct Producer {
-  store: HashMap<Sstr, usize>,
-  costs: HashMap<Sstr, (usize, Vec<(usize, Sstr)>)>,
-}
-
-impl Producer {
-  fn new(input: &[((usize, Sstr), Vec<(usize, Sstr)>)]) -> Self {
-    let store = input.iter()
-      .map(|((_,m),_)| (*m,0))
-      .collect();
-    let costs = input.iter()
-      .map(|((n,m),v)| (*m, (*n, v.clone())))
-      .collect();
-    Self { store, costs }
-  }
-
-  fn produce(&mut self, material: Sstr, needed: usize) -> usize {
-    if material == "ORE" { return needed; }
-
-    let mut ore = 0;
-    let mut curr_amount = self.store[material];
-    if curr_amount < needed {
-      let (num_produced, mats) = self.costs[material].clone();
-      let rounds = div_round_up(needed - curr_amount, num_produced);
-      ore += mats.iter()
-        .map(|(needed, mat)| self.produce(mat, needed * rounds))
-        .sum::<usize>();
-      curr_amount += num_produced * rounds;
-    }
-
-    self.store.insert(material, curr_amount - needed);
-    ore
-  }
-
-  fn reset(&mut self) {
-    for i in self.store.values_mut() { *i = 0; }
-  }
-}
-
-fn main() {
-  let now = Instant::now();
-  let input = [
+macro_rules! input {
+  () => {[
     ( (9,"RFSZD"), vec![(1,"QDKHC")] ),
     ( (3,"JCHF"),  vec![(15,"FHRN"),(17,"ZFSLM"),(2,"TQFKQ")] ),
     ( (4,"TQFKQ"), vec![(4,"KDPV")] ),
@@ -104,8 +60,55 @@ fn main() {
     ( (7,"DCLQ"),  vec![(7,"KDPV"),(17,"BGVXG")] ),
     ( (3,"BCGLR"), vec![(1,"CKFW"),(3,"TKZNJ"),(4,"PQCQN"),(1,"VQPC"),(32,"QFVR"),(1,"FNJM"),(13,"FSTRZ")] ),
     ( (5,"TKZNJ"), vec![(2,"FSTRZ")] ),
-  ];
-  let mut producer = Producer::new(&input);
+  ]};
+}
+
+type Sstr = &'static str;
+
+fn div_round_up(a: usize, b: usize) -> usize { (a + b - 1) / b }
+
+struct Producer {
+  store: HashMap<Sstr, usize>,
+  costs: HashMap<Sstr, (usize, Vec<(usize, Sstr)>)>,
+}
+
+impl Producer {
+  fn new() -> Self {
+    let input = input!();
+    let store = input.iter()
+      .map(|((_,m),_)| (*m,0))
+      .collect();
+    let costs = input.iter()
+      .map(|((n,m),v)| (*m, (*n, v.clone())))
+      .collect();
+    Self { store, costs }
+  }
+
+  fn produce(&mut self, material: Sstr, needed: usize) -> usize {
+    if material == "ORE" { return needed; }
+
+    let (mut ore, mut curr_amount) = (0, self.store[material]);
+    if curr_amount < needed {
+      let (num_produced, mats) = self.costs[material].clone();
+      let rounds = div_round_up(needed - curr_amount, num_produced);
+      ore += mats.iter()
+        .map(|(needed, mat)| self.produce(mat, needed * rounds))
+        .sum::<usize>();
+      curr_amount += num_produced * rounds;
+    }
+
+    self.store.insert(material, curr_amount - needed);
+    ore
+  }
+
+  fn reset(&mut self) {
+    for i in self.store.values_mut() { *i = 0; }
+  }
+}
+
+fn main() {
+  let now = Instant::now();
+  let mut producer = Producer::new();
   let part_one = producer.produce("FUEL", 1);
 
   let (mut min, mut max) = (0,4000000);

@@ -37,11 +37,7 @@ fn main() {
     .map(|(x,y)| x.abs() + y.abs())
     .min();
   let part_two = intersections.iter()
-    .map(|pos| {
-      let d1 = steps1.get(pos).unwrap();
-      let d2 = steps2.get(pos).unwrap();
-      d1 + d2
-    })
+    .map(|pos| steps1[pos] + steps2[pos])
     .min();
 
   println!("Part one: {}", part_one.unwrap());

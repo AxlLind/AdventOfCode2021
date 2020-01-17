@@ -65,21 +65,20 @@ fn lines_sorted_by_angle() -> Vec<Pos> {
   (-x_max..x_max)
     .cartesian_product(-y_max..y_max)
     .filter(|&(x,y)| gcd(x,y) == 1)
-    .sorted_by(|&p1, &p2| to_angle(p1).partial_cmp(&to_angle(p2)).unwrap())
+    .sorted_by(|&p1, &p2| {
+      let a1 = to_angle(p1);
+      let a2 = to_angle(p2);
+      a1.partial_cmp(&a2).unwrap()
+    })
     .collect()
 }
 
-fn until_hit(
-  asteroids: &HashSet<Pos>,
-  (x,y): Pos,
-  (dx,dy): Pos,
-) -> Option<Pos> {
-  let (mut new_x, mut new_y) = (x,y);
-  while (0..H).contains(&new_x) && (0..W).contains(&new_y) {
-    new_x += dx;
-    new_y += dy;
-    if asteroids.contains(&(new_x, new_y)) {
-      return Some((new_x, new_y));
+fn until_hit(asteroids: &HashSet<Pos>, (mut x, mut y): Pos, (dx,dy): Pos) -> Option<Pos> {
+  while (0..H).contains(&x) && (0..W).contains(&y) {
+    x += dx;
+    y += dy;
+    if asteroids.contains(&(x,y)) {
+      return Some((x,y));
     }
   }
   None

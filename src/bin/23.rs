@@ -6,21 +6,20 @@ const PROGRAM: [i64; 2237] = [3,62,1001,62,11,10,109,2237,105,1,0,919,1344,1032,
 fn part_one() -> i64 {
   let mut net = vec![IntCoder::new(&PROGRAM); 50];
   for i in 0..50 { net[i].push_input(i as i64); }
-  loop {
-    for i in 0..50 {
-      match net[i].execute() {
-        ExitCode::Output(adr) => {
-          let x = net[i].execute_until_output();
-          let y = net[i].execute_until_output();
-          if adr == 255 { return y; }
-          net[adr as usize].push_input(x);
-          net[adr as usize].push_input(y);
-        }
-        ExitCode::AwaitInput => net[i].push_input(-1),
-        ExitCode::Halted => unreachable!(),
+  for i in (0..50).cycle() {
+    match net[i].execute() {
+      ExitCode::Output(adr) => {
+        let x = net[i].execute_until_output();
+        let y = net[i].execute_until_output();
+        if adr == 255 { return y; }
+        net[adr as usize].push_input(x);
+        net[adr as usize].push_input(y);
       }
+      ExitCode::AwaitInput => net[i].push_input(-1),
+      ExitCode::Halted => unreachable!(),
     }
-  };
+  }
+  unreachable!()
 }
 
 fn part_two() -> i64 {
