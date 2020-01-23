@@ -1,35 +1,35 @@
 # Output
 This file contains the output of all solutions. All of them are timed. The timing is just wall clock time so things like other processes running can affect it. All solutions finish in under `100ms` on my machine and the total running time of all 50 stars is under `500ms`!
 
-## Day 1
+## Day [1](./src/bin/01.rs)
 ```
 Part one: 3303995
 Part two: 4953118
 Time: 0ms
 ```
 
-## Day 2
+## Day [2](./src/bin/02.rs)
 ```
 Part one: 8017076
 Part two: 3146
 Time: 0ms
 ```
 
-## Day 3
+## Day [3](./src/bin/03.rs)
 ```
 Part one: 721
 Part two: 7388
 Time: 44ms
 ```
 
-## Day 4
+## Day [4](./src/bin/04.rs)
 ```
 Part one: 1653
 Part two: 1133
 Time: 5ms
 ```
 
-## Day 5
+## Day [5](./src/bin/05.rs)
 ```
 Part one:
 0
@@ -46,21 +46,21 @@ Part two: 15586959
 Time: 0ms
 ```
 
-## Day 6
+## Day [6](./src/bin/06.rs)
 ```
 Part one: 251208
 Part two: 397
 Time: 18ms
 ```
 
-## Day 7
+## Day [7](./src/bin/07.rs)
 ```
 Part one: 79723
 Part two: 70602018
 Time: 0ms
 ```
 
-## Day 8
+## Day [8](./src/bin/08.rs)
 ```
 Part one: 2806
 Part two:
@@ -73,21 +73,21 @@ Part two:
 Time: 0ms
 ```
 
-## Day 9
+## Day [9](./src/bin/09.rs)
 ```
 Part one: 3345854957
 Part two: 68938
 Time: 4ms
 ```
 
-## Day 10
+## Day [10](./src/bin/10.rs)
 ```
 Part one: 314
 Part two: 1513
 Time: 33ms
 ```
 
-## Day 11
+## Day [11](./src/bin/11.rs)
 ```
       ██
     █  █
@@ -175,28 +175,28 @@ Part two: 249
 Time: 3ms
 ```
 
-## Day 12
+## Day [12](./src/bin/12.rs)
 ```
 Part one: 6678
 Part two: 496734501382552
 Time: 2ms
 ```
 
-## Day 13
+## Day [13](./src/bin/13.rs)
 ```
 Part one: 193
 Part two: 10547
 Time: 7ms
 ```
 
-## Day 14
+## Day [14](./src/bin/14.rs)
 ```
 Part one: 365768
 Part two: 3756877
 Time: 7ms
 ```
 
-## Day 15
+## Day [15](./src/bin/15.rs)
 ```
 █████████████████████████████████████████
 █   █   █             █     █       █   █
@@ -244,14 +244,14 @@ Part two: 390
 Time: 19ms
 ```
 
-## Day 16
+## Day [16](./src/bin/16.rs)
 ```
 Part one: 17978331
 Part two: 19422575
 Time: 66ms
 ```
 
-## Day 17
+## Day [17](./src/bin/17.rs)
 ```
 ..........................#####..................
 ..........................#...#..................
@@ -303,14 +303,14 @@ Part two: 880360
 Time: 1ms
 ```
 
-## Day 18
+## Day [18](./src/bin/18.rs)
 ```
 Part one: 3918
 Part two: 2004
 Time: 86ms
 ```
 
-## Day 19
+## Day [19](./src/bin/19.rs)
 ```
 Part one: 138
 Part two: 13530764
@@ -318,47 +318,47 @@ Time: 23ms
 ```
 
 ## Day 20
-### Part one
+### Part [one](./src/bin/20.rs)
 ```
 Answer: 668
 Time: 2ms
 ```
 
-### Part two
+### Part [two](./src/bin/20-2.rs)
 ```
 Answer: 7778
 Time: 29ms
 ```
 
-## Day 21
+## Day [21](./src/bin/21.rs)
 ```
 Part one: 19361414
 Part two: 1139205618
 Time: 4ms
 ```
 
-## Day 22
+## Day [22](./src/bin/22.rs)
 ```
 Part one: 6850
 Part two: 13224103523662
 Time: 0ms
 ```
 
-## Day 23
+## Day [23](./src/bin/23.rs)
 ```
 Part one: 18192
 Part two: 10738
 Time: 4ms
 ```
 
-## Day 24
+## Day [24](./src/bin/24.rs)
 ```
 Part one: 18404913
 Part two: 1989
 Time: 60ms
 ```
 
-## Day 25
+## Day [25](./src/bin/25.rs)
 ```
 == Pressure-Sensitive Floor ==
 Analyzing...
