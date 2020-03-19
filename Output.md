@@ -186,7 +186,7 @@ Time: 2ms
 ```
 Part one: 193
 Part two: 10547
-Time: 7ms
+Time: 6ms
 ```
 
 ## Day [14](./src/bin/14.rs)
@@ -314,7 +314,7 @@ Time: 86ms
 ```
 Part one: 138
 Part two: 13530764
-Time: 23ms
+Time: 22ms
 ```
 
 ## Day 20
@@ -370,5 +370,5 @@ A loud, robotic voice says "Analysis complete! You may proceed." and you enter t
 Santa notices your small droid, looks puzzled for a moment, realizes what has happened, and radios your ship directly.
 "Oh, hello! You should be able to get in by typing 352325632 on the keypad at the main airlock."
 
-Time: 30ms
+Time: 28ms
 ```
