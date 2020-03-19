@@ -15,27 +15,25 @@ fn to_digits(n: usize) -> [usize; 6] {
   ]
 }
 
-fn part_one() -> usize {
-  INPUT.map(to_digits)
-    .filter(|&digits| (1..digits.len()).all(|i| digits[i-1] <= digits[i]))
-    .filter(|&digits| (1..digits.len()).any(|i| digits[i-1] == digits[i]))
-    .count()
-}
-
-fn part_two() -> usize {
-  INPUT.map(to_digits)
-    .filter(|&digits| (1..digits.len()).all(|i| digits[i-1] <= digits[i]))
-    .filter(|&digits| digits.iter()
-      .group_by(|d| *d)
+fn count_passwords() -> (usize,usize) {
+  let passwords = INPUT.map(to_digits)
+    .filter(|d| (1..d.len()).all(|i| d[i-1] <= d[i]))
+    .filter(|d| (1..d.len()).any(|i| d[i-1] == d[i]))
+    .map(|d| d.iter()
+      .group_by(|&i| i)
       .into_iter()
       .any(|(_,x)| x.count() == 2)
     )
-    .count()
+    .collect::<Vec<_>>();
+  let part_one = passwords.len();
+  let part_two = passwords.iter().filter(|&&b| b).count();
+  (part_one,part_two)
 }
 
 fn main() {
   let now = Instant::now();
-  println!("Part one: {}", part_one());
-  println!("Part two: {}", part_two());
+  let (part_one, part_two) = count_passwords();
+  println!("Part one: {}", part_one);
+  println!("Part two: {}", part_two);
   println!("Time: {}ms", now.elapsed().as_millis());
 }

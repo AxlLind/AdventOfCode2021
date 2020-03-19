@@ -26,7 +26,7 @@ Time: 44ms
 ```
 Part one: 1653
 Part two: 1133
-Time: 5ms
+Time: 2ms
 ```
 
 ## Day [5](./src/bin/05.rs)
