@@ -193,7 +193,7 @@ Time: 7ms
 ```
 Part one: 365768
 Part two: 3756877
-Time: 7ms
+Time: 2ms
 ```
 
 ## Day [15](./src/bin/15.rs)
