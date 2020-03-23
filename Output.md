@@ -317,16 +317,10 @@ Part two: 13530764
 Time: 22ms
 ```
 
-## Day 20
-### Part [one](./src/bin/20.rs)
+## Day [20](./src/bin/20.rs)
 ```
-Answer: 668
-Time: 2ms
-```
-
-### Part [two](./src/bin/20-2.rs)
-```
-Answer: 7778
+Part one: 668
+Part two: 7778
 Time: 29ms
 ```
 

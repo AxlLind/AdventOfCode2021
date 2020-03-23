@@ -136,22 +136,12 @@ const INPUT: [&str; 129] = [
 const W: usize = INPUT.len();
 const H: usize = INPUT[0].len();
 
-type Graph = HashMap<(usize,usize), Vec<(usize,usize)>>;
+#[derive(Copy,Clone)]
+enum EdgeType { Outer, Inner, Normal }
 
-fn create_graph(map: &[Vec<char>]) -> Graph {
-  (0..W).cartesian_product(0..H)
-    .filter(|&(i,j)| map[i][j] == '.')
-    .map(|(i,j)| {
-      let neighbours = [(i-1,j), (i+1,j), (i,j-1), (i,j+1)].iter()
-        .filter(|&&(x,y)| map[x][y] == '.')
-        .cloned()
-        .collect();
-      ((i,j), neighbours)
-    })
-    .collect()
-}
+type Graph = HashMap<(usize,usize), Vec<(usize,usize,EdgeType)>>;
 
-fn find_portals(map: &[Vec<char>]) -> Vec<(String, usize, usize)> {
+fn find_portals(map: &[Vec<char>]) -> Vec<(String,usize,usize)> {
   let mut portals = Vec::new();
   for i in 1..(W-1) {
     for j in 1..(H-1) {
@@ -166,7 +156,7 @@ fn find_portals(map: &[Vec<char>]) -> Vec<(String, usize, usize)> {
       if let Some(&(_,x,y)) = neighbours.iter().find(|(c,_,_)| *c == '.') {
         let to = neighbours.iter().find(|(c,_,_)| c.is_ascii_uppercase()).unwrap().0;
         let name = [from, to].iter().sorted().collect();
-        portals.push((name, x, y));
+        portals.push((name,x,y));
       }
     }
   }
@@ -174,49 +164,95 @@ fn find_portals(map: &[Vec<char>]) -> Vec<(String, usize, usize)> {
 }
 
 fn connect_portals(g: &mut Graph, portals: &[(String, usize, usize)]) {
-  for index in 0..portals.len() {
-    let (p1, x, y) = &portals[index];
+  let (max_x,max_y) = (W-3,H-3);
+  for (p1,x,y) in portals {
     let o = portals.iter().find(|(p2,x2,y2)| p1 == p2 && x != x2 && y != y2);
     if let Some(&(_,i,j)) = o {
-      g.get_mut(&(*x,*y)).unwrap().push((i,j));
+      let t = if i == 2 || j == 2 {
+        EdgeType::Inner
+      } else if i == max_x || j == max_y {
+        EdgeType::Inner
+      } else {
+        EdgeType::Outer
+      };
+      g.get_mut(&(*x,*y)).unwrap().push((i,j,t));
     }
   }
 }
 
-fn bfs(
-  graph: &Graph,
-  (x, y): (usize,usize),
-  (ex, ey): (usize,usize),
-) -> usize {
+fn create_graph(map: &[Vec<char>], portals: &[(String, usize, usize)]) -> Graph {
+  let mut g = (0..W).cartesian_product(0..H)
+    .filter(|&(i,j)| map[i][j] == '.')
+    .map(|(i,j)| {
+      let neighbours = [(i-1,j), (i+1,j), (i,j-1), (i,j+1)].iter()
+        .filter(|&&(x,y)| map[x][y] == '.')
+        .map(|&(x,y)| (x,y,EdgeType::Normal))
+        .collect();
+      ((i,j), neighbours)
+    })
+    .collect();
+  connect_portals(&mut g, portals);
+  g
+}
+
+fn bfs_part_one(graph: &Graph, (x,y): (usize,usize), goal: (usize,usize)) -> usize {
   let mut queue = VecDeque::new();
   let mut visited = HashSet::new();
   queue.push_back((x,y,0));
   visited.insert((x,y));
 
   loop {
-    let (ux, uy, len) = queue.pop_front().unwrap();
+    let (ux,uy,len) = queue.pop_front().unwrap();
+
+    if (ux,uy) == goal { return len; }
     visited.insert((ux,uy));
 
-    if ux == ex && uy == ey { return len; }
+    for &(x,y,_) in &graph[&(ux,uy)] {
+      if visited.contains(&(x,y)) { continue; }
+      queue.push_back((x,y,len+1))
+    }
+  }
+}
 
-    graph[&(ux,uy)].iter()
-      .filter(|pos| !visited.contains(pos))
-      .for_each(|&(x,y)| queue.push_back((x,y,len+1)));
+fn bfs_part_two(graph: &Graph, (x,y): (usize,usize), goal: (usize,usize)) -> usize {
+  let mut visited = HashSet::new();
+  let mut queue = VecDeque::new();
+  queue.push_back((x,y,0,0));
+  visited.insert((x,y,0));
+
+  loop {
+    let (ux,uy,level,len) = queue.pop_front().unwrap();
+
+    if level == 0 && (ux,uy) == goal { return len; }
+    visited.insert((ux,uy,level));
+
+    for &(x,y,t) in &graph[&(ux,uy)] {
+      let level = level + match (t,level) {
+        (EdgeType::Outer,0)  => continue,
+        (EdgeType::Outer,_)  => -1,
+        (EdgeType::Inner,25) => continue,
+        (EdgeType::Inner,_)  => 1,
+        (EdgeType::Normal,_) => 0,
+      };
+      if visited.contains(&(x,y,level)) { continue; }
+      queue.push_back((x,y,level,len+1));
+    };
   }
 }
 
 fn main() {
   let now = Instant::now();
   let map = INPUT.iter().map(|s| s.chars().collect_vec()).collect_vec();
-  let mut g = create_graph(&map);
   let portals = find_portals(&map);
-  connect_portals(&mut g, &portals);
+  let g = create_graph(&map, &portals);
 
-  let (_,x1,y1) = *portals.iter().find(|(p,_,_)| p == "AA").unwrap();
-  let (_,x2,y2) = *portals.iter().find(|(p,_,_)| p == "ZZ").unwrap();
+  let &(_,x1,y1) = portals.iter().find(|(p,_,_)| p == "AA").unwrap();
+  let &(_,x2,y2) = portals.iter().find(|(p,_,_)| p == "ZZ").unwrap();
 
-  let answer = bfs(&g, (x1,y1), (x2,y2));
+  let part_one = bfs_part_one(&g, (x1,y1), (x2,y2));
+  let part_two = bfs_part_two(&g, (x1,y1), (x2,y2));
 
-  println!("Answer: {}", answer);
+  println!("Part one: {}", part_one);
+  println!("Part two: {}", part_two);
   println!("Time: {}ms", now.elapsed().as_millis());
 }
