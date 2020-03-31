@@ -7,13 +7,9 @@ const JNZ: i64 = 5; const JZ:  i64 = 6;
 const SLT: i64 = 7; const SEQ: i64 = 8;
 const BSE: i64 = 9; const HLT: i64 = 99;
 
-pub enum ExitCode {
-  Output(i64),
-  AwaitInput,
-  Halted
-}
+pub enum ExitCode { Output(i64), AwaitInput, Halted }
 
-#[derive(Clone, Default)]
+#[derive(Clone)]
 pub struct IntCoder {
   ram: Vec<i64>,
   input: VecDeque<i64>,
@@ -23,7 +19,12 @@ pub struct IntCoder {
 
 impl IntCoder {
   pub fn new(program: &[i64]) -> Self {
-    Self { ram: program.into(), ..Self::default() }
+    Self {
+      ram: program.into(),
+      input: VecDeque::new(),
+      rel_base: 0,
+      pc: 0
+    }
   }
 
   pub fn execute(&mut self) -> ExitCode {
@@ -32,22 +33,22 @@ impl IntCoder {
       match op {
         ADD => self.set(c, a + b),
         MUL => self.set(c, a * b),
-        OUT => return ExitCode::Output(a),
-        JNZ => if a != 0 { self.pc = b; },
-        JZ  => if a == 0 { self.pc = b; },
         SLT => self.set(c, a < b),
         SEQ => self.set(c, a == b),
         BSE => self.rel_base += a,
+        JNZ => if a != 0 { self.pc = b },
+        JZ  => if a == 0 { self.pc = b },
+        OUT => return ExitCode::Output(a),
         HLT => return ExitCode::Halted,
         IN  => match self.input.pop_front() {
           Some(i) => {
             let a = self.fetch_write_adr(1);
-            self.set(a, i);
+            self.set(a,i);
             self.pc += 2;
           }
           None => return ExitCode::AwaitInput
         }
-        _ => unreachable!("invalid opcode {}", op)
+        _ => panic!("invalid opcode {}", op)
       }
     }
   }
@@ -55,7 +56,7 @@ impl IntCoder {
   pub fn execute_until_output(&mut self) -> i64 {
     match self.execute() {
       ExitCode::Output(o) => o,
-      _ => unreachable!("assumed CPU would exit with output"),
+      _ => panic!("assumed CPU would exit with output"),
     }
   }
 
@@ -120,8 +121,7 @@ impl IntCoder {
       ADD|MUL|SLT|SEQ => 4,
       OUT|BSE         => 2,
       JNZ|JZ          => 3,
-      HLT|IN          => 0,
-      _ => unreachable!("invalid opcode {}", op),
+      _               => 0,
     };
     (op,a,b,c)
   }
