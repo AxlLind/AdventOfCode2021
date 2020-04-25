@@ -4,7 +4,6 @@ version = "0.1.0"
 authors = ["Axel Lindeberg <axel.ew.lindeberg@gmail.com>"]
 edition = "2018"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [lib]
 name = "intcoder"
 path = "src/intcoder.rs"
@@ -14,9 +13,3 @@ itertools = "0.8.2"
 num-integer = "0.1.41"
 mod_exp = "1.0.1"
 easy_io = "0.3.0"
-criterion = "0.3.0"
-
-[[bench]]
-name = "intcode-benchmark"
-harness = false
-path = "./src/intcode_benchmark.rs"
