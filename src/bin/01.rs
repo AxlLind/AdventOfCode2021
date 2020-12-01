@@ -21,7 +21,7 @@ fn part_two() -> u32 {
 
 fn main() {
   let now = Instant::now();
-  println!("{}", part_one());
-  println!("{}", part_two());
+  println!("Part one: {}", part_one());
+  println!("Part two: {}", part_two());
   println!("Time: {}ms", now.elapsed().as_millis());
 }
