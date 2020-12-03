@@ -18,3 +18,10 @@ This was one of those "find correct passwords" puzzles that have shown up previo
 Otherwise, the problem itself was quite easy. Part one, count the occurrences, check if it's within the given range. Part two, look at the two chars and check if exactly 1 is equal to the provided char.
 
 This day made it clear why Rust is not the best language for speed programming. I got silly borrowing compilation errors in filter for example, which were easy to fix but took some time. My biggest take away from today is that it is **always** worth it to read the input clearly! I wasted so much time by trying to save like 5 seconds and actually read the instructions. Got rate-limited after I submitted the wrong answer, because I did not read the question clearly. Will not do that again..
+
+## Day 03 - [link](./src/bin/03.rs)
+You have to calculate the number of trees in a given slope. For some reason I was just quite slow on part one. I started thinking of [day 10](https://github.com/AxlLind/AdventOfCode2019/blob/master/src/bin/10.rs) of 2019, which was just a thousand times more difficult. This problem was easy, so I should have just continued.
+
+For part one, the fact that the lines continues was easy, obviously just modulo. I chose to use a cycle iterator: `(0..W).cycle().step_by(dw)`. That might have been the only tricky part for people. After I did part one, doing part two was quite easy. In my solution I iterated over all rows since `dh == 1`. That was the only thing that was not general about my initial solution. Breaking it out into a function, general over `dw, dh` was easy otherwise.
+
+So not my best day. I was just not that fast on this one but that's okay :)
