@@ -25,3 +25,17 @@ You have to calculate the number of trees in a given slope. For some reason I wa
 For part one, the fact that the lines continues was easy, obviously just modulo. I chose to use a cycle iterator: `(0..W).cycle().step_by(dw)`. That might have been the only tricky part for people. After I did part one, doing part two was quite easy. In my solution I iterated over all rows since `dh == 1`. That was the only thing that was not general about my initial solution. Breaking it out into a function, general over `dw, dh` was easy otherwise.
 
 So not my best day. I was just not that fast on this one but that's okay :)
+
+## Day 04 - [link](./src/bin/04.rs)
+This was entirely a parsing challenge. When I realized that I got super nervous since Rust is not always the smoothest when it comes to string handling in my experience. However, it was surprisingly easy to do this in Rust, I mean just look at how easy it was to parse each passport:
+
+```Rust
+let map = s.split_whitespace()
+  .flat_map(|p| p.split(":"))
+  .tuples()
+  .collect::<HashMap<_,_>>();
+```
+
+I was a bit slow on star one since I misread how to parse the input, but got it after a while. For star two, it was just about implementing all these rules which was also surprisingly easy in Rust. The char primitive has some amazing functions to check if it's a digit, a hexdigit, etc, which made it quite easy.
+
+Overall, I placed (3468/1688), so could have been faster on star one but very happy with my performance on star two!
