@@ -43,4 +43,4 @@ Overall, I placed (3468/1688), so could have been faster on star one but very ha
 ## Day 05 - [link](./src/bin/05.rs)
 First weekend. I overslept since my alarm was only set for weekdays, so missed the leaderboard completely today. That's fine though! Not sure I'll make it through december, going up at 5:50 each day.
 
-This problem was not too bad. You just had to implement binary search. Part two was just about figuring out exactly what the instructions meant, which took me a few minutes.
+The input was just a disguised binary encoding. I choose to implement it like the instructions, with a binary search. For part two, I struggled a few minutes with understanding exactly what the instructions meant, but it wasn't too bad. Used a hashset for fast lookup, which made it `O(n)`. Another solution would have been to sort the list and check for a missing entry but that would be `O(nlogn)`.
