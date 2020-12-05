@@ -29,11 +29,8 @@ fn main() {
     .max()
     .unwrap();
   let part_two = (0..=127).cartesian_product(1..=6)
-    .find(|&(r,c)|
-      !seats.contains(&(r,c))
-        && seats.contains(&(r, c-1))
-        && seats.contains(&(r, c+1))
-    )
+    .filter(|pos| !seats.contains(pos))
+    .find(|&(r,c)| seats.contains(&(r,c-1)) && seats.contains(&(r,c+1)))
     .map(|(r,c)| r * 8 + c)
     .unwrap();
   println!("Part one: {}", part_one);
