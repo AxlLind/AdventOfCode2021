@@ -39,3 +39,8 @@ let passport = s.split_whitespace()
 I was a bit slow on star one since I misread how to parse the input, but got it after a while. For star two, it was just about implementing all these rules which was also surprisingly easy in Rust. The char primitive has some amazing functions to check what type of char it is, like `c.is_ascii_digit()` and `c.is_ascii_hexdigit()`, which made it quite easy.
 
 Overall, I placed (3468/1688), so could have been faster on star one but very happy with my performance on star two!
+
+## Day 05 - [link](./src/bin/05.rs)
+First weekend. I overslept since my alarm was only set for weekdays, so missed the leaderboard completely today. That's fine though! Not sure I'll make it through december, going up at 5:50 each day.
+
+This problem was not too bad. You just had to implement binary search. Part two was just about figuring out exactly what the instructions meant, which took me a few minutes.
