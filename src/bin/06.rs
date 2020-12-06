@@ -16,11 +16,7 @@ fn part_one() -> usize {
 fn part_two() -> u32 {
   INPUT.iter()
     .map(|s| s.split_whitespace()
-      .map(|part| part.chars()
-        .filter(|c| !c.is_whitespace())
-        .map(|c| c as u8 - b'a')
-        .fold(0u32, |acc, b| acc | (1 << b))
-      )
+      .map(|part| part.bytes().fold(0u32, |x, b| x | 1 << (b - b'a')))
       .fold(0x3ffffff, |acc, x| acc & x)
       .count_ones()
     )
