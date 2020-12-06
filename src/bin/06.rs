@@ -17,7 +17,7 @@ fn part_two() -> u32 {
   INPUT.iter()
     .map(|s| s.split_whitespace()
       .map(|part| part.bytes().fold(0u32, |x, b| x | 1 << (b - b'a')))
-      .fold(0x3ffffff, |acc, x| acc & x)
+      .fold(!0, |acc, x| acc & x)
       .count_ones()
     )
     .sum()

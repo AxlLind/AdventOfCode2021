@@ -62,7 +62,7 @@ Part two was a bit more difficult. Initially, I started using HashSets, and usin
 ```Rust
 s.split_whitespace()
   .map(|part| part.bytes().fold(0u32, |x, b| x | 1 << (b - b'a')))
-  .fold(0x3ffffff, |acc, x| acc & x)
+  .fold(!0, |acc, x| acc & x)
   .count_ones()
 ```
 
