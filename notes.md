@@ -48,18 +48,22 @@ The input was just a disguised binary encoding. I choose to implement it like th
 ## Day 06 - [link](./src/bin/06.rs)
 Today was really fun! First a bit more challenging problem in my opinion. Managed to get a respectable score on both stars today which I am really happy with. Part one I realized quickly would be solved nicely with the [itertools::unique](https://docs.rs/itertools/0.9.0/itertools/trait.Itertools.html#method.unique) function:
 
-    s.chars()
-      .filter(|c| !c.is_whitespace())
-      .unique()
-      .count()
+```Rust
+s.chars()
+  .filter(|c| !c.is_whitespace())
+  .unique()
+  .count()
+```
 
 Then you just had to sum it up. This was both quick and really easy to implement, so got an ok score on the leaderboard.
 
 Part two was a bit more difficult. Initially, I started using HashSets, and using `set1.intersection(set2)`, ran into borrow issues and quickly switched approach. The possible answers are only `a-z`, which we can easily fit in a `u32` and let each bit represent if the answer is present or not. You then just have to `and` them together, starting with the full set `0x3ffffff`. The Rust number primitives also have an amazing function [u32::count_ones()](https://doc.rust-lang.org/std/primitive.u32.html#method.count_ones) which made this approach very easy to implement.
 
-    s.split_whitespace()
-      .map(|part| part.bytes().fold(0u32, |x, b| x | 1 << (b - b'a')))
-      .fold(0x3ffffff, |acc, x| acc & x)
-      .count_ones()
+```Rust
+s.split_whitespace()
+  .map(|part| part.bytes().fold(0u32, |x, b| x | 1 << (b - b'a')))
+  .fold(0x3ffffff, |acc, x| acc & x)
+  .count_ones()
+```
 
 Not using HashSets means no extra allocations. Both stars are solved in a single iterator expression each, without any collect. My solution is therefore quite fast, `0ms` on my machine.
