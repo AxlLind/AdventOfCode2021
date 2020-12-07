@@ -13,13 +13,13 @@ type BagMap<'a> = HashMap<&'a str, &'a [(u32, &'a str)]>;
 fn contains_gold<'a>(
   cache: &mut HashMap<&'a str, bool>,
   map: &BagMap<'a>,
-  bag: &'a str
+  bag: &'a str,
 ) -> bool {
-  if !cache.contains_key(&bag) {
+  if !cache.contains_key(bag) {
     let b = map[bag].iter().any(|(_,b)| contains_gold(cache, map, b));
     cache.insert(bag, b);
   }
-  return cache[bag];
+  cache[bag]
 }
 
 fn bags_containing_gold(bags: &BagMap) -> usize {
@@ -39,7 +39,7 @@ fn main() {
   let part_one = bags_containing_gold(&bags);
   let part_two = total_bags(&bags, "shiny gold");
 
-  // -1 because gold is itself counted in both parts
+  // -1 because the gold bag itself is counted in both parts
   println!("Part one: {}", part_one - 1);
   println!("Part two: {}", part_two - 1);
   println!("Time: {}ms", now.elapsed().as_millis());
