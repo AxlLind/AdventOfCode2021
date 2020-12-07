@@ -67,3 +67,23 @@ s.split_whitespace()
 ```
 
 Not using HashSets means no extra allocations. Both stars are solved in a single iterator expression each, without any collect. My solution is therefore quite fast, `0ms` on my machine.
+
+## Day 07 - [link](./src/bin/07.rs)
+
+(662/335) Best placing on the leaderboard ever for me (not counting day 1 this year), super happy with that! Rust is not really known for being a good AoC speed language, so that's fun! I guess I was just quick with realizing the recursive pattern.
+
+This problem was really about being comfortable with recursion. There were simple patterns for both of them:
+
+```Rust
+fn contains_gold(map: &BagMap, bag: &str) -> bool {
+  bag == "shiny gold" || map[bag].iter().any(|(_,b)| contains_gold(map, b))
+}
+
+fn total_bags(map: &BagMap, bag: &str) -> u32 {
+  1 + map[bag].iter().map(|(c,b)| c * total_bags(map, b)).sum::<u32>()
+}
+```
+
+Both of my solutions get an off-by-one error since the gold bag itself gets counted. That tripped me up on part one, but I tested with the test input and quickly realized the problem. I also heavily preprocessed the input this time. I realized it would be quite complicated to parse so I edited it by hand and embedded it in the problem directly, probably a bit faster than figuring out the parsing code.
+
+My initial implementation (the one above) finished in 6ms, relatively fast. I later added memoization to part one, which brought it down to 0ms!
