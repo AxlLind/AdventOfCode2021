@@ -87,3 +87,9 @@ fn total_bags(map: &BagMap, bag: &str) -> u32 {
 Both of my solutions get an off-by-one error since the gold bag itself gets counted. That tripped me up on part one, but I tested with the test input and quickly realized the problem. I also heavily preprocessed the input this time. I realized it would be quite complicated to parse so I edited it by hand and embedded it in the problem directly, probably a bit faster than figuring out the parsing code.
 
 My initial implementation (the one above) finished in 6ms, relatively fast. I later added memoization to part one, which brought it down to 0ms!
+
+## Day 07 - [link](./src/bin/07.rs)
+
+(1320/544) Pretty happy with my star 2 placing! Nothing to much to say about today's challenge. Just had to implement each instruction correctly. Used an array of booleans to check if we had a cycle. For part 2, I just brute forced and checked changing each acc/jmp instruction.
+
+Is this the new VM we will be using for the rest of the challenges?? I was hoping something like the IntCoder would return this year! This one seems a bit annoying though, if the instructions will be signed. You would have to do a bunch of `as usize` everywhere.
