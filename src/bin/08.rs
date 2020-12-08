@@ -48,6 +48,10 @@ fn part_one() -> i32 {
 fn main() {
   let now = Instant::now();
   let part_two = (0..INPUT_LEN)
+    .filter(|&i| match INPUT[i] {
+      Op::Nop(_) => false,
+      _ => true,
+    })
     .map(|i| run_inst_changed(i as i32))
     .find(|o| o.is_some())
     .unwrap()
