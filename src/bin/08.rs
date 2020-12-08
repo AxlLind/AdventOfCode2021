@@ -55,6 +55,6 @@ fn main() {
     .filter_map(|i| run_inst_changed(i as i32))
     .next();
   println!("Part one: {}", part_one());
-  println!("Part two: {:?}", part_two.unwrap());
+  println!("Part two: {}", part_two.unwrap());
   println!("Time: {}ms", now.elapsed().as_millis());
 }
