@@ -16,8 +16,9 @@ fn run_inst_changed(changed_ip: i32) -> Option<i32> {
   while !visited[ip as usize] {
     visited[ip as usize] = true;
     match (&INPUT[ip as usize], ip != changed_ip) {
-      (Op::Acc(n), true) => acc += n,
-      (Op::Jmp(n), true) => ip += n - 1,
+      (Op::Acc(n), true)  => acc += n,
+      (Op::Jmp(n), true)  => ip += n - 1,
+      (Op::Nop(n), false) => ip += n - 1,
       _ => {},
     }
     ip += 1;
@@ -47,13 +48,7 @@ fn part_one() -> i32 {
 
 fn main() {
   let now = Instant::now();
-  let part_two = (0..INPUT_LEN)
-    .filter(|&i| match INPUT[i] {
-      Op::Nop(_) => false,
-      _ => true,
-    })
-    .filter_map(|i| run_inst_changed(i as i32))
-    .next();
+  let part_two = (0..INPUT_LEN).filter_map(|i| run_inst_changed(i as i32)).next();
   println!("Part one: {}", part_one());
   println!("Part two: {}", part_two.unwrap());
   println!("Time: {}ms", now.elapsed().as_millis());
