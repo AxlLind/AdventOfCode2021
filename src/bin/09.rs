@@ -5,11 +5,11 @@ static INPUT: [usize; 1000] = [42,27,23,19,4,26,31,29,11,49,38,9,45,1,40,46,39,2
 
 fn part_one() -> usize {
   INPUT.windows(26)
-    .find(|chunk| chunk[0..25].iter()
+    .find(|wnd| wnd[0..25].iter()
       .tuple_combinations()
-      .all(|(a,b)| a + b != chunk[25])
+      .all(|(a,b)| a + b != wnd[25])
     )
-    .map(|chunk| chunk[25])
+    .map(|wnd| chunk[25])
     .unwrap()
 }
 
