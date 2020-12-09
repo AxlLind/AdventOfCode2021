@@ -94,7 +94,7 @@ My initial implementation (the one above) finished in 6ms, relatively fast. I la
 
 Is this the new VM we will be using for the rest of the challenges?? I was hoping something like the IntCoder would return this year! This one seems a bit annoying though, if the instructions will be signed. You would have to do a bunch of `as usize` everywhere.
 
-## Day 9 - [link](./src/bin/9.rs)
+## Day 09 - [link](./src/bin/09.rs)
 Was not too quick today for some reason. Struggled with stupid off-by-one errors and stuff. I think my part one ended up very clean. The stdlib function [`slice::windows()`](https://doc.rust-lang.org/std/primitive.slice.html#method.windows) is perfect for this!
 
 ```Rust
