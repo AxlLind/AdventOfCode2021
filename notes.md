@@ -88,8 +88,23 @@ Both of my solutions get an off-by-one error since the gold bag itself gets coun
 
 My initial implementation (the one above) finished in 6ms, relatively fast. I later added memoization to part one, which brought it down to 0ms!
 
-## Day 07 - [link](./src/bin/07.rs)
+## Day 08 - [link](./src/bin/08.rs)
 
 (1320/544) Pretty happy with my star 2 placing! Nothing to much to say about today's challenge. Just had to implement each instruction correctly. Used an array of booleans to check if we had a cycle. For part 2, I just brute forced and checked changing each acc/jmp instruction.
 
 Is this the new VM we will be using for the rest of the challenges?? I was hoping something like the IntCoder would return this year! This one seems a bit annoying though, if the instructions will be signed. You would have to do a bunch of `as usize` everywhere.
+
+## Day 9 - [link](./src/bin/9.rs)
+Was not too quick today for some reason. Struggled with stupid off-by-one errors and stuff. I think my part one ended up very clean. The stdlib function [`slice::windows()`](https://doc.rust-lang.org/std/primitive.slice.html#method.windows) is perfect for this!
+
+```Rust
+INPUT.windows(26)
+  .find(|chunk| chunk[0..25].iter()
+    .tuple_combinations()
+    .all(|(a,b)| a + b != chunk[25])
+  )
+  .map(|chunk| chunk[25])
+  .unwrap()
+```
+
+For my part two, I keep indexes `(i,j)` and the current sum. If the sum is less than the target I increase `j` and if it's larger I increase `i`. This works only because all numbers are positive in this case. By keeping track of the total sum and only adding/removing `arr[i]/arr[j]`, it ends up being quite fast. About `70μs` on my machine.
