@@ -24,9 +24,9 @@ fn part_two(target: usize) -> usize {
       i += 1;
     }
   }
-  let min = INPUT[i..=j].iter().min().unwrap();
-  let max = INPUT[i..=j].iter().max().unwrap();
-  max + min
+  let min = INPUT[i..j].iter().min().unwrap();
+  let max = INPUT[i..j].iter().max().unwrap();
+  min + max
 }
 
 fn main() {
