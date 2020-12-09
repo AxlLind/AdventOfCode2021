@@ -9,7 +9,7 @@ fn part_one() -> usize {
       .tuple_combinations()
       .all(|(a,b)| a + b != wnd[25])
     )
-    .map(|wnd| chunk[25])
+    .map(|wnd| wnd[25])
     .unwrap()
 }
 
