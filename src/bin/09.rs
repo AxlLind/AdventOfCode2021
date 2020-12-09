@@ -14,18 +14,19 @@ fn part_one() -> usize {
 }
 
 fn part_two(target: usize) -> usize {
-  for i in 0..INPUT.len() {
-    let mut sum = 0;
-    for j in i..INPUT.len() {
+  let (mut i, mut j, mut sum) = (0,0,0);
+  while sum != target {
+    if sum < target {
       sum += INPUT[j];
-      if sum == target {
-        let min = INPUT[i..=j].iter().min().unwrap();
-        let max = INPUT[i..=j].iter().max().unwrap();
-        return max + min;
-      }
+      j += 1;
+    } else {
+      sum -= INPUT[i];
+      i += 1;
     }
   }
-  unreachable!()
+  let min = INPUT[i..=j].iter().min().unwrap();
+  let max = INPUT[i..=j].iter().max().unwrap();
+  max + min
 }
 
 fn main() {
