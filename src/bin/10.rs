@@ -15,6 +15,32 @@ fn part_one(v: &[usize]) -> usize {
   ones * threes
 }
 
+// A recursive backtracking approach for part two.
+// The DP solution below is a bit simpler but I initially implemented this.
+#[allow(unused)]
+fn num_paths(
+  cache: &mut HashMap<usize, usize>,
+  v: &[usize],
+  target: usize,
+  i: usize
+) -> usize {
+  if !v.contains(&i) {
+    return 0;
+  }
+  if i == target {
+    return 1;
+  }
+
+  if !cache.contains_key(&i) {
+    let ans =
+      num_paths(cache, v, target, i + 1) +
+      num_paths(cache, v, target, i + 2) +
+      num_paths(cache, v, target, i + 3);
+    cache.insert(i, ans);
+  }
+  cache[&i]
+}
+
 fn part_two(v: &[usize]) -> usize {
   let mut dp = HashMap::new();
   dp.insert(0, 1);
