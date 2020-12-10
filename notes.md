@@ -108,3 +108,21 @@ INPUT.windows(26)
 ```
 
 For my part two, I keep indexes `(i,j)` and the current sum. If the sum is less than the target I increase `j` and if it's larger I increase `i`. This works only because all numbers are positive in this case. By keeping track of the total sum and only adding/removing `arr[i]/arr[j]`, it ends up being quite fast. About `70μs` on my machine.
+
+## Day 10 - [link](./src/bin/10.rs)
+Kind of slow on part one, but pretty happy with my star 2 placing (2476/1360)!
+
+For part one, I just sorted the list, iterated over it, and looked at the difference between neighbors. Could be done in O(n) by using a HashSet instead.
+
+```Rust
+v.iter().tuple_windows()
+  .fold((1,1), |(ones, threes), (a, b)| match b - a {
+    1 => (ones + 1, threes),
+    3 => (ones, threes + 1),
+    _ => unreachable!(),
+  });
+```
+
+For part two, this was the graph problem of finding the number of paths between two nodes in an acyclic graph. I initially implemented a recursive backtracking algorithm with memorization. Wasted some time, not realizing step size `2` was valid.
+
+It can be solved more easily with a dynamic programming algorithm. The ways to get to node i are the sum of the ways to get to nodes i-1, i-2, i-3. This recursive relation makes it easy to implement the DP algorithm. They both run in about 70μs on my machine, however.
