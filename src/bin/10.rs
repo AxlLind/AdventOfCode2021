@@ -15,41 +15,23 @@ fn part_one(v: &[usize]) -> usize {
   ones * threes
 }
 
-fn num_paths(
-  cache: &mut HashMap<usize, usize>,
-  v: &[usize],
-  target: usize,
-  i: usize
-) -> usize {
-  if !v.contains(&i) {
-    return 0;
-  }
-  if i == target {
-    return 1;
-  }
-
-  if !cache.contains_key(&i) {
+fn part_two(v: &[usize]) -> usize {
+  let mut dp = HashMap::new();
+  dp.insert(0, 1);
+  for &i in v {
     let ans =
-      num_paths(cache, v, target, i + 1) +
-      num_paths(cache, v, target, i + 2) +
-      num_paths(cache, v, target, i + 3);
-    cache.insert(i, ans);
+      dp.get(&(i - 1)).unwrap_or(&0) +
+      dp.get(&(i - 2)).unwrap_or(&0) +
+      dp.get(&(i - 3)).unwrap_or(&0);
+    dp.insert(i, ans);
   }
-  cache[&i]
+  dp[v.last().unwrap()]
 }
 
 fn main() {
   let now = Instant::now();
   let v = INPUT.iter().cloned().sorted().collect::<Vec<_>>();
-
-  let mut cache = HashMap::new();
-  let target = *v.last().unwrap();
-  let part_two =
-    num_paths(&mut cache, &v, target, 1) +
-    num_paths(&mut cache, &v, target, 2) +
-    num_paths(&mut cache, &v, target, 3);
-
   println!("Part one: {}", part_one(&v));
-  println!("Part two: {}", part_two);
+  println!("Part two: {}", part_two(&v));
   println!("Time: {}ms", now.elapsed().as_millis());
 }
