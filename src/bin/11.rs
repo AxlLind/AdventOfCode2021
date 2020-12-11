@@ -26,10 +26,9 @@ fn find_neighbour(
     i += dy;
     j += dx;
     match map.get(i as usize).and_then(|row| row.get(j as usize)) {
-      Some('#') => return Some('#'),
-      Some('L') => return Some('L'),
-      Some(_) => {}
-      _ => break,
+      Some('.') => {},
+      Some(&c)  => return Some(c),
+      None      => break,
     }
   }
   None
