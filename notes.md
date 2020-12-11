@@ -126,3 +126,16 @@ v.iter().tuple_windows()
 For part two, this was the graph problem of finding the number of paths between two nodes in an acyclic graph. I initially implemented a recursive backtracking algorithm with memorization. Wasted some time, not realizing step size `2` was valid.
 
 It can be solved more easily with a dynamic programming algorithm. The ways to get to node i are the sum of the ways to get to nodes i-1, i-2, i-3. This recursive relation makes it easy to implement the DP algorithm. They both run in about 70μs on my machine, however.
+
+## Day 11 - [link](./src/bin/11.rs)
+(934/1800) Very happy to get top 1k on star one! Messed up a bit on star two, accidentally returned when I found `.` as well. That cost me a few minutes.
+
+This was another one of those game of life challenges, bound to be at least one every year! Just about implementing the rules correctly and making sure not to mutate the array while performing each step of the simulation. I kept two copies of the map. Read from one and wrote to the other during the simulation step, and then swapped them. Here [`std::mem::swap`](https://doc.rust-lang.org/std/mem/fn.swap.html) comes in handy to quickly swap the vectors.
+
+I managed to reuse all of the simulation code between parts 1 and 2 by passing in a `should_swap` function since that was the only difference between the two. It also seems to not incur any runtime penalty, it is just as fast if I copy the code. The signature looks a bit ugly but still nice to not copy-paste the code.
+
+```Rust
+fn run_simulation<F: Fn(&[Vec<char>], usize, usize) -> bool>(should_swap: F) -> usize {...}
+```
+
+My solution is ok fast, around `26ms` for both stars on my machine. A bit unsure of how I would improve that.
