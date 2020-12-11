@@ -1,4 +1,5 @@
 use std::time::Instant;
+use std::mem;
 
 static INPUT: [&str; 98] = [
   "LLLLL.LLLLLLL.LLLLLL.L.LLLL..LLLL.LLLLLLLLL.LLLLLLLL.LLLLLLLLLLLLL.L.LLLLLLLLLLLLLL.LLLLLL",
@@ -103,19 +104,19 @@ static INPUT: [&str; 98] = [
 
 static DIRS: [(i64,i64); 8] = [(-1,-1),(-1,0),(-1,1),(0,-1),(0,1),(1,-1),(1,0),(1,1)];
 
-fn should_swap_p1(map: &Vec<Vec<char>>, i: usize, j: usize) -> bool {
-  let mut neigbours = DIRS.iter()
+fn should_swap_p1(map: &[Vec<char>], i: usize, j: usize) -> bool {
+  let mut neighbours = DIRS.iter()
     .map(|&(dy,dx)| (i as i64 + dy, j as i64 + dx))
     .filter_map(|(y,x)| map.get(y as usize).and_then(|v| v.get(x as usize)));
   match map[i][j] {
-    'L' => neigbours.all(|&c| c != '#'),
-    '#' => neigbours.filter(|&&c| c == '#').count() >= 4,
+    'L' => neighbours.all(|&c| c != '#'),
+    '#' => neighbours.filter(|&&c| c == '#').count() >= 4,
     _ => unreachable!()
   }
 }
 
 fn find_neighbour(
-  map: &Vec<Vec<char>>,
+  map: &[Vec<char>],
   (dy, dx): (i64, i64),
   (i,j): (usize,usize),
 ) -> Option<char> {
@@ -133,16 +134,16 @@ fn find_neighbour(
   None
 }
 
-fn should_swap_p2(map: &Vec<Vec<char>>, i: usize, j: usize) -> bool {
-  let mut neigbours = DIRS.iter().filter_map(|&dir| find_neighbour(&map, dir, (i,j)));
+fn should_swap_p2(map: &[Vec<char>], i: usize, j: usize) -> bool {
+  let mut neighbours = DIRS.iter().filter_map(|&dir| find_neighbour(&map, dir, (i,j)));
   match map[i][j] {
-    'L' => neigbours.all(|c| c != '#'),
-    '#' => neigbours.filter(|&c| c == '#').count() >= 5,
+    'L' => neighbours.all(|c| c != '#'),
+    '#' => neighbours.filter(|&c| c == '#').count() >= 5,
     _ => unreachable!()
   }
 }
 
-fn run_simulation<F: Fn(&Vec<Vec<char>>, usize, usize) -> bool>(should_swap: F) -> usize {
+fn run_simulation<F: Fn(&[Vec<char>], usize, usize) -> bool>(should_swap: F) -> usize {
   let mut map = INPUT.iter().map(|s| s.chars().collect::<Vec<_>>()).collect::<Vec<_>>();
   let mut tmp_map = map.clone();
   loop {
@@ -159,7 +160,7 @@ fn run_simulation<F: Fn(&Vec<Vec<char>>, usize, usize) -> bool>(should_swap: F) 
         changed |= c != map[i][j];
       }
     }
-    std::mem::swap(&mut map, &mut tmp_map);
+    mem::swap(&mut map, &mut tmp_map);
     if !changed { break; }
   }
   map.iter().flat_map(|row| row.iter()).filter(|&&c| c == '#').count()
