@@ -141,25 +141,26 @@ fn run_simulation<F: Fn(&[Vec<char>], usize, usize) -> bool>(should_swap: F) -> 
 My solution is ok fast, around `26ms` for both stars on my machine. A bit unsure of how I would improve that.
 
 ## Day 12 - [link](./src/bin/12.rs)
-(241/996) My best placing on the leaderboard ever!! Super, super happy with today. Fun to be able to compete against all the Python people with a language like Rust that's not known for being a good AoC "speed" language.
 
-The problem itself was not too bad. Part one was really easy and I think Rust pattern matching is what made me able to finish it so quickly. The rotation in part two was obviously the difficult part. It was not something I had in my head so I quickly googled it and found [a page with the formulas](https://lexique.netmath.ca/en/rotation-in-a-cartesian-plane/). That made it quite easy to implement but still took a bit for me. And of course I initially switched up clockwise vs counter-clockwise.
+(241/996) My best placing on the leaderboard ever! Super, super happy with today. Fun to be able to compete against all the Python people with a language like Rust that's not known for being a good AoC "speed" language.
 
-Not much else to say about my solution. I just iterate over each element in the input, match on the character, and do the operation. I just love these small utility functions the stdlib has on primitives, for example today with `x.abs()`.
+The problem itself was not too bad. For part one, I think Rust pattern matching is what made me able to finish it so quickly. The rotation in part 2 was obviously the difficult part. It was not something I had in my head so I quickly googled the formulas and found [this page](https://lexique.netmath.ca/en/rotation-in-a-cartesian-plane/). That made it quite easy to implement but still took a bit for me.
+
+Not much else to say about my solution. I just iterate over each element in the input, match on the character, and do the operation. I just love these small utility functions the stdlib has on the primitives, for example [`x.abs()`](https://doc.rust-lang.org/std/primitive.i64.html#method.abs) and [`r.rem_euclid(360)`](https://doc.rust-lang.org/std/primitive.i64.html#method.rem_euclid) to get the rotation in `[0,360)` for part one.
 
 ```Rust
 match d {
-  'N' => x += n,
-  'S' => x -= n,
-  'E' => y += n,
-  'W' => y -= n,
+  'N' => y += n,
+  'S' => y -= n,
+  'E' => x += n,
+  'W' => x -= n,
   'L' => r -= n,
   'R' => r += n,
-  'F' => match r {
-    0   => x += n,
-    90  => y += n,
-    180 => x -= n,
-    270 => y -= n,
+  'F' => match r.rem_euclid(360) {
+    0   => y += n,
+    90  => x += n,
+    180 => y -= n,
+    270 => x -= n,
     _ => unreachable!(),
   }
 }
