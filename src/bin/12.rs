@@ -12,7 +12,7 @@ fn part_one() -> i64 {
       'W' => x -= n,
       'L' => r -= n,
       'R' => r += n,
-      'F' => match r {
+      'F' => match r.rem_euclid(360) {
         0   => y += n,
         90  => x += n,
         180 => y -= n,
@@ -21,7 +21,6 @@ fn part_one() -> i64 {
       }
       _ => unreachable!(),
     }
-    r = (r + 360) % 360; // to keep it in [0,360)
   }
   x.abs() + y.abs()
 }
