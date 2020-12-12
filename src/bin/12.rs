@@ -6,17 +6,17 @@ fn part_one() -> i64 {
   let (mut x, mut y, mut r) = (0, 0, 90);
   for (d, n) in &INPUT {
     match d {
-      'N' => x += n,
-      'S' => x -= n,
-      'E' => y += n,
-      'W' => y -= n,
+      'N' => y += n,
+      'S' => y -= n,
+      'E' => x += n,
+      'W' => x -= n,
       'L' => r -= n,
       'R' => r += n,
       'F' => match r {
-        0   => x += n,
-        90  => y += n,
-        180 => x -= n,
-        270 => y -= n,
+        0   => y += n,
+        90  => x += n,
+        180 => y -= n,
+        270 => x -= n,
         _ => unreachable!(),
       }
       _ => unreachable!(),
@@ -36,21 +36,21 @@ fn rot(x: i64, y: i64, d: i64) -> (i64,i64) {
 }
 
 fn part_two() -> i64 {
-  let (mut x, mut y) = (1, 10); // waypoint
+  let (mut x, mut y) = (10, 1); // waypoint
   let (mut i, mut j) = (0, 0);  // ship
   for &(d,n) in &INPUT {
     match d {
-      'N' => x += n,
-      'S' => x -= n,
-      'E' => y += n,
-      'W' => y -= n,
+      'N' => y += n,
+      'S' => y -= n,
+      'E' => x += n,
+      'W' => x -= n,
       'L' => {
-        let (a,b) = rot(x, y, 360 - n);
+        let (a,b) = rot(x, y, n);
         x = a;
         y = b;
       }
       'R' => {
-        let (a,b) = rot(x, y, n);
+        let (a,b) = rot(x, y, 360 - n);
         x = a;
         y = b;
       }
