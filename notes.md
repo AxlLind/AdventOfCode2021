@@ -167,3 +167,18 @@ match d {
 ```
 
 The problem size is very small, but finishes in `0ms`!
+
+## Day 13 - [link](./src/bin/13.rs)
+(263/438) Yesterday I got my best leaderboard position ever and today I beat it again! I suspect this is a day many, many people will struggle with and be frustrated by. It requires some relatively advanced math, [Chinese remainder theorem](https://en.wikipedia.org/wiki/Chinese_remainder_theorem). You can probably solve it without it but the problem is formulated exactly as CRT.
+
+For part one, I just brute forced it. I started at the given target and incremented it until it was divisible by one of the bus numbers.
+
+Part two is the interesting one and definitely the most difficult so far. Initially, I started thinking about the least common multiple. Took me a bit but eventually, CRT came to mind. We had a list of different moduli and satisfying different remainders for each, that's CRT! We want to find the number `n` such that for each buss `b` with an offset `i` the following holds:
+
+```
+(n + i) mod b = 0
+<=>
+n mob = b - i
+```
+
+This is exactly the phrasing of a CRF problem. I just pulled an implementation from [rosetta code](https://rosettacode.org/wiki/Chinese_remainder_theorem#Rust)! No reason to implement something as standard as CRT myself.
