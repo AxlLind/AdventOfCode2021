@@ -3,12 +3,14 @@ use std::time::Instant;
 static START: i64 = 1003240;
 static INPUT: &str = "19,x,x,x,x,x,x,x,x,41,x,x,x,37,x,x,x,x,x,787,x,x,x,x,x,x,x,x,x,x,x,x,13,x,x,x,x,x,x,x,x,x,23,x,x,x,x,x,29,x,571,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,17";
 
-fn part_one(busses: &[(i64, i64)], start: i64) -> i64 {
-  let (i,b) = (start..)
-    .flat_map(|i| busses.iter().map(move |(_,b)| (i,b)))
-    .find(|&(i,b)| i % b == 0)
-    .unwrap();
-  b * (i - start)
+fn part_one(busses: &[(i64, i64)]) -> i64 {
+  (START..)
+    .find_map(|i| busses.iter()
+      .find(|&(_,b)| i % b == 0)
+      .map(|(_,b)| (i,b))
+    )
+    .map(|(i,b)| b * (i - START))
+    .unwrap()
 }
 
 // from: https://rosettacode.org/wiki/Chinese_remainder_theorem#Rust
@@ -51,9 +53,9 @@ fn main() {
   let busses = INPUT.split(",")
     .enumerate()
     .filter(|(_, s)| s != &"x")
-    .map(|(i,s)| (i as i64, s.parse::<i64>().unwrap()))
+    .map(|(i,s)| (i as i64, s.parse().unwrap()))
     .collect::<Vec<_>>();
-  println!("Part one: {}", part_one(&busses, START));
+  println!("Part one: {}", part_one(&busses));
   println!("Part two: {}", part_two(&busses));
   println!("Time: {}ms", now.elapsed().as_millis());
 }
