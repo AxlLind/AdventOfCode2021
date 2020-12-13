@@ -3,7 +3,7 @@ use std::time::Instant;
 static START: i64 = 1003240;
 static INPUT: &str = "19,x,x,x,x,x,x,x,x,41,x,x,x,37,x,x,x,x,x,787,x,x,x,x,x,x,x,x,x,x,x,x,13,x,x,x,x,x,x,x,x,x,23,x,x,x,x,x,29,x,571,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,17";
 
-fn part_one(busses: &[(i64, i64)]) -> i64 {
+fn part_one(busses: &[(i64,i64)]) -> i64 {
   for i in START.. {
     if let Some((_,b)) = busses.iter().find(|(_,b)| i % b == 0) {
       return b * (i - START)
@@ -12,7 +12,6 @@ fn part_one(busses: &[(i64, i64)]) -> i64 {
   unreachable!()
 }
 
-// from: https://rosettacode.org/wiki/Chinese_remainder_theorem#Rust
 fn egcd(a: i64, b: i64) -> (i64, i64, i64) {
   if a == 0 {
     (b, 0, 1)
@@ -31,6 +30,7 @@ fn mod_inv(x: i64, n: i64) -> Option<i64> {
   }
 }
 
+// from: https://rosettacode.org/wiki/Chinese_remainder_theorem#Rust
 fn chinese_remainder(residues: &[i64], modulii: &[i64]) -> Option<i64> {
   let prod = modulii.iter().product::<i64>();
   let mut sum = 0;
@@ -43,7 +43,7 @@ fn chinese_remainder(residues: &[i64], modulii: &[i64]) -> Option<i64> {
 
 fn part_two(busses: &[(i64, i64)]) -> i64 {
   let mods = busses.iter().map(|&(_,b)| b).collect::<Vec<_>>();
-  let res = busses.iter().map(|&(i,b)| (b - i)).collect::<Vec<_>>();
+  let res  = busses.iter().map(|&(i,b)| b-i).collect::<Vec<_>>();
   chinese_remainder(&res, &mods).unwrap()
 }
 
@@ -51,7 +51,7 @@ fn main() {
   let now = Instant::now();
   let busses = INPUT.split(",")
     .enumerate()
-    .filter(|(_, s)| s != &"x")
+    .filter(|&(_,s)| s != "x")
     .map(|(i,s)| (i as i64, s.parse().unwrap()))
     .collect::<Vec<_>>();
   println!("Part one: {}", part_one(&busses));
