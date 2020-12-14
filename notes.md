@@ -182,3 +182,14 @@ n mob = b - i
 ```
 
 This is exactly the phrasing of a CRF problem. I just pulled an implementation from [rosetta code](https://rosettacode.org/wiki/Chinese_remainder_theorem#Rust)! No reason to implement something as standard as CRT myself.
+
+## Day 14 - [link](./src/bin/14.rs)
+(413/201) Third day in a row where I set a new personal best on the leaderboard! I really liked today's puzzle. It required an understanding of both bitwise operations and recursion for part two (at least for me, you can probably solve it without it).
+
+Initially, I edited the input to make my life easier. Since it followed such a simple pattern, I could do it in a few seconds using `select all occurrences` and multi cursor editing. This way I could skip writing any boring parsing code.
+
+For part one, I kept the last mask I had seen. Before every write, I just iterated over every char in the last mask and performed the operation. You can probably do something by keeping two masks, creating them once, and simply `and/or` the value before writing. Would be a lot faster but the problem size is small so it did not matter.
+
+For part two, I just wrote a recursive function that splits at every encounter of an `X`. Not sure how you would avoid that. No matter what you do, you will have `2^n` unique addresses to write to, where `n` is the number of X:s in the mask. In my input, the max number of X:s was 9, so just 512 addresses at most. I guess that's why it works.
+
+Finishes in `7ms` on my machine. Part two takes up pretty much all running time. Not really sure how to make that faster.
