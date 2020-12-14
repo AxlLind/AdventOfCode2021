@@ -32,21 +32,17 @@ fn part_one() -> usize {
 fn write(
   mem: &mut HashMap<usize, usize>,
   mask: &[u8],
-  addr: usize,
   v: usize,
   i: usize,
+  addr: usize,
 ) {
+  let bit = 1 << (35 - i);
   match mask.get(i) {
-    Some(b'0') => write(mem, mask, addr, v, i+1),
-    Some(b'1') => {
-      let a = addr | 1 << (35 - i);
-      write(mem, mask, a, v, i+1)
-    }
+    Some(b'0') => write(mem, mask, v, i+1, addr),
+    Some(b'1') => write(mem, mask, v, i+1, addr | bit),
     Some(b'X') => {
-      let a1 = addr & !(1 << (35 - i));
-      let a2 = addr | 1 << (35 - i);
-      write(mem, mask, a1, v, i+1);
-      write(mem, mask, a2, v, i+1);
+      write(mem, mask, v, i+1, addr | bit);
+      write(mem, mask, v, i+1, addr & !bit);
     }
     _ => { mem.insert(addr,v); }
   }
@@ -57,7 +53,7 @@ fn part_two() -> usize {
   let mut mask: &[u8] = b"";
   for &op in &INPUT {
     match op {
-      Op::Mem(addr, v) => write(&mut mem, mask, addr, v, 0),
+      Op::Mem(addr, v) => write(&mut mem, mask, v, 0, addr),
       Op::Mask(m) => mask = m,
     }
   }
