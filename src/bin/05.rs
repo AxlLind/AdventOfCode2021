@@ -1,4 +1,3 @@
-use std::time::Instant;
 use std::collections::HashSet;
 use itertools::Itertools;
 
@@ -19,8 +18,7 @@ fn plane_position(s: &str) -> (usize, usize) {
   (rhigh, clow)
 }
 
-fn main() {
-  let now = Instant::now();
+aoc2020::main! {
   let seats = INPUT.iter()
     .map(|s| plane_position(s))
     .collect::<HashSet<_>>();
@@ -33,7 +31,5 @@ fn main() {
     .find(|&(r,c)| seats.contains(&(r,c-1)) && seats.contains(&(r,c+1)))
     .map(|(r,c)| r * 8 + c)
     .unwrap();
-  println!("Part one: {}", part_one);
-  println!("Part two: {}", part_two);
-  println!("Time: {}ms", now.elapsed().as_millis());
+  (part_one, part_two)
 }

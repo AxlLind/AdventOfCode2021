@@ -1,4 +1,3 @@
-use std::time::Instant;
 use std::collections::*;
 use itertools::Itertools;
 
@@ -54,10 +53,10 @@ fn part_two(v: &[usize]) -> usize {
   dp[v.last().unwrap()]
 }
 
-fn main() {
-  let now = Instant::now();
-  let v = INPUT.iter().cloned().sorted().collect::<Vec<_>>();
-  println!("Part one: {}", part_one(&v));
-  println!("Part two: {}", part_two(&v));
-  println!("Time: {}ms", now.elapsed().as_millis());
+aoc2020::main! {
+  let v = INPUT.iter()
+    .cloned()
+    .sorted()
+    .collect::<Vec<_>>();
+  (part_one(&v), part_two(&v))
 }

@@ -1,5 +1,3 @@
-use std::time::Instant;
-
 static START: i64 = 1003240;
 static INPUT: &str = "19,x,x,x,x,x,x,x,x,41,x,x,x,37,x,x,x,x,x,787,x,x,x,x,x,x,x,x,x,x,x,x,13,x,x,x,x,x,x,x,x,x,23,x,x,x,x,x,29,x,571,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,17";
 
@@ -47,14 +45,11 @@ fn part_two(busses: &[(i64, i64)]) -> i64 {
   chinese_remainder(&res, &mods).unwrap()
 }
 
-fn main() {
-  let now = Instant::now();
+aoc2020::main! {
   let busses = INPUT.split(",")
     .enumerate()
     .filter(|&(_,s)| s != "x")
     .map(|(i,s)| (i as i64, s.parse().unwrap()))
     .collect::<Vec<_>>();
-  println!("Part one: {}", part_one(&busses));
-  println!("Part two: {}", part_two(&busses));
-  println!("Time: {}ms", now.elapsed().as_millis());
+  (part_one(&busses), part_two(&busses))
 }

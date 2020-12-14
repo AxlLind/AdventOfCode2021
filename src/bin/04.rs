@@ -1,4 +1,3 @@
-use std::time::Instant;
 use std::collections::HashMap;
 use itertools::Itertools;
 
@@ -37,15 +36,12 @@ fn is_valid_passport(passport: &HashMap<&str,&str>) -> bool {
   })
 }
 
-fn main() {
-  let now = Instant::now();
+aoc2020::main! {
   let passports = INPUT.iter()
     .filter_map(|&s| parse_passport(s))
     .collect::<Vec<_>>();
   let part_two = passports.iter()
     .filter(|p| is_valid_passport(p))
     .count();
-  println!("Part one: {}", passports.len());
-  println!("Part two: {}", part_two);
-  println!("Time: {}ms", now.elapsed().as_millis());
+  (passports.len(), part_two)
 }

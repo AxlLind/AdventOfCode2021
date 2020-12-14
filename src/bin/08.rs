@@ -1,5 +1,3 @@
-use std::time::Instant;
-
 enum Op {
   Acc(i32),
   Jmp(i32),
@@ -46,8 +44,7 @@ fn part_one() -> i32 {
   acc
 }
 
-fn main() {
-  let now = Instant::now();
+aoc2020::main! {
   let part_two = (0..INPUT_LEN)
     .filter(|&i| match INPUT[i] {
       Op::Acc(_) => false,
@@ -57,7 +54,5 @@ fn main() {
     .filter_map(|i| run_inst_changed(i as i32))
     .next()
     .unwrap();
-  println!("Part one: {}", part_one());
-  println!("Part two: {}", part_two);
-  println!("Time: {}ms", now.elapsed().as_millis());
+  (part_one(), part_two)
 }
