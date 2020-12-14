@@ -26,7 +26,7 @@ fn part_one() -> usize {
       Op::Mask(m) => mask = m,
     }
   }
-  mem.values().sum::<usize>()
+  mem.values().sum()
 }
 
 fn write(
@@ -41,8 +41,8 @@ fn write(
     Some(b'0') => write(mem, mask, v, i+1, addr),
     Some(b'1') => write(mem, mask, v, i+1, addr | bit),
     Some(b'X') => {
-      write(mem, mask, v, i+1, addr | bit);
-      write(mem, mask, v, i+1, addr & !bit);
+      write(mem, mask, v, i+1, addr);
+      write(mem, mask, v, i+1, addr ^ bit);
     }
     _ => { mem.insert(addr,v); }
   }
@@ -57,7 +57,7 @@ fn part_two() -> usize {
       Op::Mask(m) => mask = m,
     }
   }
-  mem.values().sum::<usize>()
+  mem.values().sum()
 }
 
 aoc2020::main! {
