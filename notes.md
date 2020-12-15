@@ -193,3 +193,19 @@ For part one, I kept the last mask I had seen. Before every write, I just iterat
 For part two, I just wrote a recursive function that splits at every encounter of an `X`. Not sure how you would avoid that. No matter what you do, you will have `2^n` unique addresses to write to, where `n` is the number of X:s in the mask. In my input, the max number of X:s was 9, so just 512 addresses at most. I guess that's why it works.
 
 Finishes in `7ms` on my machine. Part two takes up pretty much all running time. Not really sure how to make that faster.
+
+## Day 15 - [link](./src/bin/15.rs)
+
+(760/2313) Today was very disappointing. Worst problem so far I think. I wasted so much time on part two, thinking about ways to maybe find a cycle but realizing that would probably never happen. In the end, I just tried brute-force and surprisingly that just worked... Not a very satisfying problem at all.
+
+Think my solution ended up very clean though. `HashMap::insert()` gives you the back element if it already existed, avoiding two hashmap lookups!
+
+```Rust
+let mut seen = [9,19,1,6,0,5].iter()
+  .enumerate()
+  .map(|(i,&e)| (e, i+1))
+  .collect::<HashMap<_,_>>();
+(7..target).fold(4, |last, i| i - seen.insert(last, i).unwrap_or(i))
+```
+
+Finishes in about `2.8 seconds` on my machine.
