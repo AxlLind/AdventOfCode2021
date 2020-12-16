@@ -209,3 +209,12 @@ let mut seen = [9,19,1,6,0,5].iter()
 ```
 
 Finishes in about `2.8 seconds` on my machine.
+
+## Day 16 - [link](./src/bin/16.rs)
+(566/1977) Very happy with part 1 but had a frustrating error on part two! Definitely one of the most "implementation heavy" so far. Took me an hour and still got top 2k.
+
+A single misplaced `i` instead of a `j` meant the simple solution for part two did not work.. Started trying to implement a recursive backtrack approach to find a valid assignment of rules. When that did not work either I realized something else must be wrong. Those types of errors are always annoying.
+
+For part two, I first collect which rules are possible for which indexes. I then try to find a rule with only one possible assignment. We then know that has to be the correct assignment! By then removing that as a possibility for all others, we eventually get a unique solution. This just happens to be the case with our input, that it has a unique solution.
+
+Somewhat fast solution, about `260μs` on my machine.
