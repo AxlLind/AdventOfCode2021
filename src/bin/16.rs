@@ -36,15 +36,11 @@ fn get_possible_rules(tickets: &[&Ticket]) -> Vec<HashSet<usize>> {
 fn part_two(tickets: &[&Ticket]) -> usize {
   let mut possible_rules = get_possible_rules(&tickets);
   let mut assigned_rules = [0; 20];
-  loop {
-    let (i,&v) = match possible_rules.iter().enumerate().find(|(_,s)| s.len() == 1) {
-      Some((i,s)) => (i, s.iter().next().unwrap()),
-      None => break,
-    };
+  while let Some(i) = possible_rules.iter().position(|s| s.len() == 1) {
+    let v = *possible_rules[i].iter().next().unwrap();
     assigned_rules[i] = v;
     for s in &mut possible_rules { s.remove(&v); }
   }
-
   assigned_rules.iter()
     .enumerate()
     .filter(|(_,&rule)| rule < 6)

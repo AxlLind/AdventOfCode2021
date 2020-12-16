@@ -46,7 +46,7 @@ fn part_two(busses: &[(i64, i64)]) -> i64 {
 }
 
 aoc2020::main! {
-  let busses = INPUT.split(",")
+  let busses = INPUT.split(',')
     .enumerate()
     .filter(|&(_,s)| s != "x")
     .map(|(i,s)| (i as i64, s.parse().unwrap()))
