@@ -213,7 +213,7 @@ For part two, I first collect which rules are possible for which indexes. I then
 
 Somewhat fast solution, about `260μs` on my machine.
 
-## Day 16 - [link](./src/bin/16.rs) (227/407)
+## Day 17 - [link](./src/bin/17.rs) (227/407)
 One of my best days ever! My solution was to keep a `HashSet<Pos>` of all active cells. Then for each round, I create a `HashMap<Pos, usize>`, a count of how many neighbors a certain position has. To do this you just have to iterate over each active cell and add it as a neighbor to all its neighbours cells!
 
 ```Rust
