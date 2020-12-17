@@ -212,3 +212,28 @@ A single misplaced `i` instead of a `j` meant the simple solution for part two d
 For part two, I first collect which rules are possible for which indexes. I then try to find a rule with only one possible assignment. We then know that has to be the correct assignment! By then removing that as a possibility for all others, we eventually get a unique solution. This just happens to be the case with our input, that it has a unique solution.
 
 Somewhat fast solution, about `260μs` on my machine.
+
+## Day 16 - [link](./src/bin/16.rs) (227/407)
+One of my best days ever! My solution was to keep a `HashSet<Pos>` of all active cells. Then for each round, I create a `HashMap<Pos, usize>`, a count of how many neighbors a certain position has. To do this you just have to iterate over each active cell and add it as a neighbor to all its neighbours cells!
+
+```Rust
+for (x,y,z,w) in active {
+  for (dx,dy,dz,dw) in &NEIGHBOURS {
+    *neighbours.entry((x+dx, y+dy, z+dz, w+dw)).or_insert(0) += 1;
+  }
+}
+```
+
+Then in I simply recreate the hashset of active cells from that hashmap:
+
+```Rust
+count_neighbours(&active).iter()
+  .filter(|(pos,n)| match (n,active.contains(pos)) {
+    (2,true) | (3,_) => true,
+    _ => false,
+  })
+```
+
+There was not too much difference between part one and two, so I was able to reuse the simulation code between the two by passing in the `count_neighbours` function. I created the giant list of 80 neighbors manually by hand. It's actually quite easy if you're just very systematic about it and follow the pattern.
+
+Finishes in about `20ms` on my machine, not sure if that's fast or not. I think pretty much all time is in HashMap/HashSet operations, so if you use arrays on a fixed size grid instead it would be a lot faster probably.
