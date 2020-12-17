@@ -43,18 +43,19 @@ static NEIGHBOURS: [(i8,i8,i8,i8); 80] = [
 ];
 
 fn simulate<Pos: Hash + Eq + Copy, F: Fn(&HashSet<Pos>) -> HashMap<Pos,usize>>(
-  active: HashSet<Pos>,
+  mut active: HashSet<Pos>,
   count_neighbours: F,
 ) -> usize {
-  (0..6).fold(active, |active, _|
-    count_neighbours(&active).iter()
-      .filter(|(pos,n)| match (n,active.contains(pos)) {
-        (2,true) | (3,_) => true,
+  for _ in 0..6 {
+    active = count_neighbours(&active).iter()
+      .filter(|(pos,n)| match (active.contains(pos),n) {
+        (true,2) | (_,3) => true,
         _ => false,
       })
       .map(|(&pos,_)| pos)
-      .collect()
-  ).len()
+      .collect();
+  }
+  active.len()
 }
 
 fn count_neighbours_p1(active: &HashSet<(i8,i8,i8)>) -> HashMap<(i8,i8,i8), usize> {
@@ -67,18 +68,6 @@ fn count_neighbours_p1(active: &HashSet<(i8,i8,i8)>) -> HashMap<(i8,i8,i8), usiz
   neighbours
 }
 
-fn part_one() -> usize {
-  let active = INPUT.iter()
-    .enumerate()
-    .flat_map(|(y, row)| row.chars()
-      .enumerate()
-      .filter(|&(_,b)| b == '#')
-      .map(move |(x,_)| (x as i8, y as i8, 0))
-    )
-    .collect();
-  simulate(active, count_neighbours_p1)
-}
-
 fn count_neighbours_p2(active: &HashSet<(i8,i8,i8,i8)>) -> HashMap<(i8,i8,i8,i8), usize> {
   let mut neighbours = HashMap::new();
   for (x,y,z,w) in active {
@@ -89,19 +78,17 @@ fn count_neighbours_p2(active: &HashSet<(i8,i8,i8,i8)>) -> HashMap<(i8,i8,i8,i8)
   neighbours
 }
 
-fn part_two() -> usize {
-  let active = INPUT.iter()
+aoc2020::main! {
+  let active1 = INPUT.iter()
     .enumerate()
     .flat_map(|(y, row)| row.chars()
       .enumerate()
       .filter(|&(_,b)| b == '#')
-      .map(move |(x,_)| (x as i8, y as i8, 0, 0))
+      .map(move |(x,_)| (x as i8, y as i8, 0))
     )
+    .collect::<HashSet<_>>();
+  let active2 = active1.iter()
+    .map(|&(x,y,z)| (x,y,z,0))
     .collect();
-  simulate(active, count_neighbours_p2)
-}
-
-
-aoc2020::main! {
-  (part_one(), part_two())
+  (simulate(active1, count_neighbours_p1), simulate(active2, count_neighbours_p2))
 }
