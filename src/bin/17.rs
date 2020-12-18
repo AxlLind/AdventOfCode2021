@@ -48,10 +48,7 @@ fn simulate<Pos: Hash + Eq + Copy, F: Fn(&HashSet<Pos>) -> HashMap<Pos,usize>>(
 ) -> usize {
   for _ in 0..6 {
     active = count_neighbours(&active).iter()
-      .filter(|(pos,n)| match (active.contains(pos),n) {
-        (true,2) | (_,3) => true,
-        _ => false,
-      })
+      .filter(|&(pos,&n)| n == 3 || (n == 2 && active.contains(pos)))
       .map(|(&pos,_)| pos)
       .collect();
   }
