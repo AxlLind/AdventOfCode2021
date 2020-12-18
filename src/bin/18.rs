@@ -37,9 +37,9 @@ fn eval_p1(s: &[u8]) -> usize {
           _ => unreachable!()
         }
       }
-      _ => {}
+      _ => unreachable!()
     }
-    i += 1;
+    i += 2;
   }
   val
 }
@@ -56,11 +56,6 @@ fn eval_term(s: &[u8]) -> (usize, usize) {
 fn eval_p2(s: &[u8]) -> usize {
   let (mut val, mut i) = (1,0);
   while i < s.len() {
-    if s[i] == b'*' || s[i] == b' ' {
-      i += 1;
-      continue;
-    }
-
     let (mut tmp, j) = eval_term(&s[i..]);
     i += j;
 
@@ -70,9 +65,8 @@ fn eval_p2(s: &[u8]) -> usize {
       tmp += v;
       i += j + 4;
     }
-
     val *= tmp;
-    i += 1;
+    i += 4;
   }
   val
 }
