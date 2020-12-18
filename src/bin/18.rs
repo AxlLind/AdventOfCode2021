@@ -28,14 +28,14 @@ fn eval_p1(s: &[u8]) -> usize {
         _ => unreachable!()
       },
       '(' => {
-        let start = i+1;
-        i += find_matching_par(&s[i..]);
-        let v = eval_p1(&s[start..i]);
+        let end = i + find_matching_par(&s[i..]);
+        let v = eval_p1(&s[(i+1)..end]);
         match op {
           '+' => val += v,
           '*' => val *= v,
           _ => unreachable!()
         }
+        i = end;
       }
       _ => unreachable!()
     }
@@ -56,16 +56,17 @@ fn eval_term(s: &[u8]) -> (usize, usize) {
 fn eval_p2(s: &[u8]) -> usize {
   let (mut val, mut i) = (1,0);
   while i < s.len() {
-    let (mut tmp, j) = eval_term(&s[i..]);
-    i += j;
+    let (mut v, step) = eval_term(&s[i..]);
+    i += step;
 
     // eagerly perform all add operations!
     while let Some(b'+') = s.get(i+2) {
-      let (v,j) = eval_term(&s[(i+4)..]);
-      tmp += v;
-      i += j + 4;
+      let (tmp, step) = eval_term(&s[(i+4)..]);
+      v += tmp;
+      i += step + 4;
     }
-    val *= tmp;
+
+    val *= v;
     i += 4;
   }
   val
@@ -74,5 +75,5 @@ fn eval_p2(s: &[u8]) -> usize {
 aoc2020::main! {
   let p1 = INPUT.iter().map(|s| eval_p1(s)).sum::<usize>();
   let p2 = INPUT.iter().map(|s| eval_p2(s)).sum::<usize>();
-  (p1, p2)
+  (p1,p2)
 }
