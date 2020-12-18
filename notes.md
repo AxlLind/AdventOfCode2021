@@ -237,3 +237,9 @@ count_neighbours(&active).iter()
 There was not too much difference between part one and two, so I was able to reuse the simulation code between the two by passing in the `count_neighbours` function. I created the giant list of 80 neighbors manually by hand. It's actually quite easy if you're just very systematic about it and follow the pattern.
 
 Finishes in about `20ms` on my machine, not sure if that's fast or not. I think pretty much all time is in HashMap/HashSet operations, so if you use arrays on a fixed size grid instead it would be a lot faster probably.
+## Day 18 - [link](./src/bin/18.rs) (1327/1537)
+Maybe not the prettiest code I've written but pretty happy with my placing today. A more proper parser and not handling the string directly all the way through would be a lot cleaner. But my solution does zero allocations or copying of the string at least and is therefore quite fast, about `200μs`.
+
+For part one, I just keep track of the last operator and apply it whenever you see a number/parenthesis. When you see a parenthesis I find the matching one, and recursively evaluate everything within them.
+
+For part two, my solution was to eagerly evaluate all add operations, by looking ahead and evaluating the term as long as the next operation was an add.
