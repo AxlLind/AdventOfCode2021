@@ -26,29 +26,47 @@ fn matches(rules: &HashMap<usize, Rule>, id: usize) -> Vec<String> {
   }
 }
 
+// Rule 0 has the form:
+// 0: 8 11
+// 8: 42
+// 11: 42 31
+// -> 0: 42 42 31
+// I.e start with any of the two prefixes, and when with a suffix.
+fn check_match_p1(prefixes: &[String], suffixes: &[String], s: &str) -> bool {
+  let p_len = match prefixes.iter().find(|&p| s.starts_with(p)) {
+    Some(p) => p.len(),
+    None => return false,
+  };
+  let s = &s[p_len..];
+  prefixes.iter()
+    .cartesian_product(suffixes.iter())
+    .filter(|(p1,p2)| s.len() == p1.len() + p2.len())
+    .any(|(p1,p2)| s.starts_with(p1) && s.ends_with(p2))
+}
+
 // This matches the following:
 // 0: 8 11
 // 8: 42 | 42 8
 // 11: 42 31 | 42 11 31
-// We start with 1 or more 42s, which we try in the function check_match
-// then we have any number of wrapping 42 x 31, which we try in try_pre_suf
-fn check_match(prefixes: &[String], suffixes: &[String], s: &str) -> bool {
+// We start with 1 or more 42s, which we try in the function check_match_p2
+// then we have any number of wrapping 42 x 31, which we try in check_rule_11
+fn check_match_p2(prefixes: &[String], suffixes: &[String], s: &str) -> bool {
   prefixes.iter()
     .filter(|&p| s.starts_with(p))
     .map(|p| &s[p.len()..])
     .any(|s|
-      check_match(prefixes, suffixes, s)
-      || try_pre_suf(prefixes, suffixes, s)
+      check_match_p2(prefixes, suffixes, s)
+      || check_rule_11(prefixes, suffixes, s)
     )
 }
 
-fn try_pre_suf(prefixes: &[String], suffixes: &[String], s: &str) -> bool {
+fn check_rule_11(prefixes: &[String], suffixes: &[String], s: &str) -> bool {
   prefixes.iter()
     .cartesian_product(suffixes.iter())
     .filter(|&(p1,p2)| p1.len() + p2.len() <= s.len())
     .filter(|&(p1,p2)| s.starts_with(p1) && s.ends_with(p2))
     .map(|(p1,p2)| &s[p1.len()..(s.len() - p2.len())])
-    .any(|s| s.len() == 0 || try_pre_suf(prefixes, suffixes, s))
+    .any(|s| s.len() == 0 || check_rule_11(prefixes, suffixes, s))
 }
 
 aoc2020::main! {
@@ -68,13 +86,9 @@ aoc2020::main! {
       (id, Rule::Comb(v))
     })
     .collect::<HashMap<_,_>>();
-
-  let rule_one = matches(&rules, 0);
-  let p1 = INPUT.iter().filter(|&&s| rule_one.contains(&s.to_string())).count();
-
   let v42 = matches(&rules, 42);
   let v31 = matches(&rules, 31);
-  let p2 = INPUT.iter().filter(|s| check_match(&v42, &v31, &s)).count();
-
+  let p1 = INPUT.iter().filter(|s| check_match_p1(&v42, &v31, &s)).count();
+  let p2 = INPUT.iter().filter(|s| check_match_p2(&v42, &v31, &s)).count();
   (p1, p2)
 }
