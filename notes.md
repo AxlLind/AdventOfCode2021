@@ -237,9 +237,19 @@ count_neighbours(&active).iter()
 There was not too much difference between part one and two, so I was able to reuse the simulation code between the two by passing in the `count_neighbours` function. I created the giant list of 80 neighbors manually by hand. It's actually quite easy if you're just very systematic about it and follow the pattern.
 
 Finishes in about `20ms` on my machine, not sure if that's fast or not. I think pretty much all time is in HashMap/HashSet operations, so if you use arrays on a fixed size grid instead it would be a lot faster probably.
+
 ## Day 18 - [link](./src/bin/18.rs) (1327/1537)
 Maybe not the prettiest code I've written but pretty happy with my placing today. A more proper parser and not handling the string directly all the way through would be a lot cleaner. But my solution does zero allocations or copying of the string at least and is therefore quite fast, about `200μs`.
 
 For part one, I just keep track of the last operator and apply it whenever you see a number/parenthesis. When you see a parenthesis I find the matching one, and recursively evaluate everything within them.
 
 For part two, my solution was to eagerly evaluate all add operations, by looking ahead and evaluating the term as long as the next operation was an add.
+
+## Day 19 - [link](./src/bin/19.rs) (362/931)
+My solution for today is definitely not the most elegant, I'm very happy with my placing. Might rework it later. It seems many people used the [CYK algorithm](https://en.wikipedia.org/wiki/CYK_algorithm), which I had not heard of before, or leveraged regexes. I just kind of hand-rolled my own solution to this.
+
+For part one, I created a function to get all matches of a rule and then I checked which strings in the input are in that list. This is horribly inefficient and takes over 2 seconds to run on my machine.. But it works and was quick to implement!
+
+For part two, you really had to check your input this time. The zero rule is just `0: 8 11`, so with the given rules, you get that the string has to match 1 or more prefixing "42:s" and 1 or more matching `42 x 31`. I fetched all matches for `42` and `31` with the same function I made for part one and then I just checked if any of the input matches that pattern. I didn't use any regexes, just implemented two recursive backtracking functions to try and match rule 8 and 11.
+
+Later, I rewrote part one, to make use of the matches on 42, 31, and checked if it matched those, without the repetitions added in part two. That made it finish in about `52ms` instead of 2 seconds!
