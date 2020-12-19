@@ -33,15 +33,15 @@ fn matches(rules: &HashMap<usize, Rule>, id: usize) -> Vec<String> {
 // -> 0: 42 42 31
 // I.e start with any of the two prefixes, and when with a suffix.
 fn check_match_p1(prefixes: &[String], suffixes: &[String], s: &str) -> bool {
-  let p_len = match prefixes.iter().find(|&p| s.starts_with(p)) {
-    Some(p) => p.len(),
-    None => return false,
-  };
-  let s = &s[p_len..];
   prefixes.iter()
-    .cartesian_product(suffixes.iter())
-    .filter(|(p1,p2)| s.len() == p1.len() + p2.len())
-    .any(|(p1,p2)| s.starts_with(p1) && s.ends_with(p2))
+    .filter(|&p| s.starts_with(p))
+    .any(|p| {
+      let s = &s[p.len()..];
+      prefixes.iter()
+        .cartesian_product(suffixes.iter())
+        .filter(|(p1,p2)| s.len() == p1.len() + p2.len())
+        .any(|(p1,p2)| s.starts_with(p1) && s.ends_with(p2))
+    })
 }
 
 // This matches the following:
