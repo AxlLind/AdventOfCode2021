@@ -54,7 +54,7 @@ impl Tile {
     // rotate it to the correct position
     while tile.get_neighbour(border_map, 3) != Some(self.id) { tile.rotate() }
 
-    // the edges match but aren't equal, so it must be flipped!
+    // if the edges match but aren't equal it must be flipped!
     if (0..10).any(|i| self.v[i][9] != tile.v[i][0]) {
       for i in 0..5 { tile.v.swap(i, 9 - i) }
     }
@@ -68,7 +68,7 @@ impl Tile {
     // rotate it to the correct position
     while tile.get_neighbour(border_map, 0) != Some(self.id) { tile.rotate() }
 
-    // the edges match but aren't equal, so it must be flipped!
+    // if the edges match but aren't equal it must be flipped!
     if self.v[9] != tile.v[0] {
       for s in &mut tile.v { s.reverse() }
     }
@@ -76,15 +76,13 @@ impl Tile {
   }
 }
 
-fn reverse_str(s: &str) -> String { s.chars().rev().collect() }
-
 fn rotate(v: &[Vec<char>]) -> Vec<Vec<char>> {
   let (h,w) = (v.len(), v[0].len());
-  let mut ans = vec![vec!['\0'; w]; h];
+  let mut rot = vec![vec!['\0'; w]; h];
   for (i,j) in (0..h).cartesian_product(0..w) {
-    ans[j][w-1-i] = v[i][j];
+    rot[j][w-1-i] = v[i][j];
   }
-  ans
+  rot
 }
 
 fn build_image(border_map: &BorderMap, corner: usize) -> Vec<Vec<char>> {
@@ -124,7 +122,7 @@ fn build_image(border_map: &BorderMap, corner: usize) -> Vec<Vec<char>> {
   actual_image
 }
 
-fn find_monsters(image: &[Vec<char>], monster_coords: &HashSet::<(isize,isize)>) -> usize {
+fn find_monsters(image: &[Vec<char>], monster_coords: &HashSet<(isize,isize)>) -> usize {
   let positions = image.iter()
     .enumerate()
     .flat_map(|(i,row)| row.iter()
@@ -135,7 +133,7 @@ fn find_monsters(image: &[Vec<char>], monster_coords: &HashSet::<(isize,isize)>)
     .collect::<HashSet<_>>();
   positions.iter()
     .filter(|(i,j)| monster_coords.iter()
-      .map(|(i2,j2)| (i+i2,j+j2))
+      .map(|(a,b)| (i+a,j+b))
       .all(|pos| positions.contains(&pos))
     )
     .count()
@@ -169,22 +167,19 @@ fn part_one(border_map: &BorderMap) -> usize {
     *count_map.entry(ids[0]).or_insert(0) += 1;
   }
   count_map.iter()
-    .filter(|&(_, &c)| c == 4).map(|(id,_)| id)
+    .filter(|&(_, &c)| c == 4)
+    .map(|(id,_)| id)
     .product()
 }
 
 aoc2020::main! {
   let mut border_map = HashMap::new();
   for &(id,tile) in &IMAGES {
-    let (b1,b2) = Tile::from_input(&tile, id).get_edges();
-    border_map.entry(tile[0].to_string()).or_insert(Vec::new()).push(id);
-    border_map.entry(tile[9].to_string()).or_insert(Vec::new()).push(id);
-    border_map.entry(b1.clone()).or_insert(Vec::new()).push(id);
-    border_map.entry(b2.clone()).or_insert(Vec::new()).push(id);
-    border_map.entry(reverse_str(tile[0])).or_insert(Vec::new()).push(id);
-    border_map.entry(reverse_str(tile[9])).or_insert(Vec::new()).push(id);
-    border_map.entry(reverse_str(&b1)).or_insert(Vec::new()).push(id);
-    border_map.entry(reverse_str(&b2)).or_insert(Vec::new()).push(id);
+    let (b1,b2) = Tile::from_input(&tile,id).get_edges();
+    for edge in &[tile[0], tile[9], &b1, &b2] {
+      border_map.entry(edge.to_string()).or_insert(Vec::new()).push(id);
+      border_map.entry(edge.chars().rev().collect()).or_insert(Vec::new()).push(id);
+    }
   }
   (part_one(&border_map), part_two(&border_map, 3517))
 }
