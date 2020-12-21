@@ -21,7 +21,8 @@ aoc2020::main! {
   }
 
   let allergens = allergen_map.values().collect::<HashSet<_>>();
-  let p1 = INPUT.iter().flat_map(|(s,_)| s.split_whitespace())
+  let p1 = INPUT.iter()
+    .flat_map(|(s,_)| s.split_whitespace())
     .filter(|i| !allergens.contains(i))
     .count();
   let p2 = allergen_map.iter()
