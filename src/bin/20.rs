@@ -12,45 +12,51 @@ const MONSTER: [&str; 3] = [
 type BorderMap = HashMap<String, Vec<usize>>;
 
 #[derive(Clone, Debug, Default)]
-struct Tile(Vec<Vec<char>>, usize);
+struct Tile {
+  v: Vec<Vec<char>>,
+  id: usize
+}
 
 impl Tile {
   fn from_input(tile: &[&str], id: usize) -> Self {
-    Self(tile.iter().map(|s| s.chars().collect()).collect(), id)
+    Self {
+      v: tile.iter().map(|s| s.chars().collect()).collect(),
+      id,
+    }
   }
 
   fn get_edges(&self) -> (String,String) {
     let (mut b1, mut b2) = (String::new(), String::new());
     for i in 0..10 {
-      b1.push(self.0[i][0]);
-      b2.push(self.0[i][9]);
+      b1.push(self.v[i][0]);
+      b2.push(self.v[i][9]);
     }
     (b1,b2)
   }
 
   fn get_neighbour(&self, border_map: &BorderMap, n: usize) -> Option<usize> {
     let matches = match n {
-      0 => &border_map[&self.0[0].iter().copied().collect::<String>()],
+      0 => &border_map[&self.v[0].iter().copied().collect::<String>()],
       1 => &border_map[&self.get_edges().1],
-      2 => &border_map[&self.0[9].iter().copied().collect::<String>()],
+      2 => &border_map[&self.v[9].iter().copied().collect::<String>()],
       3 => &border_map[&self.get_edges().0],
       _ => unreachable!()
     };
-    matches.iter().find(|&&id| id != self.1).copied()
+    matches.iter().find(|&&id| id != self.id).copied()
   }
 
-  fn rotate(&mut self) { self.0 = rotate(&self.0) }
+  fn rotate(&mut self) { self.v = rotate(&self.v) }
 
   fn match_right(&self, border_map: &BorderMap, images: &HashMap<usize, [&str;10]>) -> Self {
     let id = self.get_neighbour(border_map, 1).unwrap();
     let mut tile = Tile::from_input(&images[&id], id);
 
     // rotate it to the correct position
-    while tile.get_neighbour(border_map, 3) != Some(self.1) { tile.rotate() }
+    while tile.get_neighbour(border_map, 3) != Some(self.id) { tile.rotate() }
 
     // the edges match but aren't equal, so it must be flipped!
-    if (0..10).any(|i| self.0[i][9] != tile.0[i][0]) {
-      for i in 0..5 { tile.0.swap(i, 9 - i) }
+    if (0..10).any(|i| self.v[i][9] != tile.v[i][0]) {
+      for i in 0..5 { tile.v.swap(i, 9 - i) }
     }
     tile
   }
@@ -60,11 +66,11 @@ impl Tile {
     let mut tile = Tile::from_input(&images[&id], id);
 
     // rotate it to the correct position
-    while tile.get_neighbour(border_map, 0) != Some(self.1) { tile.rotate() }
+    while tile.get_neighbour(border_map, 0) != Some(self.id) { tile.rotate() }
 
     // the edges match but aren't equal, so it must be flipped!
-    if self.0[9] != tile.0[0] {
-      for s in &mut tile.0 { s.reverse() }
+    if self.v[9] != tile.v[0] {
+      for s in &mut tile.v { s.reverse() }
     }
     tile
   }
@@ -112,7 +118,7 @@ fn build_image(border_map: &BorderMap, corner: usize) -> Vec<Vec<char>> {
   for (i,j) in (0..12).cartesian_product(0..12) {
     let tile = &image[i][j];
     for k in 1..9 {
-      actual_image[i * 8 + (k-1)].extend(&tile.0[k][1..9]);
+      actual_image[i * 8 + (k-1)].extend(&tile.v[k][1..9]);
     }
   }
   actual_image
