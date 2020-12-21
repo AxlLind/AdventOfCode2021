@@ -26,6 +26,23 @@ fn as_regex(rules: &HashMap<usize,Rule>, id: usize) -> String {
   }
 }
 
+fn part_one(rules: &HashMap<usize,Rule>) -> usize {
+  let re0 = as_regex(&rules, 0);
+  let r1 = Regex::new(&format!("^{}$", re0)).unwrap();
+  INPUT.iter().filter(|s| r1.is_match(s)).count()
+}
+
+fn part_two(rules: &HashMap<usize,Rule>) -> usize {
+  let re42 = as_regex(&rules, 42);
+  let re31 = as_regex(&rules, 31);
+  let rule_11 = (1..6)
+    .map(|i| format!("{r1}{{{n}}}{r2}{{{n}}}", r1 = re42, r2 = re31, n = i))
+    .join("|");
+  let re_str = format!("^{}+({})$", re42, rule_11);
+  let re = Regex::new(&re_str).unwrap();
+  INPUT.iter().filter(|s| re.is_match(s)).count()
+}
+
 aoc2020::main! {
   let rules = RULES.iter()
     .flat_map(|s| s.split(": "))
@@ -43,17 +60,5 @@ aoc2020::main! {
       (id, Rule::Comb(v))
     })
     .collect::<HashMap<_,_>>();
-  let re0 = as_regex(&rules, 0);
-  let re42 = as_regex(&rules, 42);
-  let re31 = as_regex(&rules, 31);
-  let re_rule_11 = (1..6)
-    .map(|i| format!("{{{}}}", i))
-    .map(|rep| format!("{r1}{rep}{r2}{rep}", r1 = re42, r2 = re31, rep = rep))
-    .join("|");
-  let re_p2 = format!("^({})+({})$", re42, re_rule_11);
-  let r1 = Regex::new(&format!("^{}$", re0)).unwrap();
-  let r2 = Regex::new(&re_p2).unwrap();
-  let p1 = INPUT.iter().filter(|s| r1.is_match(s)).count();
-  let p2 = INPUT.iter().filter(|s| r2.is_match(s)).count();
-  (p1, p2)
+  (part_one(&rules), part_two(&rules))
 }
