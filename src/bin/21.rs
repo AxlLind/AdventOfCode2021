@@ -17,7 +17,7 @@ aoc2020::main! {
   while let Some((&a,_)) = candidates.iter().find(|(_, s)| s.len() == 1) {
     let &i = candidates[a].iter().next().unwrap();
     allergen_map.insert(a,i);
-    for (_,s) in &mut candidates { s.remove(&i); }
+    for s in candidates.values_mut() { s.remove(&i); }
   }
 
   let allergens = allergen_map.values().collect::<HashSet<_>>();
