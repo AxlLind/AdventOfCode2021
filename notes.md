@@ -253,3 +253,14 @@ For part one, I created a function to get all matches of a rule and then I check
 For part two, you really had to check your input this time. The zero rule is just `0: 8 11`, so with the given rules, you get that the string has to match 1 or more prefixing "42:s" and 1 or more matching `42 x 31`. I fetched all matches for `42` and `31` with the same function I made for part one and then I just checked if any of the input matches that pattern. I didn't use any regexes, just implemented two recursive backtracking functions to try and match rule 8 and 11.
 
 Later, I rewrote part one, to make use of the matches on 42, 31, and checked if it matched those, without the repetitions added in part two. That made it finish in about `52ms` instead of 2 seconds!
+
+Edit: I rewrote this using regexes. It was both cleaner and faster. [Here](https://github.com/AxlLind/AdventOfCode2020/blob/18dc6ebc94532c328833d919407ccf2058eb9a55/src/bin/19.rs) is my initial solution, though.
+
+## Day 21 - [link](./src/bin/21.rs) (1323/898)
+Took me way too long to even understand the problem. Just stared at it for a while. Eventually, I decided to try and see if the intersection between all lists containing a certain allergen might be small. When it was only 2 for "nuts" I figured it out. Isn't this just more or less the same as day 16?
+
+For part one, I compute the intersection of ingredients between all lists containing a certain allergen. Then it was the same process as [day 16](https://github.com/AxlLind/AdventOfCode2020/blob/master/src/bin/16.rs), whereby you eliminate possibilities by iteratively looking at what allergen only has one possible ingredient it can be. Once again, this leads to a unique solution in our input.
+
+Part two was basically free. I was a bit unsure about how to sort by key in Rust so I initially edited and sorted it by hand in the terminal. Later I remembered that sorting a tuple in Rust works just as you expect, which means a simple [`.sorted()`](https://docs.rs/itertools/0.9.0/itertools/trait.Itertools.html#method.sorted) from the itertools crate sorts in the way we want!
+
+Finishes in `0ms`.
