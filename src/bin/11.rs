@@ -56,7 +56,7 @@ fn run_simulation<F: Fn(&[Vec<char>], usize, usize) -> bool>(should_swap: F) -> 
     }
     if to_swap.is_empty() { break; }
   }
-  map.iter().flat_map(|row| row.iter()).filter(|&&c| c == '#').count()
+  map.iter().flatten().filter(|&&c| c == '#').count()
 }
 
 aoc2020::main! {
