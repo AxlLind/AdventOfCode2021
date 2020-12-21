@@ -256,6 +256,15 @@ Later, I rewrote part one, to make use of the matches on 42, 31, and checked if 
 
 Edit: I rewrote this using regexes. It was both cleaner and faster. [Here](https://github.com/AxlLind/AdventOfCode2020/blob/18dc6ebc94532c328833d919407ccf2058eb9a55/src/bin/19.rs) is my initial solution, though.
 
+## Day 20 - [link](./src/bin/20.rs) (359/116)
+Insane day! My highest placing on the leaderboard by far. The problem was very implementation heavy but maybe not that "algorithmically" difficult.
+
+For part one, I assumed there would be some relatively easy way to uniquely identify the corners. I created a map of `border -> [ids with that border]` and checked for tiles that had 2 unique borders. This worked and gave only the 4 corners! Finished it quite quickly. This also revealed that at most two tiles have the same border, making the problem significantly easier.
+
+Part two was very annoying. I finished it in about 1 hour and 15 minutes and that still got me my best placing **ever**. Since we know the borders match uniquely, we only need to check one border to know the tile that has to be placed there. I therefore started with one of the corners and placed it in the top left. I then go row by row. If it's the first tile I look at the tile above and find the other tile that matches with it's bottom border. Then for all others I do the same process but with the tile to the left. A key insight was to flip the tile if it did not exactly equal the border above/to the left. With this each tile is correctly rotated/flipped!
+
+I think what made me finish today so quickly was just immediately getting the unique border matching part and also aiming for the right abstraction level. I created a `Tile` class to handle rotations, flips, and finding a matching tile below/to the right. This made the other code relatively easy.
+
 ## Day 21 - [link](./src/bin/21.rs) (1323/898)
 Took me way too long to even understand the problem. Just stared at it for a while. Eventually, I decided to try and see if the intersection between all lists containing a certain allergen might be small. When it was only 2 for "nuts" I figured it out. Isn't this just more or less the same as day 16?
 
