@@ -26,11 +26,9 @@ fn part_one() -> usize {
   while !p1.is_empty() && !p2.is_empty() {
     let (c1,c2) = (p1.pop_front().unwrap(), p2.pop_front().unwrap());
     if c1 > c2 {
-      p1.push_back(c1);
-      p1.push_back(c2);
+      p1.extend(&[c1,c2]);
     } else {
-      p2.push_back(c2);
-      p2.push_back(c1);
+      p2.extend(&[c2,c1]);
     }
   }
   score(if p2.is_empty() {&p1} else {&p2})
@@ -53,11 +51,9 @@ fn game(p1: &mut Deck, p2: &mut Deck) -> usize {
     };
 
     if winner == 1 {
-      p1.push_back(c1);
-      p1.push_back(c2);
+      p1.extend(&[c1,c2]);
     } else {
-      p2.push_back(c2);
-      p2.push_back(c1);
+      p2.extend(&[c2,c1]);
     }
   }
   if p2.is_empty() {1} else {2}
