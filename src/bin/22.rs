@@ -6,9 +6,10 @@ static PLAYER2: [usize; 25] = [28,50,37,20,6,42,32,47,39,22,14,7,21,17,27,8,48,1
 
 type Deck = VecDeque<usize>;
 
-fn hash(v: &Deck) -> u64 {
+fn hash(d1: &Deck, d2: &Deck) -> u64 {
   let mut hasher = hash_map::DefaultHasher::new();
-  v.hash(&mut hasher);
+  d1.hash(&mut hasher);
+  d2.hash(&mut hasher);
   hasher.finish()
 }
 
@@ -37,7 +38,7 @@ fn part_one() -> usize {
 fn game(p1: &mut Deck, p2: &mut Deck) -> usize {
   let mut seen = HashSet::new();
   while !p1.is_empty() && !p2.is_empty() {
-    if !seen.insert((hash(&p1), hash(&p2))) {
+    if !seen.insert(hash(&p1, &p2)) {
       return 1;
     }
 
