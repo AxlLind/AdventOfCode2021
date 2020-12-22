@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Fetches the input, prints to stdout and copies to clipboard.
 # This gives both a quick overview of what the input looks like
 # and makes it available on ctrl+v for use in the challenge.
@@ -13,6 +15,5 @@ if [ -z "$AOC_SESSION" ]; then
   exit 1
 fi
 
-curl "https://adventofcode.com/2020/day/$1/input" --cookie "session=$AOC_SESSION" -s \
-  | tee /dev/tty \
-  | pbcopy
+URL="https://adventofcode.com/2020/day/$1/input"
+curl $URL --cookie "session=$AOC_SESSION" -s | tee >(pbcopy)
