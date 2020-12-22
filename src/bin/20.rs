@@ -99,19 +99,18 @@ fn build_image(border_map: &BorderMap, corner: usize) -> Vec<Vec<char>> {
     }
   }
 
-  // for each row, match the first tile from the tile above
-  // and then for all else match with the one left to it
   let mut image = vec![vec![Tile::default(); 12]; 12];
   image[0][0] = starting_corner;
-  for (i,j) in (0..12).cartesian_product(0..12).skip(1) {
-    image[i][j] = if j == 0 {
-      image[i-1][0].match_down(border_map, &images)
-    } else {
-      image[i][j-1].match_right(border_map, &images)
-    };
+  // match the first tile in each row to the one above
+  for i in 1..12 {
+    image[i][0] = image[i-1][0].match_down(border_map, &images);
+  }
+  // for tile, match to the previous tile in the row
+  for (i,j) in (0..12).cartesian_product(1..12) {
+    image[i][j] = image[i][j-1].match_right(border_map, &images);
   }
 
-  // have placed and rotated the tiles correctly, now build the actual image
+  // tiles are placed and rotated correctly, now build the actual image
   let mut actual_image = vec![Vec::new(); 8 * 12];
   for (i,j) in (0..12).cartesian_product(0..12) {
     let tile = &image[i][j];
