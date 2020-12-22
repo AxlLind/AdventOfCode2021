@@ -273,3 +273,12 @@ For part one, I compute the intersection of ingredients between all lists contai
 Part two was basically free. I was a bit unsure about how to sort by key in Rust so I initially edited and sorted it by hand in the terminal. Later I remembered that sorting a tuple in Rust works just as you expect, which means a simple [`.sorted()`](https://docs.rs/itertools/0.9.0/itertools/trait.Itertools.html#method.sorted) from the itertools crate sorts in the way we want!
 
 Finishes in `0ms`.
+
+## Day 22 - [link](./src/bin/22.rs) (471/281)
+What a day! Super happy with my placing. Finally got to make good use of Rust's amazing [`VecDeque`](https://doc.rust-lang.org/std/collections/struct.VecDeque.html) data structure.
+
+Not too much to say about today's solution. The problem was not too difficult. Just had to really carefully read the rules for part two. I stored each player's deck in a `VecDeque` which allows for efficient `pop_front` and `push_back`.
+
+My solution is not very fast though, about `200ms`. Not entirely sure why and how to make it faster.
+
+Edit: Thanks u/aceshades for the idea of storing only hashes! Saved 500ms.
