@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <time.h>
 
-#define START 4
+int INPUT[] = {4,6,3,5,2,8,1,7,9};
 
 typedef struct Node {
   int val;
@@ -10,32 +10,23 @@ typedef struct Node {
 } Node;
 
 Node* build_list(int size) {
-  int input[] = {4,6,3,5,2,8,1,7,9};
   Node *list = malloc(sizeof(Node) * size);
-
-  Node *prev = list + START;
-  prev->val = START;
-
-  for (int i = 1; i < size; ++i) {
-    int val = i < 9 ? input[i] : i + 1;
-    Node *n = list + val;
-    n->val = val;
-    prev->next = n;
-    prev = n;
+  Node *curr = list + INPUT[0];
+  curr->val = INPUT[0];
+  for (int i = 1; i < size; curr = curr->next, ++i) {
+    int val = i < 9 ? INPUT[i] : i + 1;
+    curr->next = list + val;
+    curr->next->val = val;
   }
-  prev->next = list + START;
-
+  curr->next = list + INPUT[0];
   return list;
 }
 
 Node* simulate(int size, int rounds) {
   Node *list = build_list(size);
-  Node *curr = list + START;
+  Node *curr = list + INPUT[0];
   for (int i = 0; i < rounds; curr = curr->next, ++i) {
-    Node *a = curr->next;
-    Node *b = curr->next->next;
-    Node *c = curr->next->next->next;
-
+    Node *a = curr->next, *b = a->next, *c = b->next;
     int t = (curr->val == 1 ? size : curr->val - 1);
     while (t == a->val || t == b->val || t == c->val)
       t = (t == 1 ? size : t - 1);
