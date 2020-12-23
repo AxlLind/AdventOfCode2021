@@ -282,3 +282,12 @@ Not too much to say about today's solution. The problem was not too difficult. J
 My solution is not very fast though, about `200ms`. Not entirely sure why and how to make it faster.
 
 Edit: Thanks u/aceshades for the idea of storing only hashes! Saved 500ms.
+
+## Day 23 - [link](./src/bin/23.c) (1180/560)
+I usually write in **Rust** but realizing part two required linked-lists I kind of panicked and instantly switched to C. You can probably do some relatively easy solution in Rust by storing them all in an array and using indexes. In the moment, however, I figured it would be way faster to switch to C. You should always use the right tools for the right job and in C this was easy!
+
+Kind of slow on part one, but very happy with my start two placing! Luckily I've had to use C quite a bit for a few courses recently so I was prepared. My solution just uses a singly-linked-list and does the manipulations on that list. By storing all the nodes in an array, with the node at index `i` having the value `i`, we also get O(1) look-up of a node with a particular value!
+
+I was also able to fully reuse all code between parts one and two which is nice. Only about 60 lines of C code, shorter than many python solutions on reddit.
+
+Finishes in about `830ms` on my machine, which is okay-ish fast I guess. Not sure how to make it faster.
