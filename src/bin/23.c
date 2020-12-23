@@ -2,7 +2,8 @@
 #include <stdio.h>
 #include <time.h>
 
-#define VAL(n) (n - list)
+#define VAL(n) (n - list) // assumes the list is visible
+
 int INPUT[] = {4,6,3,5,2,8,1,7,9};
 
 typedef struct Node { struct Node *next; } Node;
@@ -10,15 +11,13 @@ typedef struct Node { struct Node *next; } Node;
 Node* build_list(int size) {
   Node *list = malloc(sizeof(Node) * size);
   Node *curr = list + INPUT[0];
-  for (int i = 1; i < size; curr = curr->next, ++i) {
-    int val = i < 9 ? INPUT[i] : i + 1;
-    curr->next = list + val;
-  }
+  for (int i = 1; i < size; curr = curr->next, ++i)
+    curr->next = list + (i < 9 ? INPUT[i] : i + 1);
   curr->next = list + INPUT[0];
   return list;
 }
 
-Node* simulate(int size, int rounds) {
+Node* simulate_game(int size, int rounds) {
   Node *list = build_list(size);
   Node *curr = list + INPUT[0];
   for (int i = 0; i < rounds; curr = curr->next, ++i) {
@@ -36,15 +35,15 @@ Node* simulate(int size, int rounds) {
 }
 
 int part_one(void) {
-  Node *list = simulate(9, 100);
+  Node *list = simulate_game(9, 100);
   int ans = 0;
-  for (Node *n = list[1].next; VAL(n) != 1; n = n->next)
+  for (Node *n = list[1].next; n != list + 1; n = n->next)
     ans = ans * 10 + VAL(n);
   return ans;
 }
 
 long part_two(void) {
-  Node *list = simulate(1000000, 10000000);
+  Node *list = simulate_game(1000000, 10000000);
   return VAL(list[1].next) * VAL(list[1].next->next);
 }
 
