@@ -14,7 +14,7 @@ typedef struct Node {
 
 Node* build_list(int size) {
   u64 input[] = INPUT;
-  Node *list = calloc(sizeof(Node), size);
+  Node *list = malloc(sizeof(Node) * size);
 
   Node *prev = list + START;
   prev->val = START;
