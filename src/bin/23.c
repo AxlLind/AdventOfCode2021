@@ -39,34 +39,28 @@ Node* simulate(int size, int rounds) {
     Node *b = curr->right->right;
     Node *c = curr->right->right->right;
 
-    int t = curr->val;
-    do {
-      if (--t == 0) t = size;
-    } while (t == a->val || t == b->val || t == c->val);
+    int t = (curr->val == 1 ? size : curr->val - 1);
+    while (t == a->val || t == b->val || t == c->val)
+      t = (t == 1 ? size : t - 1);
     Node *dest = list + t;
 
     curr->right = c->right;
     c->right = dest->right;
     dest->right = a;
   }
-  return list;
+  return list + 1;
 }
 
 u64 part_one(void) {
-  Node *list = simulate(9, 100);
-  Node *n = (list + 1)->right;
+  Node *one = simulate(9, 100);
   u64 ans = 0;
-  while (n->val != 1) {
-    ans *= 10;
-    ans += n->val;
-    n = n->right;
-  };
+  for (Node *n = one->right; n->val != 1; n = n->right)
+    ans = ans * 10 + n->val;
   return ans;
 }
 
 u64 part_two(void) {
-  Node *list = simulate(1000000, 10000000);
-  Node *one = list + 1;
+  Node *one = simulate(1000000, 10000000);
   return one->right->val * one->right->right->val;
 }
 
