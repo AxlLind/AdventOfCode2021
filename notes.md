@@ -297,4 +297,4 @@ Pretty happy with my placing today! I had heard of hexagonal grids before but ne
 
 As for part two, that felt a bit boring. Isn't this the third time we're doing a game of life? The rules were not that complex and people should have an idea on how to handle those from previous days. The only twist is the hexagonal tiles but you had to figure that out for part one. I guess the tiles are maybe too far away to do this in an array of array grid and instead you have to use a hashmap approach, but that's my go-to anyway. Kind of an easy day 24.
 
-In Sweden we actually celebrate on the 24th, so marry Christmas and happy holidays! 🎄
+Finishes in about `55ms` on my machine.
