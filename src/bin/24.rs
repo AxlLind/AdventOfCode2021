@@ -6,13 +6,13 @@ static DIRS: [(i64,i64); 6] = [(1,0),(0,1),(-1,1),(-1,0),(0,-1),(1,-1)];
 fn part_two(mut black: HashSet<(i64,i64)>) -> usize {
   for _ in 0..100 {
     let mut neighbours = HashMap::new();
-    for &(q,r) in black.iter() {
-      for &(dq,dr) in &DIRS {
+    for (q,r) in &black {
+      for (dq,dr) in &DIRS {
         *neighbours.entry((q+dq,r+dr)).or_insert(0) += 1;
       }
     }
     black = neighbours.iter()
-      .filter(|&(&t, &n)| n == 2 || (n == 1 && black.contains(&t)))
+      .filter(|(t, &n)| n == 2 || (n == 1 && black.contains(t)))
       .map(|(&t,_)| t)
       .collect();
   }
