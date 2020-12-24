@@ -291,3 +291,10 @@ Kind of slow on part one, but very happy with my start two placing! Luckily I've
 I was also able to fully reuse all code between parts one and two which is nice. Only about 60 lines of C code, shorter than many python solutions on reddit.
 
 Finishes in about `830ms` on my machine, which is okay-ish fast I guess. Not sure how to make it faster.
+
+## Day 24 - [link](./src/bin/24.rs) (992/628)
+Pretty happy with my placing today! I had heard of hexagonal grids before but never implemented them myself. I quickly found [an amazing resource](https://www.redblobgames.com/grids/hexagons/#neighbors-axial) that made implementing this quite easy! You just use a 2D-grid and figure out the neighbours in a slightly more complex way.
+
+As for part two, that felt a bit boring. Isn't this the third time we're doing a game of life? The rules were not that complex and people should have an idea on how to handle those from previous days. The only twist is the hexagonal tiles but you had to figure that out for part one. I guess the tiles are maybe too far away to do this in an array of array grid and instead you have to use a hashmap approach, but that's my go-to anyway. Kind of an easy day 24.
+
+In Sweden we actually celebrate on the 24th, so marry Christmas and happy holidays! 🎄
