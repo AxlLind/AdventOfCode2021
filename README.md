@@ -9,7 +9,8 @@ Thanks for another amazing year of AoC [@ericwastl](https://twitter.com/ericwast
 
 ## Usage
 ```sh
-cargo run --release --bin [DAY]
+cargo run --release --bin [DAY]   # to run an individual day
+carho run --release --bin aoc2020 # to run all days in parallel
 ```
 
 ## Leaderboard placings
