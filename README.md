@@ -10,7 +10,7 @@ Thanks for another amazing year of AoC [@ericwastl](https://twitter.com/ericwast
 ## Usage
 ```sh
 cargo run --release --bin [DAY] # run an individual day
-cargo run --release             # run all days in parallel
+cargo run --release             # run all days
 ```
 
 ## Leaderboard
