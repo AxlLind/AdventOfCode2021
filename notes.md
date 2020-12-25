@@ -290,7 +290,9 @@ Kind of slow on part one, but very happy with my start two placing! Luckily I've
 
 I was also able to fully reuse all code between parts one and two which is nice. Only about 60 lines of C code, shorter than many python solutions on reddit.
 
-Finishes in about `830ms` on my machine, which is okay-ish fast I guess. Not sure how to make it faster.
+Finishes in about `620ms` on my machine, which is okay-ish fast I guess. Not sure how to make it faster.
+
+Edit: I later came back and [wrote this in Rust](./src/bin/23.rs) as well. It was relatively easy if you just use a `Vec<usize>`, where the index is the node, and the value at the next is the pointer.
 
 ## Day 24 - [link](./src/bin/24.rs) (992/628)
 Pretty happy with my placing today! I had heard of hexagonal grids before but never implemented them myself. I quickly found [an amazing resource](https://www.redblobgames.com/grids/hexagons/#neighbors-axial) that made implementing this quite easy! You just use a 2D-grid and figure out the neighbours in a slightly more complex way.
