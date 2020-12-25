@@ -298,3 +298,10 @@ Pretty happy with my placing today! I had heard of hexagonal grids before but ne
 As for part two, that felt a bit boring. Isn't this the third time we're doing a game of life? The rules were not that complex and people should have an idea on how to handle those from previous days. The only twist is the hexagonal tiles but you had to figure that out for part one. I guess the tiles are maybe too far away to do this in an array of array grid and instead you have to use a hashmap approach, but that's my go-to anyway. Kind of an easy day 24.
 
 Finishes in about `55ms` on my machine.
+
+## Day 25 - [link](./src/bin/25.rs) (346/284)
+Very happy with my placings today! Basically just a brute-force solution. We cannot solve the [discrete logarithm](https://www.wikiwand.com/en/Discrete_logarithm) problem so not much else you can do! You can use [modular exponentiation](https://www.wikiwand.com/en/Modular_exponentiation) to compute the final key but it really isn't needed for such small numbers. Finishes in `4ms` on my machine.
+
+This year definitely felt _a lot_ easier than the last one. Almost no graph problems, no path finding algorithms, and no insane math problems like [day 22, 2019](https://github.com/AxlLind/AdventOfCode2019/blob/master/src/bin/22.rs). It's really hard finding the right balance. I think 2019 was maybe a bit too hard and discouraged a lot of people. I like that this year was more approachable but perhaps it was a bit too easy towards the end.
+
+Thanks for an amazing year! I've had an alarm set for 5:50 for 25 days in a row now. Excited to not set one for tomorrow 🎄
