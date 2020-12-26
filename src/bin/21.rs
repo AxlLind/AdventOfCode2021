@@ -9,7 +9,7 @@ aoc2020::main! {
     let ingredients = list.split_whitespace().collect::<HashSet<_>>();
     for a in allergens.split(", ") {
       let set = candidates.entry(a).or_insert_with(|| ingredients.clone());
-      *set = set.intersection(&ingredients).copied().collect();
+      *set = &*set & &ingredients;
     }
   }
 
