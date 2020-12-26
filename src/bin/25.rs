@@ -7,7 +7,7 @@ aoc2020::main! {
     x = x * 7 % 20201227;
     loop_size += 1;
   }
-  let a = if x == A {B} else {A};
-  let key = (0..loop_size).fold(1, |x,_| x * a % 20201227);
-  (key, "🎄")
+  let y = if x == A {B} else {A};
+  let key = (0..loop_size).fold(1, |x,_| x * y % 20201227);
+  (key, '🎄')
 }
