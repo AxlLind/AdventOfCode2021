@@ -9,7 +9,7 @@ const MONSTER: [&str; 3] = [
   " #  #  #  #  #  #   ",
 ];
 
-type BorderMap = HashMap<String, Vec<usize>>;
+type BorderMatches = HashMap<String, Vec<usize>>;
 
 #[derive(Clone, Debug, Default)]
 struct Tile {
@@ -34,12 +34,12 @@ impl Tile {
     (b1,b2)
   }
 
-  fn get_neighbour(&self, border_map: &BorderMap, n: usize) -> Option<usize> {
+  fn get_neighbour(&self, matches: &BorderMatches, n: usize) -> Option<usize> {
     let matches = match n {
-      0 => &border_map[&self.v[0].iter().copied().collect::<String>()],
-      1 => &border_map[&self.get_edges().1],
-      2 => &border_map[&self.v[9].iter().copied().collect::<String>()],
-      3 => &border_map[&self.get_edges().0],
+      0 => &matches[&self.v[0].iter().copied().collect::<String>()],
+      1 => &matches[&self.get_edges().1],
+      2 => &matches[&self.v[9].iter().copied().collect::<String>()],
+      3 => &matches[&self.get_edges().0],
       _ => unreachable!()
     };
     matches.iter().find(|&&id| id != self.id).copied()
@@ -47,12 +47,12 @@ impl Tile {
 
   fn rotate(&mut self) { self.v = rotate(&self.v) }
 
-  fn match_right(&self, border_map: &BorderMap, images: &HashMap<usize, [&str;10]>) -> Self {
-    let id = self.get_neighbour(border_map, 1).unwrap();
+  fn match_right(&self, matches: &BorderMatches, images: &HashMap<usize, [&str;10]>) -> Self {
+    let id = self.get_neighbour(matches, 1).unwrap();
     let mut tile = Tile::from_input(&images[&id], id);
 
     // rotate it to the correct position
-    while tile.get_neighbour(border_map, 3) != Some(self.id) { tile.rotate() }
+    while tile.get_neighbour(matches, 3) != Some(self.id) { tile.rotate() }
 
     // if the edges match but aren't equal it must be flipped!
     if (0..10).any(|i| self.v[i][9] != tile.v[i][0]) {
@@ -61,12 +61,12 @@ impl Tile {
     tile
   }
 
-  fn match_down(&self, border_map: &BorderMap, images: &HashMap<usize, [&str;10]>) -> Self {
-    let id = self.get_neighbour(border_map, 2).unwrap();
+  fn match_down(&self, matches: &BorderMatches, images: &HashMap<usize, [&str;10]>) -> Self {
+    let id = self.get_neighbour(matches, 2).unwrap();
     let mut tile = Tile::from_input(&images[&id], id);
 
     // rotate it to the correct position
-    while tile.get_neighbour(border_map, 0) != Some(self.id) { tile.rotate() }
+    while tile.get_neighbour(matches, 0) != Some(self.id) { tile.rotate() }
 
     // if the edges match but aren't equal it must be flipped!
     if self.v[9] != tile.v[0] {
@@ -85,29 +85,24 @@ fn rotate(v: &[Vec<char>]) -> Vec<Vec<char>> {
   rot
 }
 
-fn build_image(border_map: &BorderMap, corner: usize) -> Vec<Vec<char>> {
+fn build_image(matches: &BorderMatches, corner: usize) -> Vec<Vec<char>> {
   let images = IMAGES.iter().copied().collect::<HashMap<_,_>>();
 
   // align the corner to fit in the top-left
   let mut starting_corner = Tile::from_input(&images[&corner], corner);
-  loop {
-    let n1 = starting_corner.get_neighbour(border_map, 0);
-    let n2 = starting_corner.get_neighbour(border_map, 3);
-    match (n1,n2) {
-      (None, None) => break,
-      _ => starting_corner.rotate(),
-    }
+  while [0,3].iter().any(|&d| starting_corner.get_neighbour(matches, d).is_some()) {
+    starting_corner.rotate();
   }
 
   let mut image = vec![vec![Tile::default(); 12]; 12];
   image[0][0] = starting_corner;
   // match the first tile in each row to the one above
   for i in 1..12 {
-    image[i][0] = image[i-1][0].match_down(border_map, &images);
+    image[i][0] = image[i-1][0].match_down(matches, &images);
   }
-  // for tile, match to the previous tile in the row
+  // for all other tiles match to the previous tile in the row
   for (i,j) in (0..12).cartesian_product(1..12) {
-    image[i][j] = image[i][j-1].match_right(border_map, &images);
+    image[i][j] = image[i][j-1].match_right(matches, &images);
   }
 
   // tiles are placed and rotated correctly, now build the actual image
@@ -132,13 +127,13 @@ fn find_monsters(image: &[Vec<char>], monster_coords: &HashSet<(isize,isize)>) -
     .collect::<HashSet<_>>();
   positions.iter()
     .filter(|(i,j)| monster_coords.iter()
-      .map(|(a,b)| (i+a,j+b))
+      .map(|(di,dj)| (i+di,j+dj))
       .all(|pos| positions.contains(&pos))
     )
     .count()
 }
 
-fn part_two(border_map: &BorderMap, corner: usize) -> usize {
+fn part_two(matches: &BorderMatches, corner: usize) -> usize {
   let monster_coords = MONSTER.iter()
     .enumerate()
     .flat_map(|(i,row)| row.chars()
@@ -147,7 +142,7 @@ fn part_two(border_map: &BorderMap, corner: usize) -> usize {
       .map(move |(j,_)| (i as isize - 1, j as isize))
     )
     .collect::<HashSet<_>>();
-  let mut image = build_image(border_map, corner);
+  let mut image = build_image(matches, corner);
   let total = image.iter()
     .flatten()
     .filter(|&&c| c == '#')
@@ -160,9 +155,9 @@ fn part_two(border_map: &BorderMap, corner: usize) -> usize {
   }
 }
 
-fn part_one(border_map: &BorderMap) -> usize {
+fn part_one(matches: &BorderMatches) -> usize {
   let mut count_map = HashMap::new();
-  for ids in border_map.values().filter(|ids| ids.len() == 1) {
+  for ids in matches.values().filter(|ids| ids.len() == 1) {
     *count_map.entry(ids[0]).or_insert(0) += 1;
   }
   count_map.iter()
@@ -172,13 +167,13 @@ fn part_one(border_map: &BorderMap) -> usize {
 }
 
 aoc2020::main! {
-  let mut border_map = HashMap::new();
+  let mut matches = HashMap::new();
   for &(id,tile) in &IMAGES {
     let (b1,b2) = Tile::from_input(&tile,id).get_edges();
     for edge in &[tile[0], tile[9], &b1, &b2] {
-      border_map.entry(edge.to_string()).or_insert(Vec::new()).push(id);
-      border_map.entry(edge.chars().rev().collect()).or_insert(Vec::new()).push(id);
+      matches.entry(edge.to_string()).or_insert(Vec::new()).push(id);
+      matches.entry(edge.chars().rev().collect()).or_insert(Vec::new()).push(id);
     }
   }
-  (part_one(&border_map), part_two(&border_map, 3517))
+  (part_one(&matches), part_two(&matches, 3833))
 }
