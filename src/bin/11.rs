@@ -23,13 +23,13 @@ fn find_neighbour(
   loop {
     i += dy;
     j += dx;
-    match map.get(i as usize).and_then(|row| row.get(j as usize)) {
-      Some('.') => {},
-      Some(&c)  => return Some(c),
-      None      => break,
+    let tile = map.get(i as usize)
+      .and_then(|row| row.get(j as usize))
+      .copied();
+    if tile != Some('.') {
+      return tile;
     }
   }
-  None
 }
 
 fn should_swap_p2(map: &[Vec<char>], i: usize, j: usize) -> bool {
@@ -42,12 +42,14 @@ fn should_swap_p2(map: &[Vec<char>], i: usize, j: usize) -> bool {
 }
 
 fn run_simulation<F: Fn(&[Vec<char>], usize, usize) -> bool>(should_swap: F) -> usize {
-  let mut map = INPUT.iter().map(|s| s.chars().collect::<Vec<_>>()).collect::<Vec<_>>();
+  let mut map = INPUT.iter()
+    .map(|s| s.chars().collect::<Vec<_>>())
+    .collect::<Vec<_>>();
   let mut to_swap = Vec::new();
   loop {
     to_swap.clear();
     for (i,j) in (0..map.len()).cartesian_product(0..map[0].len()) {
-      if map[i][j] != '.' && should_swap(&map, i, j) {
+      if map[i][j] != '.' && should_swap(&map,i,j) {
         to_swap.push((i,j));
       }
     }
