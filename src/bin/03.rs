@@ -12,11 +12,8 @@ fn in_slope(dh: usize, dw: usize) -> usize {
 
 aoc2020::main! {
   let part_one = in_slope(1,3);
-  let part_two =
-    in_slope(1,1) *
-    in_slope(1,3) *
-    in_slope(1,5) *
-    in_slope(1,7) *
-    in_slope(2,1);
+  let part_two = [(1,1),(1,3),(1,5),(1,7),(2,1)].iter()
+    .map(|&(dh,dw)| in_slope(dh,dw))
+    .product::<usize>();
   (part_one, part_two)
 }
