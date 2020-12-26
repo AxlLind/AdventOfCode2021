@@ -87,5 +87,7 @@ aoc2020::main! {
   let active2 = active1.iter()
     .map(|&(x,y,z)| (x,y,z,0))
     .collect();
-  (simulate(active1, count_neighbours_p1), simulate(active2, count_neighbours_p2))
+  let p1 = simulate(active1, count_neighbours_p1);
+  let p2 = simulate(active2, count_neighbours_p2);
+  (p1, p2)
 }
