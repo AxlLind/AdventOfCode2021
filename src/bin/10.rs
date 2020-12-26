@@ -7,8 +7,8 @@ fn part_one(v: &[usize]) -> usize {
   let (ones, threes) = v.iter()
     .tuple_windows()
     .fold((1,1), |(ones, threes), (a, b)| match b - a {
-      1 => (ones + 1, threes),
-      3 => (ones, threes + 1),
+      1 => (ones+1, threes),
+      3 => (ones, threes+1),
       _ => unreachable!(),
     });
   ones * threes
@@ -32,9 +32,9 @@ fn num_paths(
 
   if !cache.contains_key(&i) {
     let ans =
-      num_paths(cache, v, target, i + 1) +
-      num_paths(cache, v, target, i + 2) +
-      num_paths(cache, v, target, i + 3);
+      num_paths(cache, v, target, i+1) +
+      num_paths(cache, v, target, i+2) +
+      num_paths(cache, v, target, i+3);
     cache.insert(i, ans);
   }
   cache[&i]
@@ -45,9 +45,9 @@ fn part_two(v: &[usize]) -> usize {
   dp.insert(0, 1);
   for &i in v {
     let ans =
-      dp.get(&(i - 1)).unwrap_or(&0) +
-      dp.get(&(i - 2)).unwrap_or(&0) +
-      dp.get(&(i - 3)).unwrap_or(&0);
+      dp.get(&(i-1)).unwrap_or(&0) +
+      dp.get(&(i-2)).unwrap_or(&0) +
+      dp.get(&(i-3)).unwrap_or(&0);
     dp.insert(i, ans);
   }
   dp[v.last().unwrap()]
