@@ -1,27 +1,24 @@
 use std::process::Command;
+use once_cell::sync::Lazy;
 use regex::Regex;
 
-static DAYS: [&str; 25] = [
-  "01","02","03","04","05","06","07","08","09","10",
-  "11","12","13","14","15","16","17","18","19","20",
-  "21","22","23","24","25"
-];
+static MS_REGEX: Lazy::<Regex> = Lazy::new(|| Regex::new(r"Time: (\d+)ms").unwrap());
+
+fn extract_time(s: &str) -> u32 {
+  let capture = MS_REGEX.captures_iter(&s).next().unwrap();
+  capture[1].parse().unwrap()
+}
 
 fn main() {
-  let ms_re = Regex::new(r"Time: (\d+)ms").unwrap();
-  let mut total_time = 0;
-  for day in &DAYS {
+  let total_time = (1..=25).map(|day_num| {
+    let day = format!("{:0>2}", day_num);
     let cmd = Command::new("cargo")
-      .args(&["run", "--release", "--bin", day])
+      .args(&["run", "--release", "--bin", &day])
       .output()
       .unwrap();
-    let s = String::from_utf8(cmd.stdout).unwrap();
-    total_time += ms_re.captures_iter(&s)
-      .next()
-      .unwrap()[1]
-      .parse::<u32>()
-      .unwrap();
-    println!("Day {}:\n{}", day, s);
-  }
+    let output = String::from_utf8(cmd.stdout).unwrap();
+    println!("Day {}:\n{}", day, output);
+    extract_time(&output)
+  }).sum::<u32>();
   println!("Total time: {}ms", total_time);
 }

@@ -8,3 +8,4 @@ default-run = "aoc2020"
 [dependencies]
 itertools = "0.9"
 regex = "1.4"
+once_cell = "1.5"
