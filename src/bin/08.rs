@@ -31,8 +31,7 @@ aoc2020::main! {
   let part_one = run_inst_changed(-1);
   let part_two = (0..INPUT_LEN)
     .map(|i| run_inst_changed(i as i32))
-    .filter(|&(_, found)| found)
-    .next()
+    .find(|&(_, found)| found)
     .unwrap();
   (part_one.0, part_two.0)
 }
