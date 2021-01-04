@@ -3,9 +3,7 @@ static INPUT: [(usize, usize, u8, &[u8]); 1000] = [(4,5,b'm',b"mmpth"),(1,7,b'r'
 aoc2020::main! {
   let part_one = INPUT.iter()
     .filter(|&&(start, end, c, pw)| {
-      let v = pw.iter()
-        .filter(|&&c2| c2 == c)
-        .count();
+      let v = pw.iter().filter(|&&c2| c2 == c).count();
       start <= v && v <= end
     })
     .count();
