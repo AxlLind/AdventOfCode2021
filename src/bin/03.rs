@@ -5,7 +5,6 @@ fn in_slope(dh: usize, dw: usize) -> usize {
   INPUT.iter()
     .step_by(dh)
     .zip((0..W).cycle().step_by(dw))
-    .skip(1)
     .filter(|&(row, c)| row[c] == b'#')
     .count()
 }
