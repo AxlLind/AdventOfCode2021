@@ -22,14 +22,10 @@ aoc2020::main! {
   let seats = INPUT.iter()
     .map(|s| plane_position(s))
     .collect::<HashSet<_>>();
-  let part_one = seats.iter()
-    .map(|(r,c)| r * 8 + c)
-    .max()
-    .unwrap();
+  let part_one = seats.iter().map(|(r,c)| r * 8 + c).max();
   let part_two = (0..=127).cartesian_product(1..=6)
     .filter(|pos| !seats.contains(pos))
     .find(|&(r,c)| seats.contains(&(r,c-1)) && seats.contains(&(r,c+1)))
-    .map(|(r,c)| r * 8 + c)
-    .unwrap();
-  (part_one, part_two)
+    .map(|(r,c)| r * 8 + c);
+  (part_one.unwrap(), part_two.unwrap())
 }
