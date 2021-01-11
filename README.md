@@ -5,6 +5,8 @@ This year I went all out and went up at `5:50` every single day (except day 5 wh
 
 See [notes.md](./notes.md) for some thoughts I wrote down after completing each day.
 
+See [timings.md](./timings.md) for the execution time of each solution.
+
 Thanks for another amazing year of AoC [@ericwastl](https://twitter.com/ericwastl) :christmas_tree:
 
 ## Usage
