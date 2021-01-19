@@ -23,7 +23,7 @@ The following table contains wall-clock timings of all 25 solutions, as well as 
 | 18        | 510009915468    | 321176691637769                                         | 192 µs   |
 | 19        | 165             | 274                                                     | 20 ms    |
 | 20        | 104831106565027 | 2093                                                    | 2928 µs  |
-| 21        | 2280            | "vfvvnm bvgm rdksxt xknb hxntcz bktzrz srzqtccv gbtmdb" | 577 µs   |
+| 21        | 2280            | "vfvvnm,bvgm,rdksxt,xknb,hxntcz,bktzrz,srzqtccv,gbtmdb" | 577 µs   |
 | 22        | 33400           | 33745                                                   | 163 ms   |
 | 23        | 52937846        | 8456532414                                              | 635 ms   |
 | 24        | 332             | 3900                                                    | 56 ms    |
