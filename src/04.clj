@@ -1,5 +1,7 @@
 (import 'java.security.MessageDigest
         'java.math.BigInteger)
+
+; from https://gist.github.com/jizhang/4325757
 (defn md5 [s]
   (->> s
     .getBytes
@@ -7,10 +9,16 @@
     (BigInteger. 1)
     (format "%032x")))
 
-(defn find_leading [n leading]
-  (if (every? #(= \0 %) (subs (md5 (str "ckczppom" n)) 0 leading))
-    n
-    (recur (inc n) leading)))
+(defn leading-zeroes? [n s]
+  (->> s
+    (str "ckczppom")
+    md5
+    (take-while #(= \0 %))
+    count
+    (= n)))
 
-(->> 5 (find_leading 0) (println "Part one:"))
-(->> 6 (find_leading 0) (println "Part two:"))
+(defn find-leading [n]
+  (->> (iterate inc 0) (filter #(leading-zeroes? n %)) first))
+
+(->> 5 find-leading (println "Part one:"))
+(->> 6 find-leading (println "Part two:"))
