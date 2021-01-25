@@ -23,9 +23,9 @@
 (defn part2
   ([t points]
     (if (= t 2503)
-      (->> points (apply max) dec) ; dec since they "get" one point the 0th second
+      (apply max points)
       (recur (inc t) (give-points t points))))
-  ([] (part2 0 (replicate (count input) 0))))
+  ([] (part2 1 (replicate (count input) 0))))
 
 (->> input (map #(flown 2503 %)) (apply max) (println "Part one:"))
 (println "Part two:" (part2))
