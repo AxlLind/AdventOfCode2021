@@ -1,9 +1,5 @@
 (require '[clojure.string :as str])
 
-; how is this not in the standard library?
-(defn find-item [f coll]
-  (->> coll (filter f) first))
-
 (defn next-pw [pw]
   (case (last pw)
     \z (str (->> pw drop-last next-pw) \a)
@@ -29,7 +25,7 @@
     (->> pw (partition 2 1) has-two-pairs?)))
 
 (defn find-next-valid [start]
-  (->> start (iterate next-pw) rest (find-item valid-pw)))
+  (->> start (iterate next-pw) rest (filter valid-pw) first))
 
 (let [[p1 p2] (->> "cqjxjnds" (iterate find-next-valid) (take 2))]
   (println "Part one:" p1)
