@@ -1,24 +1,20 @@
 (import 'java.security.MessageDigest
         'java.math.BigInteger)
 
+(def leading-5-zeros (BigInteger. "000001000000000000000000000000000" 16))
+(def leading-6-zeros (BigInteger. "000000100000000000000000000000000" 16))
+
 ; from https://gist.github.com/jizhang/4325757
 (defn md5 [s]
   (->> s
     .getBytes
     (.digest (MessageDigest/getInstance "MD5"))
-    (BigInteger. 1)
-    (format "%032x")))
+    (BigInteger. 1)))
 
-(defn leading-zeroes? [n s]
-  (->> s
-    (str "ckczppom")
-    md5
-    (take-while #(= \0 %))
-    count
-    (= n)))
+(defn find-hash [n]
+  (->> (iterate inc 0)
+    (filter #(->> % (str "ckczppom") md5 (> n)))
+    first))
 
-(defn find-leading [n]
-  (->> (iterate inc 0) (filter #(leading-zeroes? n %)) first))
-
-(->> 5 find-leading (println "Part one:"))
-(->> 6 find-leading (println "Part two:"))
+(->> leading-5-zeros find-hash (println "Part two:"))
+(->> leading-6-zeros find-hash (println "Part one:"))
