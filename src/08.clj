@@ -23,5 +23,5 @@
       (recur c s)))
   ([s] (chars-in-p2 0 s)))
 
-(->> lines (map chars-in-p1) (reduce +) (- (->> lines (map count) (reduce +))) println)
-(->> lines (map chars-in-p2) (reduce +) println)
+(->> lines (map chars-in-p1) (reduce +) (- (->> lines (map count) (reduce +))) (println "Part one:"))
+(->> lines (map chars-in-p2) (reduce +) (println "Part two:"))
