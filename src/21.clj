@@ -1,6 +1,6 @@
 (def input '(109 8 2))
 
-(def weapons '((8  4 0) (10 5 0) (25 6 0) (40 7 0) (74 8 0)))
+(def weapons '((8 4 0) (10 5 0) (25 6 0) (40 7 0) (74 8 0)))
 (def armor '((0 0 0) (13 0 1) (31 0 2) (53 0 3) (75 0 4) (102 0 5)))
 (def rings '((0 0 0) (25 1 0) (50 2 0) (100 3 0) (20 0 1) (40 0 2) (80 0 3)))
 
@@ -23,7 +23,7 @@
           [c2 d2 a2] armor
           [c3 d3 a3] rings
           [c4 d4 a4] rings
-          :when (not= [c3 d3 a3] [c4 d4 a4])]
+          :when (not= c3 c4)]
     (let [[boss-hp d a] input
           dmg (- (+ d1 d2 d3 d4) a)
           boss-dmg (- d (+ a1 a2 a3 a4))]
