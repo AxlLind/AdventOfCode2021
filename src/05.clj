@@ -5,7 +5,7 @@
 (defn part1 [pwd]
   (and
     (not (some #(str/includes? pwd (str %)) '("ab" "cd" "pq" "xy")))
-    (->> pwd (partition 2 1) (some (fn [[x y]] (= x y))))
+    (->> pwd (partition 2 1) (some #(apply = %)))
     (->> pwd (filter #(str/includes? "aeiou" (str %))) count (< 2))))
 
 (defn double_pair? [[pair & pairs]]
