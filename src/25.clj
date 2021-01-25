@@ -1,7 +1,7 @@
 (def input '(3010 3019))
 
 (defn walk-diagonal [r c pre]
-  (if (and (= r (first input)) (= c (second input)))
+  (if (= [r c] input)
     pre
   (let [new (mod (* pre 252533) 33554393)]
   (if (= r 1)
