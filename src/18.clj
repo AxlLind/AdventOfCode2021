@@ -36,11 +36,8 @@
     false)))
 
 (defn update-cell-p2 [grid i]
-  (case i
-    0    true
-    99   true
-    9900 true
-    9999 true
+  (or
+    (#{0 99 9900 9999} i)
     (update-cell grid i)))
 
 (defn round [update-fn grid]
