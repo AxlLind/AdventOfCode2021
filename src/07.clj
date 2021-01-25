@@ -7,12 +7,12 @@
 (defn parse-gate [l]
   (let [[op res] (str/split l #" -> ")]
   (cond
-    (str/includes? op "AND")    (list res :and   (str/split op #" AND "))
-    (str/includes? op "OR")     (list res :or    (str/split op #" OR "))
-    (str/includes? op "LSHIFT") (list res :shl   (str/split op #" LSHIFT "))
-    (str/includes? op "RSHIFT") (list res :shr   (str/split op #" RSHIFT "))
-    (str/includes? op "NOT")    (list res :not   (subs op 4))
-    :else                       (list res :const op))))
+    (str/includes? op "AND")    [res :and   (str/split op #" AND ")]
+    (str/includes? op "OR")     [res :or    (str/split op #" OR ")]
+    (str/includes? op "LSHIFT") [res :shl   (str/split op #" LSHIFT ")]
+    (str/includes? op "RSHIFT") [res :shr   (str/split op #" RSHIFT ")]
+    (str/includes? op "NOT")    [res :not   (subs op 4)]
+    :else                       [res :const op])))
 
 (def insts
   (->> input
@@ -23,31 +23,26 @@
 (defn number-str? [s]
   (and (string? s) (every? #(str/includes? "0123456789" (str %)) s)))
 
+(defn apply-gates [gate-fn [op args]]
+  (case op
+    :and   (->> args (map gate-fn) (apply bit-and))
+    :or    (->> args (map gate-fn) (apply bit-or))
+    :shl   (->> args (map gate-fn) (apply bit-shift-left))
+    :shr   (->> args (map gate-fn) (apply bit-shift-right))
+    :not   (->> args gate-fn bit-not)
+    :const (->> args gate-fn)))
+
 (def gate-value-p1 (memoize (fn [gate]
   (if (number-str? gate)
     (parse-int gate)
-    (let [[op args] (insts gate)]
-      (case op
-        :and   (->> args (map gate-value-p1) (apply bit-and))
-        :or    (->> args (map gate-value-p1) (apply bit-or))
-        :shl   (->> args (map gate-value-p1) (apply bit-shift-left))
-        :shr   (->> args (map gate-value-p1) (apply bit-shift-right))
-        :not   (->> args gate-value-p1 bit-not)
-        :const (->> args gate-value-p1)))))))
+    (apply-gates gate-value-p1 (insts gate))))))
 
 (def gate-value-p2 (memoize (fn [gate]
   (if (= "b" gate)
     (gate-value-p1 "a")
     (if (number-str? gate)
       (parse-int gate)
-      (let [[op args] (insts gate)]
-        (case op
-          :and   (->> args (map gate-value-p2) (apply bit-and))
-          :or    (->> args (map gate-value-p2) (apply bit-or))
-          :shl   (->> args (map gate-value-p2) (apply bit-shift-left))
-          :shr   (->> args (map gate-value-p2) (apply bit-shift-right))
-          :not   (->> args gate-value-p2 bit-not)
-          :const (->> args gate-value-p2))))))))
+      (apply-gates gate-value-p2 (insts gate)))))))
 
 (->> "a" gate-value-p1 (println "Part one:"))
 (->> "a" gate-value-p2 (println "Part two:"))
