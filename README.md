@@ -9,3 +9,5 @@ Only thing I did not like was the awful error messages. When you got an exceptio
 ```sh
 clj -M src/DAY.clj
 ```
+
+![end-screen](./pictures/end-screen.png)
