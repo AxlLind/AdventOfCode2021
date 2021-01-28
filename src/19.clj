@@ -1,6 +1,6 @@
 (require '[clojure.string :as str])
 (require '[clojure.set :as set])
-(require '[clojure.data.priority-map :refer [priority-map-by]])
+(require '[clojure.data.priority-map :refer [priority-map]])
 
 (def input "Al => ThF\nAl => ThRnFAr\nB => BCa\nB => TiB\nB => TiRnFAr\nCa => CaCa\nCa => PB\nCa => PRnFAr\nCa => SiRnFYFAr\nCa => SiRnMgAr\nCa => SiTh\nF => CaF\nF => PMg\nF => SiAl\nH => CRnAlAr\nH => CRnFYFYFAr\nH => CRnFYMgAr\nH => CRnMgYFAr\nH => HCa\nH => NRnFYFAr\nH => NRnMgAr\nH => NTh\nH => OB\nH => ORnFAr\nMg => BF\nMg => TiMg\nN => CRnFAr\nN => HSi\nO => CRnFYFAr\nO => CRnMgAr\nO => HP\nO => NRnFAr\nO => OTi\nP => CaP\nP => PTi\nP => SiRnFAr\nSi => CaSi\nTh => ThCa\nTi => BP\nTi => TiTi\ne => HF\ne => NAl\ne => OMg")
 (def molecule "CRnCaSiRnBSiRnFArTiBPTiTiBFArPBCaSiThSiRnTiBPBPMgArCaSiRnTiMgArCaSiThCaSiRnFArRnSiRnFArTiTiBFArCaCaSiRnSiThCaCaSiRnMgArFYSiRnFYCaFArSiThCaSiThPBPTiMgArCaPRnSiAlArPBCaCaSiRnFYSiThCaRnFArArCaCaSiRnPBSiRnFArMgYCaCaCaCaSiThCaCaSiAlArCaCaSiRnPBSiAlArBCaCaCaCaSiThCaPBSiThPBPBCaSiRnFYFArSiThCaSiRnFArBCaCaSiRnFYFArSiThCaPBSiThCaSiRnPMgArRnFArPTiBCaPRnFArCaCaCaCaSiRnCaCaSiRnFYFArFArBCaSiThFArThSiThSiRnTiRnPMgArFArCaSiThCaPBCaSiRnBFArCaCaPRnCaCaPMgArSiRnFYFArCaSiThRnPBPMgAr")
@@ -26,7 +26,7 @@
 
 ; a bfs using a priority queue, prioritized on smaller strings
 (defn bfs [q]
-  (let [[[s n] _] (peek q) q (rest q)]
+  (let [[[s n] _] (peek q) q (pop q)]
   (if (= s "e")
     n
     (->> s
@@ -37,4 +37,4 @@
       recur))))
 
 (->> molecule (next-molecules formulas) count (println "Part one:"))
-(->> (priority-map-by < [molecule 0] 0) bfs   (println "Part two:"))
+(->> (priority-map [molecule 0] 0) bfs (println "Part two:"))
