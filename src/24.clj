@@ -11,7 +11,7 @@
 (defn find-min [numbers parts]
   (->> (iterate inc 1)
     (map #(valid-lists (/ total-sum parts) numbers %))
-    (filter #(not (empty? %)))
+    (filter not-empty)
     first
     (map #(reduce * %))
     (apply min)))
