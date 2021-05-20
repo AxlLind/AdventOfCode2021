@@ -15,5 +15,9 @@ cargo run --release --bin [DAY] # run a specific day
 cargo run --release             # run all days
 ```
 
+## Other years
+- [2019](https://github.com/AxlLind/AdventOfCode2019/) in Rust 🦀
+- [2015](https://github.com/AxlLind/AdventOfCode2015/) in Clojure λ
+
 ## Leaderboard
 ![leaderboard](./screenshots/leaderboard.png)
