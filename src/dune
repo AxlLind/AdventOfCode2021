@@ -1,3 +1,4 @@
 (executables
   (names 01)
-  (modules 01))
+  (modules 01)
+  (libraries str))
