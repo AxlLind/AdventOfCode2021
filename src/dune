@@ -7,3 +7,8 @@
   (names day02)
   (modules day02)
   (libraries aoc))
+
+(executables
+  (names day03)
+  (modules day03)
+  (libraries aoc str))
