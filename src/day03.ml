@@ -8,13 +8,13 @@ let parse_input () =
     |> Str.split (Str.regexp " +")
     |> List.map int_of_string in
     match nums with
-    | a::b::c::[] -> (a,b,c)
+    | [a;b;c] -> (a,b,c)
     | _ -> failwith "unreachable" in
   input |> String.split_on_char '\n' |> List.map parse_line
 
 let valid_triangle (a,b,c) =
   match List.sort compare [a;b;c] with
-  | a::b::c::_ -> a + b > c
+  | [a;b;c] -> a + b > c
   | _ -> failwith "unreachable"
 
 let rec num_valid_columns list count = match list with
