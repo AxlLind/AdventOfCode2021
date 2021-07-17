@@ -1,4 +1,4 @@
 (executables
   (names day01)
-  (modules day01 aoc)
-  (libraries str))
+  (modules day01)
+  (libraries aoc str))

@@ -1,0 +1,3 @@
+(library
+ (name aoc)
+ (public_name aoc))
