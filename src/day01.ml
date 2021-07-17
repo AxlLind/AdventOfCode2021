@@ -7,7 +7,7 @@ let input = "R4, R3, L3, L2, L1, R1, L1, R2, R3, L5, L5, R4, L4, R2, R4, L3, R3,
 type way = Right | Left
 type dir = North | East | South | West
 
-let input_dirs =
+let input_dirs () =
   let parse_dir s =
     let len = String.sub s 1 ((String.length s)-1) |> int_of_string in
     match s.[0] with
@@ -53,8 +53,9 @@ let rec find_duplicate positions (dir,x,y) dirs =
   | None -> find_duplicate (SS.union positions new_positions) (dir2,x2,y2) (List.tl dirs)
 
 let main () =
-  let _,x1,y1 = List.fold_left update (North,0,0) input_dirs in
-  let x2,y2 = find_duplicate SS.empty (North,0,0) input_dirs in
+  let dirs = input_dirs () in
+  let _,x1,y1 = List.fold_left update (North,0,0) dirs in
+  let x2,y2 = find_duplicate SS.empty (North,0,0) dirs in
   printf "Part 1: %d\n" ((abs x1) + (abs y1));
   printf "Part 2: %d\n" ((abs x2) + (abs y2));;
 
