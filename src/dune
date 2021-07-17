@@ -2,3 +2,8 @@
   (names day01)
   (modules day01)
   (libraries aoc str))
+
+(executables
+  (names day02)
+  (modules day02)
+  (libraries aoc))
