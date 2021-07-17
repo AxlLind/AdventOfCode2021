@@ -52,10 +52,10 @@ let rec find_duplicate positions (dir,x,y) dirs =
   | Some(pos) -> pos
   | None -> find_duplicate (SS.union positions new_positions) (dir2,x2,y2) (List.tl dirs)
 
-let _ =
-  let _,x,y = List.fold_left update (North,0,0) input_dirs in
-  printf "Part 1: %d\n" ((abs x) + (abs y))
+let main () =
+  let _,x1,y1 = List.fold_left update (North,0,0) input_dirs in
+  let x2,y2 = find_duplicate SS.empty (North,0,0) input_dirs in
+  printf "Part 1: %d\n" ((abs x1) + (abs y1));
+  printf "Part 2: %d\n" ((abs x2) + (abs y2));;
 
-let _ =
-  let x,y = find_duplicate SS.empty (North,0,0) input_dirs in
-  printf "Part 2: %d\n" ((abs x) + (abs y))
+Aoc.timer main
