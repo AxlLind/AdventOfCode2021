@@ -22,3 +22,8 @@
   (names day05)
   (modules day05)
   (libraries aoc))
+
+(executables
+  (names day06)
+  (modules day06)
+  (libraries aoc))
