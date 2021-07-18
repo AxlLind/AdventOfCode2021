@@ -17,3 +17,8 @@
   (names day04)
   (modules day04)
   (libraries aoc str))
+
+(executables
+  (names day05)
+  (modules day05)
+  (libraries aoc))
