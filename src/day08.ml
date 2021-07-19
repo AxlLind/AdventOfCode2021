@@ -4,25 +4,22 @@ type op = Rect | RotRow | RotCol
 
 let parse_input () =
   let parse_line s =
-    let a,b = match s |> Str.split (Str.regexp "[a-z =]+") |> List.map int_of_string with
-    | [a;b] -> (a,b)
-    | _ -> failwith "unreachable" in
     let op_type =
       if String.sub s 0 4 = "rect" then Rect
       else if String.sub s 7 3 = "row" then RotRow
       else RotCol
     in
-    (op_type, a, b)
+    match s |> Str.split (Str.regexp "[a-z =]+") |> List.map int_of_string with
+    | [a;b] -> (op_type, a, b)
+    | _ -> failwith "unreachable"
   in
   input |> String.split_on_char '\n' |> List.map parse_line
 
 let apply_op board (o,a,b) =
   let () = match o with
   | Rect ->
-    for x = 0 to (a-1) do
-      for y = 0 to (b-1) do
-        board.(y).(x) <- true
-      done
+    for y = 0 to (b-1) do
+      Array.fill board.(y) 0 a true
     done
   | RotRow ->
     let row = Array.copy board.(a) in
@@ -31,10 +28,7 @@ let apply_op board (o,a,b) =
       board.(a).(idx) <- row.(i)
     done
   | RotCol ->
-    let col = Array.make 6 false in
-    for i = 0 to 5 do
-      col.(i) <- board.(i).(a)
-    done;
+    let col = Array.init 6 (fun i -> board.(i).(a)) in
     for i = 0 to 5 do
       let idx = (i + b) mod 6 in
       board.(idx).(a) <- col.(i)
@@ -48,13 +42,13 @@ let board_to_str board =
     |> Array.to_list
     |> String.concat ""
   in
-  board |> Array.map row_to_str |> Array.to_list |> String.concat "\n"
+  board |> Array.map row_to_str |> Array.to_list |> List.cons "" |> String.concat "\n"
 
 let main () =
   let ops = parse_input () in
   let board = ops |> List.fold_left apply_op (Array.make_matrix 6 50 false) in
   let sum_row r = r |> Array.map (fun c -> if c then 1 else 0) |> Array.fold_left (+) 0 in
   let part1 = board |> Array.map sum_row |> Array.fold_left (+) 0 |> string_of_int in
-  (part1, "\n" ^ (board_to_str board))
+  (part1, board_to_str board)
 
 let () = Aoc.timer main
