@@ -82,3 +82,8 @@
   (names day17)
   (modules day17)
   (libraries aoc))
+
+(executables
+  (names day18)
+  (modules day18)
+  (libraries aoc))
