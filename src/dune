@@ -77,3 +77,8 @@
   (names day16)
   (modules day16)
   (libraries aoc))
+
+(executables
+  (names day17)
+  (modules day17)
+  (libraries aoc))
