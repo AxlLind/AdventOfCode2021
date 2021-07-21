@@ -1,3 +1,5 @@
+(env (release (ocamlopt_flags (:standard -O3))))
+
 (executables
   (names day01)
   (modules day01)
@@ -111,7 +113,7 @@
 (executables
   (names day23)
   (modules day23)
-  (libraries aoc str))
+  (libraries aoc))
 
 (executables
   (names day24)
