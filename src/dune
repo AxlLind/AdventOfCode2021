@@ -116,4 +116,9 @@
 (executables
   (names day24)
   (modules day24)
+  (libraries aoc))
+
+(executables
+  (names day25)
+  (modules day25)
   (libraries aoc str))
