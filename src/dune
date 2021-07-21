@@ -107,3 +107,8 @@
   (names day22)
   (modules day22)
   (libraries aoc str))
+
+(executables
+  (names day23)
+  (modules day23)
+  (libraries aoc str))
