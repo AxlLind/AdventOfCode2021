@@ -58,7 +58,7 @@ let rec bfs visited queue (floor, floors) steps =
 
 let main () =
   let part1 = bfs (Hashtbl.create 2024) (Queue.create ()) (0, init_floors_1) 0 in
-  (* let part2 = bfs (Hashtbl.create 2024) (Queue.create ()) (0, init_floors_2) 0 in *)
-  (part1 |> string_of_int, "part2 |> string_of_int")
+  let part2 = bfs (Hashtbl.create 2024) (Queue.create ()) (0, init_floors_2) 0 in
+  (part1 |> string_of_int, part2 |> string_of_int)
 
 let () = Aoc.timer main
