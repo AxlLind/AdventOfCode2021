@@ -24,7 +24,7 @@ let state_to_string (floor, floors) =
       Hashtbl.add id_map (abs n) id;
       if n < 0 then -id else id
   in
-  let floor_to_str f = f |> List.sort compare |> List.map get_id |> List.map string_of_int |> String.concat "" in
+  let floor_to_str f = f |> List.map get_id |> List.map string_of_int |> String.concat "" in
   let s = floors |> Array.map floor_to_str |> Array.to_list |> String.concat "|" in
   (string_of_int floor) ^ "|" ^ s
 
@@ -41,6 +41,8 @@ let valid_moves visited floors floor =
   let moves = combinations floors.(floor) in
   let dirs = match floor with
     | 0 -> [1]
+    | 1 when floors.(0) = [] -> [1]
+    | 2 when floors.(0) = [] && floors.(1) = [] -> [1]
     | 3 -> [-1]
     | _ -> [-1;1] in
   dirs
