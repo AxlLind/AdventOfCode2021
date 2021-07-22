@@ -17,6 +17,7 @@ cargo run --release             # run all days
 
 ## Other years
 - [2019](https://github.com/AxlLind/AdventOfCode2019/) in Rust 🦀
+- [2016](https://github.com/AxlLind/AdventOfCode2016/) in OCaml 🐫
 - [2015](https://github.com/AxlLind/AdventOfCode2015/) in Clojure λ
 
 ## Leaderboard
