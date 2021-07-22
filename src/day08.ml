@@ -39,13 +39,17 @@ let board_to_str board =
     |> Array.to_list
     |> String.concat ""
   in
-  board |> Array.map row_to_str |> Array.to_list |> List.cons "" |> String.concat "\n"
+  let str = board |> Array.map row_to_str |> Array.to_list |> String.concat "\n" in
+  "\n" ^ str
+
+let count_tiles board =
+  let sum_row r = r |> Array.map Bool.to_int |> Array.fold_left (+) 0 in
+  board |> Array.map sum_row |> Array.fold_left (+) 0
 
 let main () =
   let ops = input |> Aoc.parse_lines parse_line in
   let board = ops |> List.fold_left apply_op (Array.make_matrix 6 50 false) in
-  let sum_row r = r |> Array.map (fun c -> if c then 1 else 0) |> Array.fold_left (+) 0 in
-  let part1 = board |> Array.map sum_row |> Array.fold_left (+) 0 |> string_of_int in
+  let part1 = count_tiles board |> string_of_int in
   (part1, board_to_str board)
 
 let () = Aoc.timer main
