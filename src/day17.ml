@@ -2,16 +2,13 @@ let input = "bwnlcvfs"
 
 let valid_neighbours ((x,y),s) =
   let h = s |> Digest.string |> Digest.to_hex in
-  let neighbours = [
-    x, y-1, s ^ "U", h.[0];
-    x, y+1, s ^ "D", h.[1];
-    x-1, y, s ^ "L", h.[2];
-    x+1, y, s ^ "R", h.[3];
-  ] in
-  neighbours
+  [ x, y-1, "U", h.[0];
+    x, y+1, "D", h.[1];
+    x-1, y, "L", h.[2];
+    x+1, y, "R", h.[3] ]
   |> List.filter (fun (x,y,_,_) -> -1 < x && x < 4 && -1 < y && y < 4)
-  |> List.filter (fun (_,_,_,c) -> c |> String.contains "bcdef")
-  |> List.map (fun (x,y,s,_) -> ((x,y),s))
+  |> List.filter (fun (_,_,_,c) -> String.contains "bcdef" c)
+  |> List.map (fun (x,y,d,_) -> ((x,y),s ^ d))
 
 let rec bfs_part_1 queue curr =
   if fst curr = (3,3) then snd curr
