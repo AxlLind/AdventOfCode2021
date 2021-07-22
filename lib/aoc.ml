@@ -1,5 +1,7 @@
 open Format
 
+let parse_lines parse_line input = input |> String.split_on_char '\n' |> List.map parse_line
+
 let timer f =
   let t0 = Sys.time() in
   let (part1, part2) = f () in
