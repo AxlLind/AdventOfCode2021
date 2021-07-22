@@ -14,7 +14,7 @@ let parse_line s =
   | 'c' -> (true, 2)
   | 'd' -> (true, 3)
   | _   -> (false, int_of_string s) in
-  match s |> String.split_on_char ' ' with
+  match String.split_on_char ' ' s with
   | ["cpy";a;b] -> Cpy(parse_reg_or_value a, b |> parse_reg_or_value |> snd)
   | ["jnz";a;b] -> Jnz(parse_reg_or_value a, parse_reg_or_value b)
   | ["out";a] -> Out(a |> parse_reg_or_value)
@@ -31,7 +31,7 @@ let rec exec res regs ip insts =
     | Dec dst -> regs.(dst) <- regs.(dst) - 1
     | _ -> () in
     let offset = match insts.(ip) with
-    | Jnz (src, off) -> if reg_val src = 0 then 1 else reg_val off
+    | Jnz (src, off) when reg_val src != 0 -> reg_val off
     | _ -> 1 in
     let res = match insts.(ip) with
     | Out src -> (reg_val src)::res
