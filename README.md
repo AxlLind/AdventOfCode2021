@@ -10,4 +10,9 @@ Only thing I did not like was the awful error messages. When you got an exceptio
 clj -M src/DAY.clj
 ```
 
+## Other years
+- [2020](https://github.com/AxlLind/AdventOfCode2020/) in Rust 🦀
+- [2019](https://github.com/AxlLind/AdventOfCode2019/) in Rust 🦀
+- [2016](https://github.com/AxlLind/AdventOfCode2016/) in OCaml 🐫
+
 ![end-screen](./pictures/end-screen.png)
