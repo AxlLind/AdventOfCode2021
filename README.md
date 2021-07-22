@@ -25,4 +25,9 @@ Overall, I thought OCaml was an ok language. FP is really powerful and expressiv
 dune exec --release src/DAY.exe
 ```
 
+## Other years
+- [2020](https://github.com/AxlLind/AdventOfCode2020/) in Rust 🦀
+- [2019](https://github.com/AxlLind/AdventOfCode2019/) in Rust 🦀
+- [2015](https://github.com/AxlLind/AdventOfCode2015/) in Clojure λ
+
 ![end-screen](./pictures/end-screen.png)
