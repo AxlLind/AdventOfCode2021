@@ -7,13 +7,13 @@ let flip_inverse s =
 let round s = s ^ "0" ^ (flip_inverse s)
 
 let rec checksum s =
-  let rec impl res i s =
+  let rec checksum_round res i s =
     if i = String.length s then res |> List.rev |> String.concat ""
     else
       let c = if s.[i] = s.[i+1] then "1" else "0" in
-      impl (c::res) (i+2) s
+      checksum_round (c::res) (i+2) s
   in
-  let sum = impl [] 0 s in
+  let sum = checksum_round [] 0 s in
   if String.length sum mod 2 = 0 then checksum sum else sum
 
 let rec compute_result s size =
