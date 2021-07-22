@@ -24,37 +24,36 @@ let parse_line s =
   | ["dec";a] -> Dec(a |> parse_reg_or_value |> snd)
   | _ -> failwith "unreachable"
 
-let toggle_inst = function
-  | Cpy (src, dst) -> Jnz (src, (true, dst))
-  | Jnz (src, (is_reg, off)) -> if is_reg then Cpy (src, off) else InvalidCpy (src, off)
-  | InvalidCpy (src, off) -> Jnz (src, (false, off))
-  | Inc dst -> Dec dst
-  | Dec dst -> Inc dst
-  | Tgl (is_reg, off) -> if is_reg then Inc off else InvalidInc
-  | InvalidInc -> InvalidInc
+let toggle_inst insts i =
+  if i < Array.length insts then
+    insts.(i) <- match insts.(i) with
+    | Cpy (src, dst) -> Jnz (src, (true, dst))
+    | Jnz (src, (is_reg, off)) -> if is_reg then Cpy (src, off) else InvalidCpy (src, off)
+    | Inc dst -> Dec dst
+    | Dec dst -> Inc dst
+    | Tgl (is_reg, off) -> if is_reg then Inc off else InvalidInc
+    | InvalidCpy (src, off) -> Jnz (src, (false, off))
+    | InvalidInc -> InvalidInc
 
 let rec exec regs ip insts =
   let reg_val (is_reg, i) = if is_reg then regs.(i) else i in
   if ip < Array.length insts then
+    let offset = match insts.(ip) with
+    | Jnz (src, off) when reg_val src != 0 -> reg_val off
+    | _ -> 1 in
     let () = match insts.(ip) with
     | Cpy (src, dst) -> regs.(dst) <- reg_val src
     | Inc dst -> regs.(dst) <- regs.(dst) + 1
     | Dec dst -> regs.(dst) <- regs.(dst) - 1
+    | Tgl dst -> toggle_inst insts (ip + reg_val dst)
     | _ -> () in
-    let offset = match insts.(ip) with
-    | Jnz (src, off) -> if reg_val src = 0 then 1 else reg_val off
-    | Tgl dst ->
-      let i = ip + (reg_val dst) in
-      if i < Array.length insts then insts.(i) <- toggle_inst insts.(i);
-      1
-    | _ -> 1 in
     exec regs (ip + offset) insts
   else regs.(0)
 
 let main () =
   let insts = input |> Aoc.parse_lines parse_line in
-  let part1 = insts |> Array.of_list |> exec [|7;0;0;0|]  0 |> string_of_int in
-  let part2 = insts |> Array.of_list |> exec [|12;0;0;0|] 0 |> string_of_int in
-  (part1, part2)
+  let part1 = insts |> Array.of_list |> exec [|7;0;0;0|]  0 in
+  let part2 = insts |> Array.of_list |> exec [|12;0;0;0|] 0 in
+  (string_of_int part1, string_of_int part2)
 
 let () = Aoc.timer main
