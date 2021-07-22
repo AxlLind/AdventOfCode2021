@@ -9,22 +9,20 @@ type opcode =
   | InvalidCpy of (bool * int) * int
   | InvalidInc
 
-let parse_input () =
+let parse_line s =
   let parse_reg_or_value s = match s.[0] with
   | 'a' -> (true, 0)
   | 'b' -> (true, 1)
   | 'c' -> (true, 2)
   | 'd' -> (true, 3)
   | _   -> (false, int_of_string s) in
-  let parse_line s = match s |> String.split_on_char ' ' with
+  match s |> String.split_on_char ' ' with
   | ["cpy";a;b] -> Cpy(parse_reg_or_value a, b |> parse_reg_or_value |> snd)
   | ["jnz";a;b] -> Jnz(parse_reg_or_value a, parse_reg_or_value b)
   | ["tgl";a] -> Tgl(parse_reg_or_value a)
   | ["inc";a] -> Inc(a |> parse_reg_or_value |> snd)
   | ["dec";a] -> Dec(a |> parse_reg_or_value |> snd)
   | _ -> failwith "unreachable"
-  in
-  input |> String.split_on_char '\n' |> List.map parse_line
 
 let toggle_inst = function
   | Cpy (src, dst) -> Jnz (src, (true, dst))
@@ -54,7 +52,7 @@ let rec exec regs ip insts =
   else regs.(0)
 
 let main () =
-  let insts = parse_input () in
+  let insts = input |> Aoc.parse_lines parse_line in
   let part1 = insts |> Array.of_list |> exec [|7;0;0;0|]  0 |> string_of_int in
   let part2 = insts |> Array.of_list |> exec [|12;0;0;0|] 0 |> string_of_int in
   (part1, part2)

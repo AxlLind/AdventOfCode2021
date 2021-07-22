@@ -2,18 +2,15 @@ let input = "rect 1x1\nrotate row y=0 by 7\nrect 1x1\nrotate row y=0 by 5\nrect 
 
 type op = Rect | RotRow | RotCol
 
-let parse_input () =
-  let parse_line s =
-    let op_type =
-      if String.sub s 0 4 = "rect" then Rect
-      else if String.sub s 7 3 = "row" then RotRow
-      else RotCol
-    in
-    match s |> Str.split (Str.regexp "[a-z =]+") |> List.map int_of_string with
-    | [a;b] -> (op_type, a, b)
-    | _ -> failwith "unreachable"
+let parse_line s =
+  let op_type =
+    if String.sub s 0 4 = "rect" then Rect
+    else if String.sub s 7 3 = "row" then RotRow
+    else RotCol
   in
-  input |> String.split_on_char '\n' |> List.map parse_line
+  match s |> Str.split (Str.regexp "[a-z =]+") |> List.map int_of_string with
+  | [a;b] -> (op_type, a, b)
+  | _ -> failwith "unreachable"
 
 let apply_op board (o,a,b) =
   let () = match o with
@@ -45,7 +42,7 @@ let board_to_str board =
   board |> Array.map row_to_str |> Array.to_list |> List.cons "" |> String.concat "\n"
 
 let main () =
-  let ops = parse_input () in
+  let ops = input |> Aoc.parse_lines parse_line in
   let board = ops |> List.fold_left apply_op (Array.make_matrix 6 50 false) in
   let sum_row r = r |> Array.map (fun c -> if c then 1 else 0) |> Array.fold_left (+) 0 in
   let part1 = board |> Array.map sum_row |> Array.fold_left (+) 0 |> string_of_int in

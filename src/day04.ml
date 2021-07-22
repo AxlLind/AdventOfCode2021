@@ -2,16 +2,13 @@ let input = "gbc-frperg-pubpbyngr-znantrzrag-377[rgbnp]\nnij-mywlyn-wlsiayhcw-jf
 
 let chars_to_str cs = cs |> List.map (String.make 1) |> String.concat ""
 
-let parse_input () =
-  let parse_line l =
-    let words = l |> String.split_on_char '-' |> List.rev in
-    let head = List.hd words in
-    let i = String.index head '[' in
-    let num = String.sub head 0 i |> int_of_string in
-    let checksum = String.sub head (i+1) ((String.length head) - i - 2) in
-    (num, checksum, words |> List.tl |> String.concat "")
-  in
-  input |> String.split_on_char '\n' |> List.map parse_line
+let parse_line l =
+  let words = l |> String.split_on_char '-' |> List.rev in
+  let head = List.hd words in
+  let i = String.index head '[' in
+  let num = String.sub head 0 i |> int_of_string in
+  let checksum = String.sub head (i+1) ((String.length head) - i - 2) in
+  (num, checksum, words |> List.tl |> String.concat "")
 
 let count_occurrences s =
   let add_char map c =
@@ -45,7 +42,7 @@ let find_north_pole rooms =
   rooms |> List.map decrypt_room |> List.find (contains "north") |> fst
 
 let main () =
-  let rooms = parse_input () in
+  let rooms = input |> Aoc.parse_lines parse_line in
   let part1 = rooms
   |> List.filter valid_checksum
   |> List.map (fun (x,_,_) -> x)

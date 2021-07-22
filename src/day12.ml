@@ -6,14 +6,14 @@ type opcode =
   | Dec of int
   | Jnz of int * int
 
-let parse_input () =
+let parse_line s =
   let reg_to_int s = match s.[0] with
   | 'a' -> 0
   | 'b' -> 1
   | 'c' -> 2
   | 'd' -> 3
   | _ -> failwith ("unreachable " ^ s) in
-  let parse_line s = match s |> String.split_on_char ' ' with
+  match s |> String.split_on_char ' ' with
   | [op;a;b] ->
     let (reg,src) =
       if String.contains "abcd" a.[0] then (true, reg_to_int a)
@@ -26,8 +26,6 @@ let parse_input () =
     let reg = reg_to_int a in
     if op = "inc" then Inc(reg) else Dec(reg)
   | _ -> failwith "unreachable"
-  in
-  input |> String.split_on_char '\n' |> List.map parse_line
 
 let exec_inst regs inst = match inst with
   | Cpy (reg_src, src, dst) -> regs.(dst) <- if reg_src then regs.(src) else src; 1
@@ -42,7 +40,7 @@ let rec exec insts regs ip =
   else regs.(0)
 
 let main () =
-  let insts = parse_input () in
+  let insts = input |> Aoc.parse_lines parse_line in
   let part1 = exec insts [|0;0;0;0|] 0 |> string_of_int in
   let part2 = exec insts [|0;0;1;0|] 0 |> string_of_int in
   (part1, part2)

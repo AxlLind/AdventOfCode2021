@@ -2,13 +2,12 @@ let input = "###################################################################
 
 type tile = Wall | Open | Key of int
 
-let parse_input () =
+let parse_line s =
   let parse_tile = function
   | '#' -> Wall
   | '.' -> Open
   | c   -> Key ((Char.code c) - 48) in
-  let parse_line s = s |> String.to_seq |> Seq.map parse_tile |> Array.of_seq in
-  input |> String.split_on_char '\n' |> List.map parse_line |> Array.of_list
+  s |> String.to_seq |> Seq.map parse_tile |> Array.of_seq
 
 let bfs map goal =
   let visited, queue = (Hashtbl.create 1024, Queue.create ()) in
@@ -33,7 +32,7 @@ let bfs map goal =
   bfs_impl  (0, (27,29)) 0
 
 let main () =
-  let map = parse_input () in
+  let map = input |> Aoc.parse_lines parse_line |> Array.of_list in
   let part1 = 0xfe |> bfs map |> string_of_int in
   let part2 = 0xff |> bfs map |> string_of_int in
   (part1, part2)

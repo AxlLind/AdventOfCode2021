@@ -24,8 +24,7 @@ type inst =
   | Reverse of int * int
   | Move of int * int
 
-let parse_input () =
-  let parse_line s = match s |> String.split_on_char ' ' with
+let parse_line s = match s |> String.split_on_char ' ' with
   | ["swap"; "position"; x; _; _; y] -> SwapPos (int_of_string x, int_of_string y)
   | ["swap"; "letter"; x; _; _; y] -> SwapChar (x.[0], y.[0])
   | ["rotate"; way; x; _] -> Rotate (if way = "right" then int_of_string x else -(int_of_string x))
@@ -33,8 +32,6 @@ let parse_input () =
   | ["reverse"; _; x; _; y] -> Reverse (int_of_string x, int_of_string y)
   | ["move"; _; x; _; _; y] -> Move (int_of_string x, int_of_string y)
   | _ -> failwith "unreachable"
-  in
-  input |> String.split_on_char '\n' |> List.map parse_line
 
 let rec index e = function
   | e2::xs when e = e2 -> 0
@@ -73,7 +70,7 @@ let exec_inst_rev s = function
   | inst -> exec_inst s inst
 
 let main () =
-  let insts = parse_input () in
+  let insts = input |> Aoc.parse_lines parse_line in
   let part1 = insts |> List.fold_left exec_inst (str_to_chars "abcdefgh") in
   let part2 = insts |> List.rev |> List.fold_left exec_inst_rev (str_to_chars "fbgdceah") in
   (part1 |> chars_to_str, part2 |> chars_to_str)

@@ -7,22 +7,20 @@ type opcode =
   | Inc of int
   | Dec of int
 
-let parse_input () =
+let parse_line s =
   let parse_reg_or_value s = match s.[0] with
   | 'a' -> (true, 0)
   | 'b' -> (true, 1)
   | 'c' -> (true, 2)
   | 'd' -> (true, 3)
   | _   -> (false, int_of_string s) in
-  let parse_line s = match s |> String.split_on_char ' ' with
+  match s |> String.split_on_char ' ' with
   | ["cpy";a;b] -> Cpy(parse_reg_or_value a, b |> parse_reg_or_value |> snd)
   | ["jnz";a;b] -> Jnz(parse_reg_or_value a, parse_reg_or_value b)
   | ["out";a] -> Out(a |> parse_reg_or_value)
   | ["inc";a] -> Inc(a |> parse_reg_or_value |> snd)
   | ["dec";a] -> Dec(a |> parse_reg_or_value |> snd)
   | _ -> failwith "unreachable"
-  in
-  input |> String.split_on_char '\n' |> List.map parse_line
 
 let rec exec res regs ip insts =
   let reg_val (is_reg, i) = if is_reg then regs.(i) else i in
@@ -45,13 +43,13 @@ let rec check_output = function
   | a::b::xs -> a + b = 1 && check_output (b::xs)
   | _ -> true
 
-let rec find insts i =
+let rec find i insts =
   if insts |> exec [] [|i;0;0;0|] 0 |> check_output then i
-  else find insts (i+1)
+  else find (i+1) insts
 
 let main () =
-  let insts = parse_input () |> Array.of_list in
-  let part1 = find insts 0 |> string_of_int in
-  (part1, "🎄")
+  let insts = input |> Aoc.parse_lines parse_line in
+  let part1 = insts |> Array.of_list |> find 0 in
+  (string_of_int part1, "🎄")
 
 let () = Aoc.timer main
