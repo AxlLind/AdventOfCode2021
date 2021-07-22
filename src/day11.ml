@@ -17,7 +17,7 @@ let combinations list =
 
 let state_to_string (floor, floors) =
   let id_map = Hashtbl.create 16 in
-  let get_id n = match n |> abs |> Hashtbl.find_opt id_map with
+  let get_id n = match Hashtbl.find_opt id_map (abs n) with
     | Some id -> if n < 0 then -id else id
     | None ->
       let id = id_map |> Hashtbl.to_seq_values |> Seq.fold_left max (-1) |> (+) 1 in
@@ -41,26 +41,27 @@ let valid_moves visited floors floor =
   let moves = combinations floors.(floor) in
   let dirs = match floor with
     | 0 -> [1]
-    | 1 when floors.(0) = [] -> [1]
-    | 2 when floors.(0) = [] && floors.(1) = [] -> [1]
     | 3 -> [-1]
     | _ -> [-1;1] in
   dirs
   |> List.map (fun dir -> moves |> List.filter_map (apply_move visited floors floor dir))
   |> List.flatten
 
-let rec bfs visited queue (floor, floors) steps =
-  if [0;1;2] |> List.for_all (fun i -> floors.(i) = []) then steps
-  else
-    let neighbours = valid_moves visited floors floor in
-    neighbours |> List.iter (fun n -> Hashtbl.add visited (state_to_string n) true);
-    neighbours |> List.to_seq |> Seq.map (fun n -> (steps+1, n)) |> Queue.add_seq queue;
-    let steps, next = Queue.take queue in
-    bfs visited queue next steps
+let bfs floors =
+  let visited, queue = Hashtbl.create 2024, Queue.create () in
+  let rec bfs_impl (steps, (floor, floors)) =
+    if [0;1;2] |> List.for_all (fun i -> floors.(i) = []) then steps
+    else
+      let neighbours = valid_moves visited floors floor in
+      neighbours |> List.iter (fun n -> Hashtbl.add visited (state_to_string n) true);
+      neighbours |> List.to_seq |> Seq.map (fun n -> (steps+1, n)) |> Queue.add_seq queue;
+      bfs_impl (Queue.take queue)
+  in
+  bfs_impl (0,(0, floors))
 
 let main () =
-  let part1 = bfs (Hashtbl.create 2024) (Queue.create ()) (0, init_floors_1) 0 in
-  let part2 = bfs (Hashtbl.create 2024) (Queue.create ()) (0, init_floors_2) 0 in
-  (part1 |> string_of_int, part2 |> string_of_int)
+  let part1 = init_floors_1 |> bfs |> string_of_int in
+  let part2 = init_floors_2 |> bfs |> string_of_int in
+  (part1, part2)
 
 let () = Aoc.timer main
