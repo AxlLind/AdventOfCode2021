@@ -20,21 +20,20 @@ let bfs map goal =
     )
     |> List.filter (fun n -> n |> Hashtbl.mem visited |> not)
   in
-  let rec bfs_impl (keys, pos) steps =
+  let rec bfs_impl (steps,(keys, pos)) =
     if keys = goal then steps
     else
       let neighbours = valid_neighbours keys pos in
       neighbours |> List.iter (fun n -> Hashtbl.add visited n true);
       neighbours |> List.to_seq |> Seq.map (fun n -> (steps+1, n)) |> Queue.add_seq queue;
-      let steps, next = Queue.take queue in
-      bfs_impl next steps
+      bfs_impl (Queue.take queue)
   in
-  bfs_impl  (0, (27,29)) 0
+  bfs_impl (0,(0,(27,29)))
 
 let main () =
   let map = input |> Aoc.parse_lines parse_line |> Array.of_list in
-  let part1 = 0xfe |> bfs map |> string_of_int in
-  let part2 = 0xff |> bfs map |> string_of_int in
-  (part1, part2)
+  let part1 = bfs map 0xfe in
+  let part2 = bfs map 0xff in
+  (string_of_int part1, string_of_int part2)
 
 let () = Aoc.timer main
