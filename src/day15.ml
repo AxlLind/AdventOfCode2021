@@ -7,8 +7,7 @@ let parse_input () =
     | _ -> failwith "unreachable"
   in
   input
-  |> String.split_on_char '\n'
-  |> List.map parse_line
+  |> Aoc.parse_lines parse_line
   |> List.mapi (fun i (size, offset) -> (size - offset - i - 1, size))
 
 (* From https://rosettacode.org/wiki/Chinese_remainder_theorem#OCaml *)
@@ -23,9 +22,7 @@ let inverse_mod a = function
          if x < 0 then x + b else x
 
 let chinese_remainder_exn congruences =
-  let mtot = congruences
-  |> List.map snd
-  |> List.fold_left ( * ) 1 in
+  let mtot = congruences |> List.map snd |> List.fold_left ( * ) 1 in
   let fn acc (r, n) = acc + r * inverse_mod (mtot / n) n * (mtot / n) in
   let v = congruences |> List.fold_left fn 0 in
   v mod mtot
@@ -36,8 +33,8 @@ let chinese_remainder congruences =
 
 let main () =
   let congruences = parse_input () in
-  let part1 = chinese_remainder congruences           |> Option.get |> string_of_int in
-  let part2 = chinese_remainder ((4,11)::congruences) |> Option.get |> string_of_int in
-  (part1, part2)
+  let part1 = congruences         |> chinese_remainder |> Option.get in
+  let part2 = (4,11)::congruences |> chinese_remainder |> Option.get in
+  (string_of_int part1, string_of_int part2)
 
 let () = Aoc.timer main
