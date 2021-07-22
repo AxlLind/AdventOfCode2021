@@ -8,34 +8,31 @@ let parse_input () =
     match items with
     | [a;b]   -> Either.Left (a, b)
     | [a;b;c] -> Either.Right (a,(b,c))
-    | _ -> failwith ("unreachable " ^ s)
-  in
+    | _ -> failwith ("unreachable " ^ s) in
   let parse_init_state inputs =
     let state = Hashtbl.create (List.length inputs) in
     inputs |> List.iter (fun (v,bot) -> Hashtbl.add state bot v);
-    state
-  in
-  let (inputs, connections) = input |> String.split_on_char '\n' |> List.partition_map parse_line in
+    state in
+  let inputs, connections = input |> String.split_on_char '\n' |> List.partition_map parse_line in
   let init_state = parse_init_state inputs in
   let connection_map = connections |> List.to_seq |> Hashtbl.of_seq in
   (init_state, connection_map)
 
 let rec follow_connection connections state bot =
-  if bot |> Hashtbl.mem connections then
-  match bot |> Hashtbl.find_all state with
-  | [a;b] ->
-    let (bot1,bot2) = bot |> Hashtbl.find connections in
-    min a b |> Hashtbl.add state bot1;
-    max a b |> Hashtbl.add state bot2;
-    follow_connection connections state bot1;
-    follow_connection connections state bot2
-  | _ -> ()
+  if Hashtbl.mem connections bot then
+    match Hashtbl.find_all state bot with
+    | [a;b] ->
+      let bot1, bot2 = Hashtbl.find connections bot in
+      min a b |> Hashtbl.add state bot1;
+      max a b |> Hashtbl.add state bot2;
+      follow_connection connections state bot1;
+      follow_connection connections state bot2
+    | _ -> ()
 
 let find_part1 state =
   let check bot =
-    let vs = bot |> Hashtbl.find_all state in
-    List.mem 17 vs && List.mem 61 vs
-  in
+    let vs = Hashtbl.find_all state bot in
+    List.mem 17 vs && List.mem 61 vs in
   state
   |> Hashtbl.to_seq_keys
   |> Seq.filter check
@@ -47,10 +44,10 @@ let compute_part2 state = [1000; 1001; 1002]
   |> List.fold_left ( * ) 1
 
 let main () =
-  let (state, connections) = parse_input () in
+  let state, connections = parse_input () in
   state |> Hashtbl.to_seq_keys |> Seq.iter (follow_connection connections state);
-  let part1 = state |> find_part1 |> string_of_int in
-  let part2 = state |> compute_part2 |> string_of_int in
-  (part1, part2)
+  let part1 = find_part1 state in
+  let part2 = compute_part2 state in
+  (string_of_int part1, string_of_int part2)
 
 let () = Aoc.timer main
