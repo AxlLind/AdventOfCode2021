@@ -14,17 +14,15 @@ let viable_pairs nodes =
   set
 
 let print_map nodes =
+  let range size = List.init size (fun i -> i) in
   let coord_to_char y x = match (x,y) with
     | (32,0) -> "G"
     | (15,29) -> "_"
-    | p when Hashtbl.mem nodes (x,y) -> "."
+    | _ when Hashtbl.mem nodes (x,y) -> "."
     | _ -> "#"
   in
-  let row_str y = List.init 33 (fun i -> i)
-    |> List.map (coord_to_char y)
-    |> String.concat ""
-  in
-  List.init 30 (fun i -> i) |> List.map row_str |> String.concat "\n" |> Format.printf "%s\n"
+  let row_str y = range 33 |> List.map (coord_to_char y) |> String.concat "" in
+  range 30 |> List.map row_str |> String.concat "\n" |> Format.printf "%s\n"
 
 let main () =
   let nodes = input |> Aoc.parse_lines parse_line |> viable_pairs in
