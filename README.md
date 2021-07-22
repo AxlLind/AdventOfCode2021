@@ -10,6 +10,11 @@ To run any of the solutions use the command `cargo run --release --bin DAY_NUMBE
 
 You can see the output and wall-clock timing for each solution [here](./Output.md).
 
+## Other years
+- [2020](https://github.com/AxlLind/AdventOfCode2020/) in Rust 🦀
+- [2016](https://github.com/AxlLind/AdventOfCode2016/) in OCaml 🐫
+- [2015](https://github.com/AxlLind/AdventOfCode2015/) in Clojure λ
+
 ## Leaderboard
 I did not attempt to get high leaderboard scores since, in my timezone, I would have to get up very early. I still managed to get around top 1-2k on a lot of the later ones and even `774th` on [one star](./src/bin/22.rs). Finished most of them the day they came out.
 
