@@ -11,23 +11,21 @@ let parse_paren i s =
     | _ -> failwith "unreachable"
   else None
 
-let rec decomp_len s i c =
+let rec decomp_len i c recurse s =
   if i = String.length s then c
-  else match parse_paren i s with
-  | Some (a,b,idx) -> decomp_len s (idx + a) (c + a * b)
-  | None -> decomp_len s (i+1) (c+1)
-
-let rec decomp_len_rec s i c =
-  if i = String.length s then c
-  else match parse_paren i s with
-  | Some (a,b,idx) ->
-    let rec_len = decomp_len_rec (String.sub s idx a) 0 0 in
-    decomp_len_rec s (idx + a) (c + rec_len * b)
-  | None -> decomp_len_rec s (i+1) (c+1)
+  else
+    let i,c = match parse_paren i s with
+    | Some (a,b,idx) ->
+      let len =
+        if not recurse then a
+        else String.sub s idx a |> decomp_len 0 0 true in
+      (idx + a, c + len * b)
+    | None -> (i+1, c+1) in
+    decomp_len i c recurse s
 
 let main () =
-  let part1 = decomp_len     input 0 0 |> string_of_int in
-  let part2 = decomp_len_rec input 0 0 |> string_of_int in
-  (part1, part2)
+  let part1 = input |> decomp_len 0 0 false in
+  let part2 = input |> decomp_len 0 0 true in
+  (string_of_int part1, string_of_int part2)
 
 let () = Aoc.timer main
