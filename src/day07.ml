@@ -2,37 +2,32 @@ let input = "xdsqxnovprgovwzkus[fmadbfsbqwzzrzrgdg]aeqornszgvbizdm\nitgslvpxoqqa
 
 let str_to_list s = s |> String.to_seq |> List.of_seq
 
-let parse_input () =
-  let parse_ip s = s
-    |> Str.split (Str.regexp "[][]")
-    |> List.mapi (fun i s -> (i mod 2 = 0, str_to_list s))
-  in
-  input |> String.split_on_char '\n' |> List.map parse_ip
+let parse_ip s =
+  let a,b = Str.split (Str.regexp "[][]") s
+  |> List.mapi (fun i s -> (i mod 2 = 0, str_to_list s))
+  |> List.partition fst in
+  (a |> List.map snd, b |> List.map snd)
 
-let rec contains_abba s = match s with
-  | a::b::c::d::cs when a = d && b = c && a != b -> true
-  | _::cs -> contains_abba cs
-  | [] -> false
+let valid_ip_p1 (outside,inside) =
+  let rec abba s = match s with
+    | a::b::c::d::cs when a = d && b = c && a != b -> true
+    | _::cs -> abba cs
+    | [] -> false in
+  List.exists abba outside && not (List.exists abba inside)
 
-let valid_ip_p1 ip =
-  let cond1 = ip |> List.filter (fun (b,_) -> b)     |> List.exists (fun (_,s) -> contains_abba s) in
-  let cond2 = ip |> List.filter (fun (b,_) -> not b) |> List.exists (fun (_,s) -> contains_abba s) in
-  cond1 && not cond2
-
-let rec aba_pairs res s = match s with
-  | a::b::c::cs when a = c && a != b -> aba_pairs ((a,b)::res) (b::c::cs)
-  | _::cs -> aba_pairs res cs
-  | [] -> res
-
-let valid_ip_p2 ip =
-  let aba = ip |> List.filter (fun (b,_) -> b)     |> List.map snd |> List.map (aba_pairs []) |> List.flatten in
-  let bab = ip |> List.filter (fun (b,_) -> not b) |> List.map snd |> List.map (aba_pairs []) |> List.flatten in
+let valid_ip_p2 (outside,inside) =
+  let rec aba_pairs res s = match s with
+    | a::b::c::cs when a = c && a != b -> aba_pairs ((a,b)::res) (b::c::cs)
+    | _::cs -> aba_pairs res cs
+    | [] -> res in
+  let aba = outside |> List.map (aba_pairs []) |> List.flatten in
+  let bab = inside  |> List.map (aba_pairs []) |> List.flatten in
   aba |> List.exists (fun (a1,b1) -> bab |> List.exists (fun (b2,a2) -> a1 = a2 && b1 = b2))
 
 let main () =
-  let ips = parse_input () in
-  let part1 = ips |> List.filter valid_ip_p1 |> List.length |> string_of_int in
-  let part2 = ips |> List.filter valid_ip_p2 |> List.length |> string_of_int in
-  (part1, part2)
+  let ips = Aoc.parse_lines parse_ip input in
+  let part1 = ips |> List.filter valid_ip_p1 |> List.length in
+  let part2 = ips |> List.filter valid_ip_p2 |> List.length in
+  (string_of_int part1, string_of_int part2)
 
 let () = Aoc.timer main
