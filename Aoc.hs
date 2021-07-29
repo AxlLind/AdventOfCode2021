@@ -1,3 +1,4 @@
+{-# LANGUAGE BangPatterns #-}
 module Aoc where
 import Data.Time
 
@@ -10,8 +11,10 @@ elapsedMs t0 = do
 timer :: (Show a, Show b) => (Int -> (a,b)) -> IO()
 timer fn = do
   t0 <- getCurrentTime
-  let (part1, part2) = fn 0
+  let (a,b) = fn 0
+  let !part1 = show a
+  let !part2 = show b
   ms <- elapsedMs t0
-  putStrLn $ "Part one: " ++ show part1
-  putStrLn $ "Part two: " ++ show part2
+  putStrLn $ "Part one: " ++ part1
+  putStrLn $ "Part two: " ++ part2
   putStrLn $ "Time: " ++ show ms ++ "ms"
