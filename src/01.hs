@@ -1,3 +1,4 @@
+import Aoc
 import Data.Char
 import Data.Function
 
@@ -13,6 +14,10 @@ windows offset xs = zip xs (rotate offset xs)
 solve :: Int -> Int
 solve offset = windows offset input & filter (\(a,b) -> a == b) & map (\(a,_) -> digitToInt a) & sum
 
-main = do
-  1 & solve & print
-  (length input) `div` 2 & solve & print
+solveParts :: Int -> (Int,Int)
+solveParts _ = (part1, part2)
+  where
+    part1 = solve 1
+    part2 = solve $ (length input) `div` 2
+
+main = Aoc.timer solveParts
