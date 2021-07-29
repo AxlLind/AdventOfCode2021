@@ -1,7 +1,7 @@
+# haskell things
 dist
 dist-*
 cabal-dev
-*.exe
 *.o
 *.hi
 *.hie
@@ -22,3 +22,8 @@ cabal.project.local
 cabal.project.local~
 .HTF/
 .ghc.environment.*
+
+# ignore executables
+0?
+1?
+2?
