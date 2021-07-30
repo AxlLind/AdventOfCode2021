@@ -8,7 +8,7 @@ import Data.Bits (xor)
 input = "192,69,168,160,78,1,166,28,0,83,198,2,254,255,41,12"
 
 toHex :: Int -> String
-toHex i = (if i < 16 then "0" else "") ++ showHex i ""
+toHex i = (if i < 0x10 then "0" else "") ++ showHex i ""
 
 splitRange :: [Int] -> (Int,Int) -> ([Int],[Int],[Int])
 splitRange lst (i,len) = (a,b,c)
@@ -17,15 +17,14 @@ splitRange lst (i,len) = (a,b,c)
     (b,c) = splitAt len tmp
 
 doOperation :: ([Int], Int, Int) -> Int -> ([Int], Int, Int)
-doOperation (lst, i, skip) len = (newList, (i+skip+len) `mod` lstLen, skip+1)
+doOperation (lst, i, skip) len = (newList, (i+skip+len) `mod` 256, skip+1)
   where
-    lstLen = length lst
     (a,b,c) = splitRange (lst++lst) (i,len)
     revList = a ++ reverse b ++ c
     newList =
-      let spillover = i + len - lstLen in
-      let part = take spillover (drop lstLen revList) in
-      take lstLen (part ++ (drop spillover revList))
+      let spillover = i + len - 256 in
+      let part = take spillover (drop 256 revList) in
+      take 256 (part ++ (drop spillover revList))
 
 knotHash :: [Int] -> String
 knotHash lengths = chunksOf 16 lst & map (toHex . foldl xor 0) & concat
