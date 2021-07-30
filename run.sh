@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 # A simple script to compile and run a solution.
 set -e
 
