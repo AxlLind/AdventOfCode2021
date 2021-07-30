@@ -6,29 +6,29 @@ input = "{{{{{<>},{{<u!>},<!!!!!!!><!!u!!\"!>!!!!!>!>},<,!!o>},{}},{<!>},<{!!a!a
 countGarbage :: Bool -> String -> Int
 countGarbage inGarbage s = case (s, inGarbage) of
   ('!':_:cs, True) -> countGarbage True cs
-  ('>':cs, True) -> countGarbage False cs
-  ('<':cs, False) -> countGarbage True cs
-  (c:cs, True) -> 1 + countGarbage True cs
-  (c:cs, False) -> countGarbage False cs
-  ([], _) -> 0
+  ('>':cs,   True) -> countGarbage False cs
+  ('<':cs,  False) -> countGarbage True cs
+  (c:cs,     True) -> countGarbage True cs + 1
+  (c:cs,    False) -> countGarbage False cs
+  ([],          _) -> 0
 
 removeGarbage :: Bool -> String -> String
 removeGarbage inGarbage s = case (s, inGarbage) of
   ('!':_:cs, True) -> removeGarbage True cs
-  ('>':cs, True) -> removeGarbage False cs
-  ('<':cs, False) -> removeGarbage True cs
-  (c:cs, True) -> removeGarbage True cs
-  (c:cs, False) -> c:removeGarbage False cs
-  ([], _) -> []
+  ('>':cs,   True) -> removeGarbage False cs
+  ('<':cs,  False) -> removeGarbage True cs
+  (c:cs,     True) -> removeGarbage True cs
+  (c:cs,    False) -> c:removeGarbage False cs
+  ([],          _) -> []
 
 scoreGroups :: Int -> Int -> String -> (Int,String)
-scoreGroups score level s = case s of
-  '{':cs ->
-    let (newScore, rest) = scoreGroups 0 (level+1) cs in
-    scoreGroups (score + level + newScore) level rest
-  '}':cs -> (score, cs)
-  _:cs -> scoreGroups score level cs
-  [] -> (score,[])
+scoreGroups score _ [] = (score, [])
+scoreGroups score level (c:s) = case c of
+  '{' ->
+    let (newScore, rest) = scoreGroups (score + level) (level+1) s in
+    scoreGroups newScore level rest
+  '}' -> (score, s)
+  _ -> scoreGroups score level s
 
 solveParts :: Int -> (Int,Int)
 solveParts _ = (part1, part2)
