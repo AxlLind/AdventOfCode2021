@@ -26,18 +26,18 @@ doOperation (lst, i, skip) len = (newList, (i+skip+len) `mod` 256, skip+1)
       let part = take spillover (drop 256 revList) in
       take 256 (part ++ (drop spillover revList))
 
-knotHash :: [Int] -> String
-knotHash lengths = chunksOf 16 lst & map (toHex . foldl xor 0) & concat
+knotHash :: String -> String
+knotHash s = chunksOf 16 lst & map (toHex . foldl xor 0) & concat
   where
+    lengths = map ord s ++ [17, 31, 73, 47, 23]
     (lst,_,_) = replicate 64 lengths & concat & foldl doOperation ([0..255],0,0)
 
 solveParts :: Int -> (Int,String)
 solveParts _ = (part1, part2)
   where
     inputPart1 = splitOn "," input & map read
-    inputPart2 = map ord input ++ [17, 31, 73, 47, 23]
     (lst,_,_) = foldl doOperation ([0..255],0,0) inputPart1
     part1 = (head lst) * (head (tail lst))
-    part2 = knotHash inputPart2
+    part2 = knotHash input
 
 main = Aoc.timer solveParts
