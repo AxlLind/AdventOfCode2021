@@ -23,10 +23,10 @@ part1 particles = zip [0..] particles & minimumBy (compare `on` (vecSize . (\(_,
   where vecSize (x,y,z) = abs x + abs y + abs z
 
 part2 :: [Particle] -> Int -> Int
-part2 particles steps = foldl simulateStep particles [0..steps] & length
+part2 particles steps = iterate simulateStep particles !! steps & length
   where
     samePositions (p1,_,_) (p2,_,_) = p1 == p2
-    simulateStep particles _ = groupBy samePositions particles & filter ((==1) . length) & map (updateParticle . head)
+    simulateStep particles = groupBy samePositions particles & filter ((==1) . length) & map (updateParticle . head)
 
 solveParts :: Int -> (Int,Int)
 solveParts _ = (part1 particles, part2 particles 100)
