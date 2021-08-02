@@ -34,7 +34,7 @@ parseInput s = map parseLine (lines s) & Vec.fromList
       ["jnz",x,y] -> Jnz (parseSrc x) (parseSrc y)
 
 fetchSrc :: Vector Int -> Src -> Int
-fetchSrc _ (Val n) = n
+fetchSrc _    (Val n) = n
 fetchSrc regs (Reg n) = regs!n
 
 execOp :: Vector Int -> Op -> (Int, Int, Vector Int)
@@ -57,8 +57,13 @@ part2 ops regs ip = case ops !? ip of
     part2 ops newRegs (ip+offset)
   Nothing -> regs ! 7
 
+isPrime :: Int -> Bool
+isPrime k = k > 1 && null [ x | x <- [2..k - 1], k `mod` x == 0]
+
 solveParts :: Int -> (Int,Int)
-solveParts _ = (part1 ops (Vec.fromList [0,0,0,0,0,0,0,0]) 0, part2 ops (Vec.fromList [1,0,0,0,0,0,0,0]) 0)
-  where ops = parseInput input
+solveParts _ = (part1 ops (Vec.fromList [0,0,0,0,0,0,0,0]) 0, p2)
+  where
+    ops = parseInput input
+    p2 = filter (not . isPrime . (+ 106700)) [0,17..17000] & length
 
 main = Aoc.timer solveParts
