@@ -50,20 +50,17 @@ part1 ops regs ip = case ops !? ip of
     dres + part1 ops newRegs (ip+offset)
   Nothing -> 0
 
-part2 :: Vector Op -> Vector Int -> Int -> Int
-part2 ops regs ip = case ops !? ip of
-  Just op ->
-    let (_, offset, newRegs) = execOp regs op in
-    part2 ops newRegs (ip+offset)
-  Nothing -> regs ! 7
-
 isPrime :: Int -> Bool
-isPrime k = k > 1 && null [ x | x <- [2..k - 1], k `mod` x == 0]
+isPrime k = k > 1 && null [ x | x <- [2..isqrt k], k `mod` x == 0]
+  where isqrt = floor . sqrt . fromIntegral
+
+part2 :: Op -> Int
+part2 (Set _ (Val n)) = filter (not . isPrime . (+ start)) [0,17..17000] & length
+  where start = n * 100 + 100000
 
 solveParts :: Int -> (Int,Int)
-solveParts _ = (part1 ops (Vec.fromList [0,0,0,0,0,0,0,0]) 0, p2)
+solveParts _ = (part1 ops (Vec.fromList [0,0,0,0,0,0,0,0]) 0, part2 (Vec.head ops))
   where
     ops = parseInput input
-    p2 = filter (not . isPrime . (+ 106700)) [0,17..17000] & length
 
 main = Aoc.timer solveParts
