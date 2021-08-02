@@ -1,3 +1,4 @@
+{-# LANGUAGE BangPatterns #-}
 import Aoc
 import Data.Function
 
@@ -21,8 +22,9 @@ part2 :: Int -> Int
 part2 times = foldl next (0,0) [1..times] & fst
   where
     next (res,i) n =
-      let idx = 1 + (i + 335) `rem` n in
-      (if idx == 1 then n else res, idx)
+      let !idx = 1 + (i + 335) `rem` n in
+      let !newRes = if idx == 1 then n else res in
+      (newRes, idx)
 
 solveParts :: Int -> (Int,Int)
 solveParts _ = (part1 2017, part2 50000000)
