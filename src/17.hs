@@ -4,15 +4,27 @@ import Data.Function
 insertAt :: Int -> a -> [a] -> [a]
 insertAt 0 v lst = v:lst
 insertAt i v (x:xs) = x:insertAt (i-1) v xs
+insertAt i _ [] = error "out of bounds"
 
 findAfter :: Int -> [Int] -> Int
 findAfter n (a:xs) = if a == n then head xs else findAfter n xs
+findAfter _ [] = error "out of bounds"
 
-spinLock :: Int -> Int -> Int -> [Int] -> [Int]
-spinLock goal n i lst = if goal == n then lst else spinLock goal (n+1) (idx+1) (insertAt (idx+1) (n+1) lst)
-  where idx = (i + 335) `rem` (n+1)
+part1 :: Int -> Int
+part1 times = foldl next ([0],0) [1..times] & fst & findAfter 2017
+  where
+    next (lst,i) n =
+      let idx = 1 + (i + 335) `rem` n in
+      (insertAt idx n lst, idx)
+
+part2 :: Int -> Int
+part2 times = foldl next (0,0) [1..times] & fst
+  where
+    next (res,i) n =
+      let idx = 1 + (i + 335) `rem` n in
+      (if idx == 1 then n else res, idx)
 
 solveParts :: Int -> (Int,Int)
-solveParts _ = (spinLock 2017 0 0 [0] & findAfter 2017, (spinLock 50000000 0 0 [0])!!1)
+solveParts _ = (part1 2017, part2 50000000)
 
 main = Aoc.timer solveParts
