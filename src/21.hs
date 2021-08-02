@@ -15,10 +15,7 @@ parseInput s = lines s & concatMap parseLine & Map.fromList
   where
     parseLine s = case splitOn " => " s & map (splitOn "/") of
       [a,b] ->
-        let a1 = (reverse . transpose) a in
-        let a2 = (reverse . transpose) a1 in
-        let a3 = (reverse . transpose) a2 in
-        [a,a1,a2,a3] & concatMap (\a -> [(a,b), (reverse a,b)])
+        iterate (reverse . transpose) a & take 4 & concatMap (\a -> [(a,b), (reverse a,b)])
       _ -> error "invalid input"
 
 getMap :: Map Grid Grid -> Grid -> Grid
