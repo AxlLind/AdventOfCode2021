@@ -33,12 +33,16 @@ isUsed grid (x,y) = testBit byte (7 - bit)
     byte = grid!!x!!n
 
 removeComponent :: Set (Int,Int) -> (Int,Int) -> Set (Int,Int)
-removeComponent nodes (x,y) = if Set.notMember (x,y) nodes then nodes else newSet
+removeComponent nodes (x,y)
+  | Set.member (x,y) nodes = foldl removeComponent (Set.delete (x,y) nodes) neighbours
+  | otherwise              = nodes
   where
-    newSet = [(x-1,y),(x+1,y),(x,y-1),(x,y+1)] & foldl removeComponent (Set.delete (x,y) nodes)
+    neighbours = [(x-1,y),(x+1,y),(x,y-1),(x,y+1)]
 
 numComponents :: Set (Int,Int) -> Int
-numComponents nodes = if Set.size nodes == 0 then 0 else 1 + numComponents newLeft
+numComponents nodes
+  | Set.size nodes == 0 = 0
+  | otherwise           = 1 + numComponents newLeft
   where
     next = head $ Set.toList nodes
     newLeft = removeComponent nodes next

@@ -26,7 +26,9 @@ move v ((x,y),(dx,dy),m) = (newPos, newDir, newMap)
     newMap = Map.insert newPos v m
 
 findPosOf :: Int -> Int -> State -> (Int,Int)
-findPosOf goal prev state = if prev+1 == goal then newPos else findPosOf goal (prev+1) (newPos, newDir, newMap)
+findPosOf goal prev state
+  | prev+1 == goal = newPos
+  | otherwise      = findPosOf goal (prev+1) (newPos, newDir, newMap)
   where (newPos, newDir, newMap) = move (prev+1) state
 
 findPart1 :: Int -> Int
@@ -34,7 +36,9 @@ findPart1 goal = abs x + abs y
   where (x,y) = findPosOf goal 1 initState
 
 findPart2 :: Int -> State -> Int
-findPart2 goal ((x,y),(dx,dy),m) = if newVal > goal then newVal else findPart2 goal newState
+findPart2 goal ((x,y),(dx,dy),m)
+  | newVal > goal = newVal
+  | otherwise     = findPart2 goal newState
   where
     neighbours = [(1,-1),(1,0),(1,1),(0,-1),(0,1),(-1,-1),(-1,0),(-1,1)]
     newVal = neighbours & map (\(a,b) -> Map.findWithDefault 0 (x+dx+a,y+dy+b) m) & sum

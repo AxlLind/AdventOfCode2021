@@ -15,7 +15,6 @@ part2 = part1 . map (map sort)
 
 solveParts :: Int -> (Int,Int)
 solveParts _ = (part1 passphrases, part2 passphrases)
-  where
-    passphrases = map words (lines input)
+  where passphrases = map words (lines input)
 
 main = Aoc.timer solveParts

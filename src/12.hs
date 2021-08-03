@@ -9,23 +9,18 @@ input = "0 <-> 659, 737\n1 <-> 1, 1433\n2 <-> 982, 1869\n3 <-> 306, 380, 1462, 1
 
 parseInput :: String -> Vector [Int]
 parseInput = Vec.fromList . map parseLine . lines
-  where
-    parseLine = map read . drop 2 . words . filter (/=',')
+  where parseLine = map read . drop 2 . words . filter (/=',')
 
 connected :: Vector [Int] -> Set Int -> Int -> Set Int
-connected network seen curr =
-  if Set.member curr seen then
-    seen
-  else
-    network!curr & foldl (connected network) (Set.insert curr seen)
+connected network seen curr
+  | Set.member curr seen = seen
+  | otherwise            = foldl (connected network) (Set.insert curr seen) (network!curr)
 
 numGroups :: Vector [Int] -> Int -> Set Int -> Int
 numGroups _ 0 _ = 0
-numGroups network curr seen =
-  if Set.member curr seen then
-    numGroups network (curr-1) seen
-  else
-    1 + numGroups network (curr-1) (connected network seen curr)
+numGroups network curr seen
+  | Set.member curr seen = numGroups network (curr-1) seen
+  | otherwise            = numGroups network (curr-1) (connected network seen curr) + 1
 
 solveParts :: Int -> (Int,Int)
 solveParts _ = (part1, part2)

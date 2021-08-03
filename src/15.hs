@@ -4,10 +4,14 @@ import Data.Bits
 input = (591, 393)
 
 judgement :: Int -> Int -> Int
-judgement i j = if (.&.) (xor i j) 0xffff == 0 then 1 else 0
+judgement i j
+  | (.&.) (xor i j) 0xffff == 0 = 1
+  | otherwise                   = 0
 
 nextVal :: Int -> Int -> Int -> Int
-nextVal i d factor = if next `rem` d == 0 then next else nextVal next d factor
+nextVal i d factor
+  | next `rem` d == 0 = next
+  | otherwise         = nextVal next d factor
   where next = (i * factor) `rem` 2147483647
 
 numAccepted :: (Int,Int) -> (Int,Int) -> Int -> Int -> Int
