@@ -12,6 +12,7 @@ You can see the output and wall-clock timing for each solution [here](./Output.m
 
 ## Other years
 - [2020](https://github.com/AxlLind/AdventOfCode2020/) in Rust 🦀
+- [2017](https://github.com/AxlLind/AdventOfCode2017/) in Haskell λ
 - [2016](https://github.com/AxlLind/AdventOfCode2016/) in OCaml 🐫
 - [2015](https://github.com/AxlLind/AdventOfCode2015/) in Clojure λ
 
