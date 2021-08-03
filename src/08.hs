@@ -16,23 +16,19 @@ parseInput = map parseLine . lines
     parseOp ">=" v = (<=) v
     parseOp "==" v = (==) v
     parseOp "!=" v = (/=) v
-    parseOp _ _ = error "unreachable"
     parseLine s = case words s of
       [dst,"inc",v,"if",src,op,cond] -> (dst, src, parseOp op (read cond), read v)
       [dst,"dec",v,"if",src,op,cond] -> (dst, src, parseOp op (read cond), -1 * read v)
       _ -> error "unreachable"
 
 runInst :: (Map String Int, Int) -> Inst -> (Map String Int, Int)
-runInst (regs, totalMax) (dst, src, cond, v) =
-  let shouldExec = cond (Map.findWithDefault 0 src regs) in
-  let newRegs = if shouldExec then Map.insertWith (+) dst v regs else regs in
-  let newMax = maximum (Map.elems newRegs) in
-  (newRegs, max totalMax newMax)
+runInst (regs, totalMax) (dst, src, cond, v) = (newRegs, maximum $ totalMax : Map.elems newRegs)
+  where
+    shouldExec = cond $ Map.findWithDefault 0 src regs
+    newRegs = if shouldExec then Map.insertWith (+) dst v regs else regs
 
 solveParts :: Int -> (Int,Int)
-solveParts _ =
-  let insts = parseInput input in
-  let (regs, totalMax) = foldl runInst (Map.empty,0) insts in
-  (maximum (Map.elems regs), totalMax)
+solveParts _ = (maximum $ Map.elems regs, totalMax)
+  where (regs, totalMax) = parseInput input & foldl runInst (Map.empty,0)
 
 main = Aoc.timer solveParts
