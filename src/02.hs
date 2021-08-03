@@ -11,11 +11,11 @@ part2 :: [[Int]] -> Int
 part2 = sum . map findDivisible
   where
     pairs l = [(max x y, min x y) | (x:ys) <- tails l, y <- ys]
-    findDivisible l = pairs l & filter (\(a,b) -> a `mod` b == 0) & map (\(a,b) -> a `div` b) & sum
+    findDivisible l = pairs l & filter (\(a,b) -> a `mod` b == 0) & map (uncurry div) & sum
 
 solveParts :: Int -> (Int,Int)
 solveParts _ = (part1 rows, part2 rows)
   where
-    rows = input & lines & map (map read . words)
+    rows = lines input & map (map read . words)
 
 main = Aoc.timer solveParts
