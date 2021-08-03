@@ -13,7 +13,7 @@ input = "jlbcwrl (93)\nfzqsahw (256) -> lybovx, pdmhva\nrxivjo (206) -> mewof, h
 type TowerMap = Map String (Int, [String])
 
 parseInput :: String -> TowerMap
-parseInput s = lines s & map parseLine & Map.fromList
+parseInput = Map.fromList . map parseLine . lines
   where
     parseNum n = read $ (init . tail) n
     parseLine l = case words l of
@@ -22,8 +22,8 @@ parseInput s = lines s & map parseLine & Map.fromList
       _ -> error "unreachable"
 
 findRoot :: TowerMap -> String
-findRoot m = Map.filter ((/=[]) . snd) m & Map.keys & filter (\k -> Set.notMember k neighbours) & head
-  where neighbours = Map.elems m & map snd & concat & Set.fromList
+findRoot m = Map.filter (not . null . snd) m & Map.keys & filter (`Set.notMember` neighbours) & head
+  where neighbours = Map.elems m & concatMap snd & Set.fromList
 
 mapGet :: Ord a => Map a b -> a -> b
 mapGet m k = Map.lookup k m & fromJust
