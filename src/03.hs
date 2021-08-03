@@ -5,17 +5,17 @@ import qualified Data.Map as Map
 type PosMap = Map.Map (Int,Int) Int
 type State = ((Int,Int), (Int,Int), PosMap)
 
-initState = ((0,0), (1,0), (Map.fromList [((0,0),1)]))
+initState = ((0,0), (1,0), Map.fromList [((0,0),1)])
 
 turn :: (Int,Int) -> (Int,Int)
-turn (1,0)  = (0,1)
+turn ( 1,0) = (0,1)
 turn (-1,0) = (0,-1)
-turn (0,1)  = (-1,0)
+turn (0, 1) = (-1,0)
 turn (0,-1) = (1,0)
 turn dir = dir
 
 atCorner :: PosMap -> (Int,Int) -> Bool
-atCorner m (x,y) = neighbours & filter (\pos -> Map.notMember pos m) & length & (==3)
+atCorner m (x,y) = neighbours & filter (`Map.notMember` m) & length & (==3)
   where neighbours = [(x+1,y),(x-1,y),(x,y+1),(x,y-1)]
 
 move :: Int -> State -> State
@@ -30,7 +30,7 @@ findPosOf goal prev state = if prev+1 == goal then newPos else findPosOf goal (p
   where (newPos, newDir, newMap) = move (prev+1) state
 
 findPart1 :: Int -> Int
-findPart1 goal = (abs x) + (abs y)
+findPart1 goal = abs x + abs y
   where (x,y) = findPosOf goal 1 initState
 
 findPart2 :: Int -> State -> Int
