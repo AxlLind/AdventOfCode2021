@@ -34,11 +34,13 @@ parseInput s = lines s & map (parseOp . words) & Vec.fromList
     parseOp _ = error "invalid input"
 
 fetchSrc :: Map Char Int -> Src -> Int
-fetchSrc _ (Val v) = v
+fetchSrc _    (Val v) = v
 fetchSrc regs (Reg c) = Map.findWithDefault 0 c regs
 
 part1 :: Vector Op -> Int -> ([Int], [Int], Map Char Int) -> Int
-part1 ops ip state = if recv /= [] then head recv else part1 ops (ip + offset) newState
+part1 ops ip state
+  | not (null recv) = head recv
+  | otherwise       = part1 ops (ip + offset) newState
   where
     execOp (sent, recv, regs) (Snd x)   = (1, (fetchSrc regs x:sent, recv, regs))
     execOp (sent, recv, regs) (Set x y) = (1, (sent, recv, Map.insert x (fetchSrc regs y) regs))
@@ -51,9 +53,10 @@ part1 ops ip state = if recv /= [] then head recv else part1 ops (ip + offset) n
     (offset, newState) = execOp state (ops!ip)
     (_,recv,_) = newState
 
-
 part2 :: Vector Op -> (Int, Int, [Int], [Int], Map Char Int, Map Char Int) -> Int
-part2 ops (ip0,ip1,q0,q1,regs0,regs1) = if (offset0,offset1) == (0,0) then 0 else length sent1 + part2 ops newState
+part2 ops (ip0,ip1,q0,q1,regs0,regs1)
+  | (offset0,offset1) == (0,0) = 0
+  | otherwise = length sent1 + part2 ops newState
   where
     execOp regs queue     (Snd x)   = (1, [fetchSrc regs x], queue, regs)
     execOp regs queue     (Set x y) = (1, [], queue, Map.insert x (fetchSrc regs y) regs)
