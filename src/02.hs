@@ -15,7 +15,6 @@ part2 = sum . map findDivisible
 
 solveParts :: Int -> (Int,Int)
 solveParts _ = (part1 rows, part2 rows)
-  where
-    rows = lines input & map (map read . words)
+  where rows = lines input & map (map read . words)
 
 main = Aoc.timer solveParts
