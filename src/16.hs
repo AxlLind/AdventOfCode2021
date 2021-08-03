@@ -8,7 +8,9 @@ input = "x13/9,s8,x4/12,s11,x9/6,pi/b,x5/0,pl/o,x11/14,pg/k,x8/1,pf/h,x2/13,s10,
 
 initState = "abcdefghijklmnop"
 
-data Op = Spin Int | Exchange Int Int | Partner Char Char
+data Op = Spin Int
+        | Exchange Int Int
+        | Partner Char Char
 
 parseInput :: String -> [Op]
 parseInput = map parseOp . splitOn ","
@@ -31,19 +33,18 @@ execOp s (Spin n) = rotate (length s - n) s
 execOp s (Exchange i j) = swapElems (s!!i) (s!!j) s
 execOp s (Partner a b) = swapElems a b s
 
-execOps :: String -> [Op] -> String
-execOps = foldl execOp
-
 findCycleLength :: Int -> String -> [Op] -> Int
-findCycleLength i s ops = if next == initState then (i+1) else findCycleLength (i+1) next ops
-  where next = execOps s ops
+findCycleLength i s ops
+  | next == initState = i+1
+  | otherwise         = findCycleLength (i+1) next ops
+  where next = foldl execOp s ops
 
 runBillionOps :: String -> [Op] -> String
-runBillionOps s ops = concatMap (\_ -> ops) [1..rounds] & execOps s
-  where rounds = 1000000000 `rem` (findCycleLength 0 s ops)
+runBillionOps s ops = concatMap (const ops) [1..rounds] & foldl execOp s
+  where rounds = 1000000000 `rem` findCycleLength 0 s ops
 
 solveParts :: Int -> (String,String)
-solveParts _ = (execOps initState ops, runBillionOps initState ops)
+solveParts _ = (foldl execOp initState ops, runBillionOps initState ops)
   where ops = parseInput input
 
 main = Aoc.timer solveParts
