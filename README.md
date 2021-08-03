@@ -13,6 +13,7 @@ clj -M src/DAY.clj
 ## Other years
 - [2020](https://github.com/AxlLind/AdventOfCode2020/) in Rust 🦀
 - [2019](https://github.com/AxlLind/AdventOfCode2019/) in Rust 🦀
+- [2017](https://github.com/AxlLind/AdventOfCode2017/) in Haskell λ
 - [2016](https://github.com/AxlLind/AdventOfCode2016/) in OCaml 🐫
 
 ![end-screen](./pictures/end-screen.png)
