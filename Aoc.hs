@@ -5,7 +5,7 @@ elapsedMs :: UTCTime -> IO Int
 elapsedMs t0 = do
   t1 <- getCurrentTime
   let dt = nominalDiffTimeToSeconds $ diffUTCTime t1 t0
-  return $ (round $ dt * 1000000) `div` 1000
+  return $ round (dt * 1000000) `div` 1000
 
 timer :: (Show a, Show b) => (Int -> (a,b)) -> IO()
 timer fn = do
