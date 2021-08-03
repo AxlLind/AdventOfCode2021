@@ -8,8 +8,10 @@ insertAt i v (x:xs) = x:insertAt (i-1) v xs
 insertAt i _ [] = error "out of bounds"
 
 findAfter :: Int -> [Int] -> Int
-findAfter n (a:xs) = if a == n then head xs else findAfter n xs
 findAfter _ [] = error "out of bounds"
+findAfter n (a:xs)
+  | a == n    = head xs
+  | otherwise = findAfter n xs
 
 part1 :: Int -> Int
 part1 times = foldl next ([0],0) [1..times] & fst & findAfter 2017
