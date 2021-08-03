@@ -14,13 +14,15 @@ moveMaximum v = v // updates
     idx j = mod (i+j) (Vec.length v)
     updates = (i,0):[(idx j, (v ! idx j) + 1) | j <- [1..(v ! i)]]
 
-findRepeat :: Map (Vector Int) Int -> Int -> Vector Int -> (Int -> Int -> Int) -> Int
-findRepeat seen c v answerFn = case Map.lookup v seen of
-  Just x -> answerFn x c
-  Nothing -> findRepeat (Map.insert v c seen) (c+1) (moveMaximum v) answerFn
+findRepeat :: Map (Vector Int) Int -> Int -> Vector Int -> (Int,Int)
+findRepeat seen c v = case Map.lookup v seen of
+  Just x -> (x,c)
+  Nothing -> findRepeat (Map.insert v c seen) (c+1) (moveMaximum v)
 
 solveParts :: Int -> (Int,Int)
-solveParts _ = (solverFn (\_ y -> y), solverFn (\x y -> y - x))
-  where solverFn = words input & map read & Vec.fromList & findRepeat Map.empty 0
+solveParts _ = (c, c - x)
+  where
+    inputs = words input & map read & Vec.fromList
+    (x,c) = findRepeat Map.empty 0 inputs
 
 main = Aoc.timer solveParts
