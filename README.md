@@ -7,3 +7,5 @@ Aside from some small things at university, this was pretty much my first time w
 ```sh
 ./run.sh DAY
 ```
+
+![end-screen](./pictures/end-screen.png)
