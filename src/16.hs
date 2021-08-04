@@ -33,15 +33,12 @@ execOp s (Spin n) = rotate (length s - n) s
 execOp s (Exchange i j) = swapElems (s!!i) (s!!j) s
 execOp s (Partner a b) = swapElems a b s
 
-findCycleLength :: Int -> String -> [Op] -> Int
-findCycleLength i s ops
-  | next == initState = i+1
-  | otherwise         = findCycleLength (i+1) next ops
-  where next = foldl execOp s ops
+cycleLen :: [Op] -> Int
+cycleLen ops = (iterate (flip (foldl execOp) ops) initState & tail & takeWhile (/= initState) & length) + 1
 
 runBillionOps :: String -> [Op] -> String
 runBillionOps s ops = concatMap (const ops) [1..rounds] & foldl execOp s
-  where rounds = 1000000000 `rem` findCycleLength 0 s ops
+  where rounds = 1000000000 `rem` cycleLen ops
 
 solveParts :: Int -> (String,String)
 solveParts _ = (foldl execOp initState ops, runBillionOps initState ops)
