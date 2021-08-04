@@ -13,13 +13,8 @@ input = "jlbcwrl (93)\nfzqsahw (256) -> lybovx, pdmhva\nrxivjo (206) -> mewof, h
 type TowerMap = Map String (Int, [String])
 
 parseInput :: String -> TowerMap
-parseInput = Map.fromList . map parseLine . lines
-  where
-    parseNum n = read $ (init . tail) n
-    parseLine l = case words l of
-      [name, n] -> (name, (parseNum n, []))
-      name:n:_:rest -> (name, (parseNum n, map (filter (/=',')) rest))
-      _ -> error "unreachable"
+parseInput = Map.fromList . map (parseLine . words) . lines . filter (`notElem` ",()->")
+  where parseLine (name:n:rest) = (name, (read n, rest))
 
 findRoot :: TowerMap -> String
 findRoot m = Map.filter (not . null . snd) m & Map.keys & filter (`Set.notMember` neighbours) & head
@@ -29,7 +24,7 @@ mapGet :: Ord a => Map a b -> a -> b
 mapGet m k = Map.lookup k m & fromJust
 
 weight :: TowerMap -> String -> Int
-weight m k = n + (sum . map (weight m)) neighbours
+weight m k = n + sum (map (weight m) neighbours)
   where (n,neighbours) = mapGet m k
 
 findDiscrepancy :: TowerMap -> String -> Maybe Int
