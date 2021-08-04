@@ -11,8 +11,8 @@ moveMaximum :: Vector Int -> Vector Int
 moveMaximum v = v // updates
   where
     i = Vec.maxIndex v
-    idx j = mod (i+j) (Vec.length v)
-    updates = (i,0):[(idx j, (v ! idx j) + 1) | j <- [1..(v ! i)]]
+    idx j = (i+j) `mod` Vec.length v
+    updates = (i,0):[(idx j, v ! idx j + 1) | j <- [1..v ! i]]
 
 findRepeat :: Map (Vector Int) Int -> Int -> Vector Int -> (Int,Int)
 findRepeat seen c v = case Map.lookup v seen of
