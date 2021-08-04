@@ -19,7 +19,7 @@ data Op = Snd Src
         | Jgz Src Src
 
 parseInput :: String -> Vector Op
-parseInput s = lines s & map (parseOp . words) & Vec.fromList
+parseInput = Vec.fromList . map (parseOp . words) . lines
   where
     parseSrc s = case readMaybe s of
       Just n -> Val n

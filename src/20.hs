@@ -9,13 +9,13 @@ input = "p=<1609,-863,-779>, v=<-15,54,-69>, a=<-10,0,14>\np=<-391,1353,-387>, v
 type Particle = ((Int,Int,Int),(Int,Int,Int),(Int,Int,Int))
 
 parseInput :: String -> [Particle]
-parseInput s = lines s & map (parseParticle . map read . filter (not . null) . splitWhen (\c -> c /= '-' && not (isDigit c)))
+parseInput = map (parseParticle . map read . filter (not . null) . splitWhen (`notElem` "-1234567890")) . lines
   where
     parseParticle [x,y,z,vx,vy,vz,ax,ay,az] = ((x,y,z),(vx,vy,vz),(ax,ay,az))
     parseParticle xs = error ("invalid input" ++ show xs)
 
 updateParticle :: Particle -> Particle
-updateParticle (p,v,a) = (vecAdd p (vecAdd v a), vecAdd v a, a)
+updateParticle (p,v,a) = (vecAdd p $ vecAdd v a, vecAdd v a, a)
   where vecAdd (x,y,z) (a,b,c) = (x+a,y+b,z+c)
 
 part1 :: [Particle] -> Int
