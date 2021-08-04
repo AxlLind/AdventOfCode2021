@@ -11,7 +11,7 @@ input = "../.. => .../#.#/...\n#./.. => ..#/..#/#..\n##/.. => .../#../..#\n.#/#.
 type Grid = [String]
 
 parseInput :: String -> Map Grid Grid
-parseInput s = lines s & concatMap parseLine & Map.fromList
+parseInput = Map.fromList . concatMap parseLine . lines
   where
     parseLine s = case splitOn " => " s & map (splitOn "/") of
       [a,b] ->
@@ -19,15 +19,13 @@ parseInput s = lines s & concatMap parseLine & Map.fromList
       _ -> error "invalid input"
 
 getMap :: Map Grid Grid -> Grid -> Grid
-getMap m k = case Map.lookup k m of
-  Just v -> v
-  Nothing -> error ("Key not found: " ++ show k)
+getMap m k = Map.lookup k m & fromJust
 
 simulateStep :: Map Grid Grid -> Grid -> Grid
 simulateStep rules grid = chunksOf size grid & concatMap mapChunk
   where
     size = if even (length grid) then 2 else 3
-    mapChunk chunk = map (chunksOf size) chunk & transpose & map (getMap rules) & transpose & map concat
+    mapChunk = map concat . transpose . map (getMap rules) . transpose . map (chunksOf size)
 
 simulate :: Map Grid Grid -> Int -> Int
 simulate rules times = concat finalGrid & filter (=='#') & length
