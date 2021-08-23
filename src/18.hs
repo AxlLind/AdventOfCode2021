@@ -75,8 +75,7 @@ solveParts :: Int -> (Int,Int)
 solveParts _ = (p1,p2)
   where
     ops = parseInput input
-    p1 = part1 ops 0 ([], [], Map.empty)
+    p1 = part1 ops 0 ([],[],Map.empty)
     p2 = part2 ops (0,0,[],[], Map.fromList [('p',0)], Map.fromList [('p',1)])
 
-main = do
-  Aoc.timer solveParts
+main = Aoc.timer solveParts
