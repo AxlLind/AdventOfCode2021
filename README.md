@@ -31,4 +31,4 @@ dune exec --release src/DAY.exe
 - [2017](https://github.com/AxlLind/AdventOfCode2017/) in Haskell λ
 - [2015](https://github.com/AxlLind/AdventOfCode2015/) in Clojure λ
 
-![end-screen](./pictures/end-screen.png)
+![end-screen](./end-screen.png)
