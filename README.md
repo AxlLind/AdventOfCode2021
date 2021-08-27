@@ -16,4 +16,4 @@ My only gripe with Haskell is the very unreliable performance. Some functions th
 - [2016](https://github.com/AxlLind/AdventOfCode2016/) in OCaml :camel:
 - [2015](https://github.com/AxlLind/AdventOfCode2015/) in Clojure λ
 
-![end-screen](./pictures/end-screen.png)
+![end-screen](./end-screen.png)
