@@ -15,6 +15,5 @@ if [ -z "$AOC_SESSION" ]; then
   exit 1
 fi
 
-URL="https://adventofcode.com/2020/day/$1/input"
+URL="https://adventofcode.com/2021/day/$1/input"
 curl $URL --cookie "session=$AOC_SESSION" -s | tee >(pbcopy)
-
