@@ -4,7 +4,7 @@ static INPUT: &[u32] = &[195,197,201,204,203,216,213,215,216,185,188,190,205,218
 
 fn part1(iter: impl Iterator<Item=u32>) -> usize {
   iter.tuple_windows()
-    .filter(|&(a,b)| a < b)
+    .filter(|(a,b)| a < b)
     .count()
 }
 
