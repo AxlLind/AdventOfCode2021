@@ -2,9 +2,8 @@
 name = "aoc2021"
 version = "0.1.0"
 authors = ["Axel Lindeberg <axel.ew.lindeberg@gmail.com>"]
-edition = "2021"
+edition = "2018"
 default-run = "aoc2021"
 
 [dependencies]
-itertools = "0.9"
-
+itertools = "0.10"
