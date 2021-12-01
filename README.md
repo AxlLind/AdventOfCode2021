@@ -11,6 +11,7 @@ My only gripe with Haskell is the very unreliable performance. Some functions th
 ```
 
 ## Other years
+- [2021](https://github.com/AxlLind/AdventOfCode2021/) in Rust 🦀
 - [2020](https://github.com/AxlLind/AdventOfCode2020/) in Rust :crab:
 - [2019](https://github.com/AxlLind/AdventOfCode2019/) in Rust :crab:
 - [2016](https://github.com/AxlLind/AdventOfCode2016/) in OCaml :camel:
