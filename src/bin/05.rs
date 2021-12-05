@@ -20,12 +20,11 @@ fn num_overlapping(lines: impl Iterator<Item=(i32,i32,i32,i32)>) -> usize {
 
 aoc2021::main! {
   let lines = INPUT.lines()
-    .map(|l| l.split(" -> ")
-      .map(|s| s.split(","))
+    .filter_map(|l| l.split(" -> ")
+      .map(|s| s.split(','))
       .flatten()
       .map(|i| i.parse().unwrap())
       .collect_tuple()
-      .unwrap()
     )
     .collect::<Vec<_>>();
   let p1 = num_overlapping(lines.iter().copied().filter(|(x1,y1,x2,y2)| x1 == x2 || y1 == y2));
