@@ -9,11 +9,11 @@ fn simulate_fishes(mut fishes: [usize;9], size: usize) -> usize {
 }
 
 aoc2021::main! {
-  let mut init_fishes = [0;9];
+  let mut fishes = [0;9];
   for &i in INPUT {
-    init_fishes[i] += 1;
+    fishes[i] += 1;
   }
-  let p1 = simulate_fishes(init_fishes, 80);
-  let p2 = simulate_fishes(init_fishes, 256);
+  let p1 = simulate_fishes(fishes, 80);
+  let p2 = simulate_fishes(fishes, 256);
   (p1,p2)
 }
