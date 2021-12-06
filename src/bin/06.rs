@@ -2,21 +2,20 @@ static INPUT: &[usize] = &[4,1,4,1,3,3,1,4,3,3,2,1,1,3,5,1,3,5,2,5,1,5,5,1,3,2,5
 
 fn fishes(mut fishes: [usize;9], size: usize) -> usize {
   for _ in 0..size {
-    let mut new_fish = [0;9];
+    let f = fishes[0];
     for x in 1..9 {
-      new_fish[x-1] = fishes[x];
+      fishes[x-1] = fishes[x];
     }
-    new_fish[8] = fishes[0];
-    new_fish[6] += fishes[0];
-    fishes = new_fish;
+    fishes[8] = f;
+    fishes[6] += f;
   }
   fishes.iter().sum()
 }
 
 aoc2021::main! {
   let mut init_fishes = [0;9];
-  for i in INPUT {
-    init_fishes[*i] += 1;
+  for &i in INPUT {
+    init_fishes[i] += 1;
   }
   let p1 = fishes(init_fishes, 80);
   let p2 = fishes(init_fishes, 256);
