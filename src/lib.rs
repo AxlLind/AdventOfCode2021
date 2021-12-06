@@ -12,4 +12,3 @@ macro_rules! main {
     }
   }
 }
-
