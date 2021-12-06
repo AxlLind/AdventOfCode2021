@@ -2,12 +2,8 @@ static INPUT: &[usize] = &[4,1,4,1,3,3,1,4,3,3,2,1,1,3,5,1,3,5,2,5,1,5,5,1,3,2,5
 
 fn simulate_fishes(mut fishes: [usize;9], size: usize) -> usize {
   for _ in 0..size {
-    let f = fishes[0];
-    for x in 1..9 {
-      fishes[x-1] = fishes[x];
-    }
-    fishes[8] = f;
-    fishes[6] += f;
+    fishes.rotate_left(1);
+    fishes[6] += fishes[8];
   }
   fishes.iter().sum()
 }
