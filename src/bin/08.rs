@@ -57,8 +57,8 @@ aoc2021::main! {
   let input = INPUT.lines()
     .map(|l| {
       let (a,b) = l.split_once(" | ").unwrap();
-      let x = a.split_whitespace().collect::<Vec<_>>();
-      let y = b.split_whitespace().collect::<Vec<_>>();
+      let x = a.split_whitespace().collect();
+      let y = b.split_whitespace().collect();
       (x,y)
     })
     .collect::<Vec<_>>();
