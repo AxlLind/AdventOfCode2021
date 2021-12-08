@@ -13,7 +13,7 @@ fn display_digit(perm: &[char], s: &str) -> Option<usize> {
     .map(|c| perm[(c as u8 - b'a') as usize])
     .sorted()
     .collect::<String>();
-  DIGITS.iter().position(|&s| s == decoded.as_str())
+  DIGITS.iter().position(|&s| s == decoded)
 }
 
 fn try_permutation(perm: &[char], (a,b): &(Vec<&str>, Vec<&str>)) -> Option<usize> {
