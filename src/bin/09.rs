@@ -17,10 +17,9 @@ fn remove_component((x,y): (usize,usize), coords: &mut HashSet<(usize,usize)>) -
   if !coords.remove(&(x,y)) {
     return 0;
   }
-  let size = [(x-1,y),(x+1,y),(x,y-1),(x,y+1)].iter()
+  1 + [(x-1,y),(x+1,y),(x,y-1),(x,y+1)].iter()
     .map(|&neighbour| remove_component(neighbour, coords))
-    .sum::<usize>();
-  1 + size
+    .sum::<usize>()
 }
 
 fn part2(input: &[Vec<u8>]) -> usize {
