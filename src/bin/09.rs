@@ -13,18 +13,19 @@ fn part1(input: &[Vec<u8>]) -> usize {
     .sum()
 }
 
-fn remove_component((x,y): (i32,i32), coords: &mut HashSet<(i32,i32)>) -> usize {
+fn remove_component((x,y): (usize,usize), coords: &mut HashSet<(usize,usize)>) -> usize {
   if !coords.remove(&(x,y)) {
     return 0;
   }
-  let n = [(x-1,y),(x+1,y),(x,y-1),(x,y+1)];
-  1 + n.iter().map(|&neighbour| remove_component(neighbour, coords)).sum::<usize>()
+  let size = [(x-1,y),(x+1,y),(x,y-1),(x,y+1)].iter()
+    .map(|&neighbour| remove_component(neighbour, coords))
+    .sum::<usize>();
+  1 + size
 }
 
 fn part2(input: &[Vec<u8>]) -> usize {
   let mut points = (0..input[0].len()).cartesian_product(0..input.len())
     .filter(|&(x,y)| input[y][x] != 9)
-    .map(|(x,y)| (x as i32, y as i32))
     .collect::<HashSet<_>>();
   let mut cs = vec![];
   while let Some(&p) = points.iter().next() {
