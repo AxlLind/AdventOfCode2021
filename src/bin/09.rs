@@ -5,29 +5,20 @@ static INPUT: &str = "4323999434356678989012399854245901359876432101298901239876
 
 fn part1(input: &[Vec<u8>]) -> usize {
   (0..input[0].len()).cartesian_product(0..input.len())
-    .filter(|&(x,y)| {
-      let n = {
-        let (x,y) = (x as i32, y as i32);
-        [(x-1,y),(x+1,y),(x,y-1),(x,y+1)]
-      };
-      let i = input[y][x];
-      n.iter()
-        .filter(|&&(x,y)|
-          x != -1 && x != input[0].len() as i32
-          && y != -1 && y != input.len() as i32
-        )
-        .all(|&(x,y)| input[y as usize][x as usize] > i)
-    })
+    .filter(|&(x,y)| [(x-1,y),(x+1,y),(x,y-1),(x,y+1)].iter()
+      .filter_map(|&(x,y)| input.get(y as usize).and_then(|line| line.get(x as usize)))
+      .all(|&i| i > input[y][x])
+    )
     .map(|(x,y)| input[y][x] as usize + 1)
     .sum()
 }
 
-fn remove_clique((x,y): (i32,i32), coords: &mut HashSet<(i32,i32)>) -> usize {
+fn remove_component((x,y): (i32,i32), coords: &mut HashSet<(i32,i32)>) -> usize {
   if !coords.remove(&(x,y)) {
     return 0;
   }
   let n = [(x-1,y),(x+1,y),(x,y-1),(x,y+1)];
-  1 + n.iter().map(|&neighbour| remove_clique(neighbour, coords)).sum::<usize>()
+  1 + n.iter().map(|&neighbour| remove_component(neighbour, coords)).sum::<usize>()
 }
 
 fn part2(input: &[Vec<u8>]) -> usize {
@@ -36,11 +27,8 @@ fn part2(input: &[Vec<u8>]) -> usize {
     .map(|(x,y)| (x as i32, y as i32))
     .collect::<HashSet<_>>();
   let mut cs = vec![];
-  loop {
-    match points.iter().next() {
-      Some(&p) => cs.push(remove_clique(p, &mut points)),
-      None => break
-    }
+  while let Some(&p) = points.iter().next() {
+    cs.push(remove_component(p, &mut points));
   }
   cs.iter().sorted().rev().take(3).product()
 }
