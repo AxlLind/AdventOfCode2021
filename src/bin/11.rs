@@ -19,13 +19,13 @@ fn flash(flashed: &mut HashSet<(usize,usize)>, map: &mut [[u8;10];10], c: usize,
 
 fn round(map: &mut [[u8;10];10]) -> usize {
   let mut flashed = HashSet::new();
-  for (r,c) in (0..map.len()).cartesian_product(0..map[0].len()) {
+  for (r,c) in (0..10).cartesian_product(0..10) {
     map[r][c] += 1;
   }
-  for (r,c) in (0..map.len()).cartesian_product(0..map[0].len()) {
+  for (r,c) in (0..10).cartesian_product(0..10) {
     flash(&mut flashed, map, c, r);
   }
-  for (r,c) in (0..map.len()).cartesian_product(0..map[0].len()) {
+  for (r,c) in (0..10).cartesian_product(0..10) {
     if map[r][c] > 9 {
       map[r][c] = 0;
     }
