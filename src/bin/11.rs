@@ -33,16 +33,9 @@ fn round(map: &mut [[u8;10];10]) -> usize {
   flashed.len()
 }
 
-fn part1() -> usize {
-  let mut map = INPUT;
-  (0..100).map(|_| round(&mut map)).sum()
-}
-
-fn part2() -> usize {
-  let mut map = INPUT;
-  (0..).find(|_| round(&mut map) == 100).unwrap()
-}
-
 aoc2021::main! {
-  (part1(),part2())
+  let mut map = INPUT;
+  let p1 = (0..100).map(|_| round(&mut map)).sum::<usize>();
+  let p2 = (100..).find(|_| round(&mut map) == 100).unwrap();
+  (p1,p2)
 }
