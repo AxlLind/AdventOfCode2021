@@ -36,7 +36,7 @@ fn part2(boards: &[Board]) -> usize {
   let mut boards = boards.iter().collect::<HashSet<_>>();
   for i in 5..DRAWS.len() {
     let winners = boards.iter()
-      .filter_map(|b| check_board(&DRAWS[0..i], &b).map(|score| (b.clone(),score)))
+      .filter_map(|&b| check_board(&DRAWS[0..i], b).map(|score| (b,score)))
       .collect::<Vec<_>>();
     for (b,_) in &winners {
       boards.remove(b);
@@ -50,11 +50,10 @@ fn part2(boards: &[Board]) -> usize {
 
 aoc2021::main! {
   let boards = INPUT.split("\n\n")
-    .map(|b| {
-      b.lines()
-        .map(|l| l.split_whitespace().map(|i| i.parse().unwrap()).collect())
-        .collect()
-    })
-    .collect::<Vec<Board>>();
+    .map(|b| b.lines()
+      .map(|l| l.split_whitespace().map(|i| i.parse().unwrap()).collect())
+      .collect()
+    )
+    .collect::<Vec<_>>();
   (part1(&boards), part2(&boards))
 }
