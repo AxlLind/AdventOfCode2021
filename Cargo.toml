@@ -2,7 +2,7 @@
 name = "aoc2021"
 version = "0.1.0"
 authors = ["Axel Lindeberg <axel.ew.lindeberg@gmail.com>"]
-edition = "2018"
+edition = "2021"
 default-run = "aoc2021"
 
 [dependencies]
