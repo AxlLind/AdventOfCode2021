@@ -1,28 +1,27 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 
 static INPUT: &str = "ex-NL\nex-um\nql-wv\nVF-fo\nVF-ql\nstart-VF\nend-tg\nwv-ZQ\nwv-um\nNL-start\nlx-ex\nex-wv\nex-fo\nsb-start\num-end\nfo-ql\nNL-sb\nNL-fo\ntg-NL\nVF-sb\nfo-wv\nex-VF\nql-sb\nend-wv";
 
 fn num_paths<'a>(
   graph: &HashMap<&'a str, Vec<&'a str>>,
   src: &'a str,
-  seen: &mut HashSet<&'a str>,
+  path: &mut Vec<&'a str>,
   mut seen_twice: Option<&'a str>
 ) -> usize {
   if src == "end" {
     return 1;
   }
-  if src.chars().all(|c| c.is_lowercase()) && !seen.insert(src) {
+  if src.chars().all(|c| c.is_lowercase()) && path.contains(&src) {
     if seen_twice.is_some() || src == "start" {
       return 0;
     }
     seen_twice = Some(src);
   }
+  path.push(src);
   let ans = graph[src].iter()
-    .map(|n| num_paths(graph, n, seen, seen_twice))
+    .map(|n| num_paths(graph, n, path, seen_twice))
     .sum();
-  if seen_twice.unwrap_or("") != src {
-    seen.remove(src);
-  }
+  path.pop();
   ans
 }
 
@@ -33,7 +32,7 @@ aoc2021::main! {
     graph.entry(a).or_insert(Vec::new()).push(b);
     graph.entry(b).or_insert(Vec::new()).push(a);
   }
-  let p1 = num_paths(&graph, "start", &mut HashSet::new(), Some(""));
-  let p2 = num_paths(&graph, "start", &mut HashSet::new(), None);
+  let p1 = num_paths(&graph, "start", &mut Vec::new(), Some(""));
+  let p2 = num_paths(&graph, "start", &mut Vec::new(), None);
   (p1,p2)
 }
