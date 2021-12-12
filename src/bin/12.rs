@@ -2,21 +2,7 @@ use std::collections::{HashMap, HashSet};
 
 static INPUT: &str = "ex-NL\nex-um\nql-wv\nVF-fo\nVF-ql\nstart-VF\nend-tg\nwv-ZQ\nwv-um\nNL-start\nlx-ex\nex-wv\nex-fo\nsb-start\num-end\nfo-ql\nNL-sb\nNL-fo\ntg-NL\nVF-sb\nfo-wv\nex-VF\nql-sb\nend-wv";
 
-fn part1<'a>(graph: &HashMap<&'a str, Vec<&'a str>>, src: &'a str, seen: &mut HashSet<&'a str>) -> usize {
-  if src == "end" {
-    return 1;
-  }
-  if src.chars().all(|c| c.is_lowercase()) && !seen.insert(src) {
-    return 0;
-  }
-  let ans = graph[src].iter()
-    .map(|n| part1(graph, n, seen))
-    .sum::<usize>();
-  seen.remove(src);
-  ans
-}
-
-fn part2<'a>(graph: &HashMap<&'a str, Vec<&'a str>>, src: &'a str, seen: &mut HashSet<&'a str>, mut seen_twice: Option<&'a str>) -> usize {
+fn num_paths<'a>(graph: &HashMap<&'a str, Vec<&'a str>>, src: &'a str, seen: &mut HashSet<&'a str>, mut seen_twice: Option<&'a str>) -> usize {
   if src == "end" {
     return 1;
   }
@@ -27,8 +13,8 @@ fn part2<'a>(graph: &HashMap<&'a str, Vec<&'a str>>, src: &'a str, seen: &mut Ha
     seen_twice = Some(src);
   }
   let ans = graph[src].iter()
-    .map(|n| part2(graph, n, seen, seen_twice))
-    .sum::<usize>();
+    .map(|n| num_paths(graph, n, seen, seen_twice))
+    .sum();
   if seen_twice.unwrap_or("") != src {
     seen.remove(src);
   }
@@ -42,7 +28,7 @@ aoc2021::main! {
     graph.entry(a).or_insert(Vec::new()).push(b);
     graph.entry(b).or_insert(Vec::new()).push(a);
   }
-  let p1 = part1(&graph, "start", &mut HashSet::new());
-  let p2 = part2(&graph, "start", &mut HashSet::new(), None);
+  let p1 = num_paths(&graph, "start", &mut HashSet::new(), Some(""));
+  let p2 = num_paths(&graph, "start", &mut HashSet::new(), None);
   (p1,p2)
 }
