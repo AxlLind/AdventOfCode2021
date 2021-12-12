@@ -2,7 +2,12 @@ use std::collections::{HashMap, HashSet};
 
 static INPUT: &str = "ex-NL\nex-um\nql-wv\nVF-fo\nVF-ql\nstart-VF\nend-tg\nwv-ZQ\nwv-um\nNL-start\nlx-ex\nex-wv\nex-fo\nsb-start\num-end\nfo-ql\nNL-sb\nNL-fo\ntg-NL\nVF-sb\nfo-wv\nex-VF\nql-sb\nend-wv";
 
-fn num_paths<'a>(graph: &HashMap<&'a str, Vec<&'a str>>, src: &'a str, seen: &mut HashSet<&'a str>, mut seen_twice: Option<&'a str>) -> usize {
+fn num_paths<'a>(
+  graph: &HashMap<&'a str, Vec<&'a str>>,
+  src: &'a str,
+  seen: &mut HashSet<&'a str>,
+  mut seen_twice: Option<&'a str>
+) -> usize {
   if src == "end" {
     return 1;
   }
