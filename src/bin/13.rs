@@ -21,7 +21,7 @@ fn part2(grid: HashSet<(i32,i32)>, folds: &[(char,i32)]) {
   let max_y = final_grid.iter().map(|&(_,y)| y).max().unwrap();
   for y in 0..=max_y {
     for x in 0..=max_x {
-      let c = if final_grid.contains(&(x,y)) {'#'} else {' '};
+      let c = if final_grid.contains(&(x,y)) {'█'} else {' '};
       print!("{}", c);
     }
     println!();
