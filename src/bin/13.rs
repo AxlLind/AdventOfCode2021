@@ -17,8 +17,10 @@ fn fold_grid(points: &HashSet<(i32,i32)>, (dir,pos): (char,i32)) -> HashSet<(i32
 
 fn part2(grid: HashSet<(i32,i32)>, folds: &[(char,i32)]) {
   let final_grid = folds.iter().fold(grid, |grid,&fold| fold_grid(&grid, fold));
-  for y in 0..6 {
-    for x in 0..40 {
+  let max_x = final_grid.iter().map(|&(x,_)| x).max().unwrap();
+  let max_y = final_grid.iter().map(|&(_,y)| y).max().unwrap();
+  for y in 0..=max_y {
+    for x in 0..=max_x {
       let c = if final_grid.contains(&(x,y)) {'#'} else {' '};
       print!("{}", c);
     }
