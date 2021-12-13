@@ -18,7 +18,7 @@ fn fold_grid(points: &HashSet<(i32,i32)>, (dir,pos): (char,i32)) -> HashSet<(i32
 fn part2(grid: HashSet<(i32,i32)>, folds: &[(char,i32)]) {
   let final_grid = folds.iter().fold(grid, |grid,&fold| fold_grid(&grid, fold));
   for y in 0..6 {
-    for x in 0..30 {
+    for x in 0..40 {
       let c = if final_grid.contains(&(x,y)) {'#'} else {' '};
       print!("{}", c);
     }
@@ -30,14 +30,14 @@ aoc2021::main! {
   let grid = POINTS.lines()
     .map(|l| {
       let (a,b) = l.split_once(',').unwrap();
-      (a.parse::<i32>().unwrap(), b.parse::<i32>().unwrap())
+      (a.parse().unwrap(), b.parse().unwrap())
     })
     .collect::<HashSet<_>>();
   let folds = FOLDS.lines()
     .map(|l| {
       let tmp = l.split_whitespace().last().unwrap();
       let (dir,pos) = tmp.split_once('=').unwrap();
-      (dir.as_bytes()[0] as char, pos.parse::<i32>().unwrap())
+      (dir.as_bytes()[0] as char, pos.parse().unwrap())
     })
     .collect::<Vec<_>>();
   let p1 = fold_grid(&grid, folds[0]).len();
