@@ -29,8 +29,8 @@ aoc2021::main! {
   let recipies = INGREDIENTS.lines()
     .map(|l| {
       let (a,b) = l.split_once(" -> ").unwrap();
-      let k = (a.chars().next().unwrap(), a.chars().skip(1).next().unwrap());
-      (k,b.chars().next().unwrap())
+      let k = (a.as_bytes()[0] as char, a.as_bytes()[1] as char);
+      (k, b.as_bytes()[0] as char)
     })
     .collect::<HashMap<_,_>>();
   let p1 = simulate_polymer(&recipies, 10);
