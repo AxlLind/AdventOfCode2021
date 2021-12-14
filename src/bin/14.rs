@@ -20,8 +20,7 @@ fn simulate_polymer(recipies: &HashMap<(char,char),char>, steps: usize) -> usize
     *count.entry(a).or_insert(0) += c;
   }
   *count.entry(START.chars().last().unwrap()).or_insert(0) += 1;
-  let max = count.values().max().unwrap();
-  let min = count.values().min().unwrap();
+  let (min,max) = count.values().minmax().into_option().unwrap();
   max - min
 }
 
