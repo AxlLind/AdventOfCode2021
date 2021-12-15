@@ -26,18 +26,19 @@ fn shortest_path(maze: &Vec<Vec<i32>>) -> i32 {
 
 aoc2021::main! {
   let maze = INPUT.lines()
-    .map(|l| l.chars().map(|c| (c as u8 - b'0') as i32).collect::<Vec<_>>())
+    .map(|l| l.bytes().map(|c| (c - b'0') as i32).collect::<Vec<_>>())
     .collect::<Vec<_>>();
-  let expanded = (0..(5*maze.len())).map(|x| (0..(5*maze[0].len()))
-    .map(|y| {
-      let xlevel = (x / maze.len()) as i32;
-      let ylevel = (y / maze[0].len()) as i32;
-      let cost = maze[x % maze.len()][y % maze[0].len()] + xlevel + ylevel;
-      if cost < 10 {cost} else {cost - 9}
-    })
-    .collect::<Vec<_>>()
-  )
-  .collect::<Vec<_>>();
+  let expanded = (0..(5*maze.len()))
+    .map(|x| (0..(5*maze[0].len()))
+      .map(|y| {
+        let xlevel = (x / maze.len()) as i32;
+        let ylevel = (y / maze[0].len()) as i32;
+        let cost = maze[x % maze.len()][y % maze[0].len()] + xlevel + ylevel;
+        if cost < 10 {cost} else {cost - 9}
+      })
+      .collect::<Vec<_>>()
+    )
+    .collect::<Vec<_>>();
   let p1 = shortest_path(&maze);
   let p2 = shortest_path(&expanded);
   (p1,p2)
