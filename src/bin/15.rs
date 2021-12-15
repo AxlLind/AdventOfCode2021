@@ -8,16 +8,13 @@ fn shortes_path_bottom_corner(maze: &Vec<Vec<i32>>) -> i32 {
   let mut q = BinaryHeap::new();
   q.push((0,0,0));
   while let Some((cost,x,y)) = q.pop() {
-    let cost = -cost;
-    if (x,y) == goal { return cost; }
-
-    if cost > dist[x][y] { continue; }
-
+    if (x,y) == goal { return -cost; }
+    if -cost > dist[x][y] { continue; }
     for (x1,y1) in [(x-1,y), (x+1,y), (x,y-1), (x,y+1)] {
       if maze.get(x1).and_then(|row| row.get(y1)).is_none() {
         continue;
       }
-      let next_cost = cost + maze[x1][y1];
+      let next_cost = -cost + maze[x1][y1];
       if next_cost < dist[x1][y1] {
         q.push((-next_cost, x1,y1));
         dist[x1][y1] = next_cost;
