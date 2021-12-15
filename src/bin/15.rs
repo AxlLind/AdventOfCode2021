@@ -24,7 +24,7 @@ fn shortes_path_bottom_corner(maze: &Vec<Vec<i32>>) -> i32 {
       }
     }
   }
-  0
+  unreachable!()
 }
 
 aoc2021::main! {
