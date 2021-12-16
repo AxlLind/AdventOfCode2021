@@ -7,30 +7,14 @@ enum Instruction {
 }
 
 fn decode_hex(s: &str) -> Vec<u8> {
-  let mut vec = Vec::new();
-  for c in s.chars() {
-    let bits = match c {
-      '0' => "0000",
-      '1' => "0001",
-      '2' => "0010",
-      '3' => "0011",
-      '4' => "0100",
-      '5' => "0101",
-      '6' => "0110",
-      '7' => "0111",
-      '8' => "1000",
-      '9' => "1001",
-      'A' => "1010",
-      'B' => "1011",
-      'C' => "1100",
-      'D' => "1101",
-      'E' => "1110",
-      'F' => "1111",
+  s.bytes()
+    .map(|c| match c {
+      b'0'..=b'9' => HEX_BITS[(c - b'0') as usize],
+      b'A'..=b'F' => HEX_BITS[(c - b'A') as usize + 10],
       _ => unreachable!(),
-    };
-    vec.extend(bits.bytes().map(|b| b - b'0'));
-  }
-  vec
+    })
+    .flat_map(|bits| bits.bytes().map(|b| b - b'0'))
+    .collect()
 }
 
 fn consume_bits(bits: &[u8], i: &mut usize, len: usize) -> usize {
