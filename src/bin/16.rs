@@ -83,9 +83,8 @@ fn value(inst: &Instruction) -> usize {
 }
 
 aoc2021::main! {
-  let b = decode_hex(INPUT);
-  let (_,inst) = parse_instruction(&b, 1);
-  let p1 = version_sum(&inst[0]);
-  let p2 = value(&inst[0]);
+  let inst = parse_inst(&decode_hex(INPUT), &mut 0);
+  let p1 = version_sum(&inst);
+  let p2 = value(&inst);
   (p1,p2)
 }
