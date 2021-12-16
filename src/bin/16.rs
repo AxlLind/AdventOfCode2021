@@ -27,39 +27,35 @@ fn consume_bits(bits: &[u8], i: &mut usize, len: usize) -> usize {
   x
 }
 
-fn parse_instruction(b: &[u8], max_insts: usize) -> (usize,Vec<Instruction>) {
-  let (mut i, mut insts) = (0, Vec::new());
-  while i < b.len() && insts.len() < max_insts {
-    let version = consume_bits(b, &mut i, 3) as u8;
-    match consume_bits(b, &mut i, 3) as u8 {
-      4 => {
-        let mut val = 0;
-        loop {
-          let x = consume_bits(b, &mut i, 5);
-          val = (val << 4) + (x & 0xf);
-          if x >> 4 == 0 {
-            break;
-          }
+fn parse_inst(b: &[u8], i: &mut usize) -> Instruction {
+  let version = consume_bits(b,i,3) as u8;
+  match consume_bits(b,i,3) as u8 {
+    4 => {
+      let mut val = 0;
+      loop {
+        let x = consume_bits(b,i,5);
+        val = (val << 4) + (x & 0xf);
+        if x >> 4 == 0 {
+          break;
         }
-        insts.push(Instruction::Literal(version, val));
       }
-      id => match consume_bits(b, &mut i, 1) {
-        0 => {
-          let nbits = consume_bits(b, &mut i, 15);
-          let (_, new_insts) = parse_instruction(&b[i..(i+nbits)], usize::MAX);
-          i += nbits;
-          insts.push(Instruction::Operator(version, id, new_insts));
+      Instruction::Literal(version, val)
+    }
+    id => match consume_bits(b,i,1) {
+      0 => {
+        let endbit = *i + consume_bits(b,i,15);
+        let mut insts = Vec::new();
+        while *i < endbit {
+          insts.push(parse_inst(&b, i));
         }
-        _ => {
-          let ninsts = consume_bits(b, &mut i, 11);
-          let (j, new_insts) = parse_instruction(&b[i..], ninsts);
-          i += j;
-          insts.push(Instruction::Operator(version, id, new_insts));
-        }
+        Instruction::Operator(version, id, insts)
+      } 
+      _ => {
+        let insts = (0..consume_bits(b,i,11)).map(|_| parse_inst(&b, i)).collect();
+        Instruction::Operator(version, id, insts)
       }
     }
   }
-  (i, insts)
 }
 
 fn version_sum(inst: &Instruction) -> usize {
