@@ -45,13 +45,13 @@ fn parse_instruction(b: &[u8], max_insts: usize) -> (usize,Vec<Instruction>) {
       }
       id => match consume_bits(b, &mut i, 1) {
         0 => {
-          let nbits = consume_bits(b, &mut i, 15) as usize;
+          let nbits = consume_bits(b, &mut i, 15);
           let (_, new_insts) = parse_instruction(&b[i..(i+nbits)], usize::MAX);
           i += nbits;
           insts.push(Instruction::Operator(version, id, new_insts));
         }
         _ => {
-          let ninsts = consume_bits(b, &mut i, 11) as usize;
+          let ninsts = consume_bits(b, &mut i, 11);
           let (j, new_insts) = parse_instruction(&b[i..], ninsts);
           i += j;
           insts.push(Instruction::Operator(version, id, new_insts));
@@ -87,7 +87,7 @@ fn value(inst: &Instruction) -> usize {
 }
 
 aoc2021::main! {
-  let b = decode_hex(&INPUT);
+  let b = decode_hex(INPUT);
   let (_,inst) = parse_instruction(&b, 1);
   let p1 = version_sum(&inst[0]);
   let p2 = value(&inst[0]);
