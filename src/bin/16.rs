@@ -34,9 +34,9 @@ fn decode_hex(s: &str) -> Vec<u8> {
   vec
 }
 
-fn from_bytes(bytes: &[u8]) -> usize {
+fn from_bits(bits: &[u8]) -> usize {
   let mut x = 0;
-  for &b in bytes {
+  for &b in bits {
     x = (x << 1) | b as usize
   }
   x
@@ -46,16 +46,15 @@ fn parse_instruction(b: &[u8], max_insts: usize) -> (usize,Vec<Instruction>) {
   let mut i = 0;
   let mut insts = Vec::new();
   while i < b.len() && insts.len() < max_insts {
-    let version = from_bytes(&b[i..(i+3)]) as u8;
-    let type_id = from_bytes(&b[(i+3)..(i+6)]);
+    let version = from_bits(&b[i..(i+3)]) as u8;
+    let type_id = from_bits(&b[(i+3)..(i+6)]);
     i += 6;
     match type_id {
       4 => {
-        // literal
         let mut val = 0;
         loop {
           val <<= 4;
-          let x = from_bytes(&b[i..(i+5)]);
+          let x = from_bits(&b[i..(i+5)]);
           val += x & 0xf;
           i += 5;
           if x >> 4 == 0 {
@@ -65,18 +64,17 @@ fn parse_instruction(b: &[u8], max_insts: usize) -> (usize,Vec<Instruction>) {
         insts.push(Instruction::Literal(version, val));
       }
       id => {
-        // an operator
         i += 1;
         let new_insts = match b[i-1] {
           0 => {
-            let nbits = from_bytes(&b[i..(i+15)]) as usize;
+            let nbits = from_bits(&b[i..(i+15)]) as usize;
             i += 15;
             let (_, new_insts) = parse_instruction(&b[i..(i+nbits)], usize::MAX);
             i += nbits;
             new_insts
           }
           _ => {
-            let ninsts = from_bytes(&b[i..(i+11)]) as usize;
+            let ninsts = from_bits(&b[i..(i+11)]) as usize;
             i += 11;
             let (j, new_insts) = parse_instruction(&b[i..], ninsts);
             i += j;
@@ -90,25 +88,25 @@ fn parse_instruction(b: &[u8], max_insts: usize) -> (usize,Vec<Instruction>) {
   (i, insts)
 }
 
-fn part1(inst: &Instruction) -> usize {
+fn version_sum(inst: &Instruction) -> usize {
   match inst {
     Instruction::Literal(version, _) => *version as usize,
     Instruction::Operator(version, _, insts) =>
-     *version as usize + insts.iter().map(part1).sum::<usize>()
+     *version as usize + insts.iter().map(version_sum).sum::<usize>()
   }
 }
 
-fn part2(inst: &Instruction) -> usize {
+fn value(inst: &Instruction) -> usize {
   match inst {
     Instruction::Literal(_, val) => *val as usize,
     Instruction::Operator(_, id, insts) => match id {
-      0 => insts.iter().map(part2).sum(),
-      1 => insts.iter().map(part2).product(),
-      2 => insts.iter().map(part2).min().unwrap(),
-      3 => insts.iter().map(part2).max().unwrap(),
-      5 => if part2(&insts[0]) >  part2(&insts[1]) {1} else {0}
-      6 => if part2(&insts[0]) <  part2(&insts[1]) {1} else {0}
-      7 => if part2(&insts[0]) == part2(&insts[1]) {1} else {0}
+      0 => insts.iter().map(value).sum(),
+      1 => insts.iter().map(value).product(),
+      2 => insts.iter().map(value).min().unwrap(),
+      3 => insts.iter().map(value).max().unwrap(),
+      5 => if value(&insts[0]) >  value(&insts[1]) {1} else {0}
+      6 => if value(&insts[0]) <  value(&insts[1]) {1} else {0}
+      7 => if value(&insts[0]) == value(&insts[1]) {1} else {0}
       _ => unreachable!()
     }
   }
@@ -116,8 +114,8 @@ fn part2(inst: &Instruction) -> usize {
 
 aoc2021::main! {
   let b = decode_hex(&INPUT);
-  let inst = parse_instruction(&b, 1);
-  let p1 = part1(&inst.1[0]);
-  let p2 = part2(&inst.1[0]);
+  let inst = parse_instruction(&b, 1).1;
+  let p1 = version_sum(&inst[0]);
+  let p2 = value(&inst[0]);
   (p1,p2)
 }
