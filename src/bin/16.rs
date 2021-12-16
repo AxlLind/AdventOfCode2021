@@ -104,9 +104,9 @@ fn value(inst: &Instruction) -> usize {
       1 => insts.iter().map(value).product(),
       2 => insts.iter().map(value).min().unwrap(),
       3 => insts.iter().map(value).max().unwrap(),
-      5 => if value(&insts[0]) >  value(&insts[1]) {1} else {0}
-      6 => if value(&insts[0]) <  value(&insts[1]) {1} else {0}
-      7 => if value(&insts[0]) == value(&insts[1]) {1} else {0}
+      5 => (value(&insts[0]) >  value(&insts[1])) as usize,
+      6 => (value(&insts[0]) <  value(&insts[1])) as usize,
+      7 => (value(&insts[0]) == value(&insts[1])) as usize,
       _ => unreachable!()
     }
   }
