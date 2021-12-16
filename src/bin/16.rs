@@ -46,8 +46,7 @@ fn parse_instruction(b: &[u8], max_insts: usize) -> (usize,Vec<Instruction>) {
   let (mut i, mut insts) = (0, Vec::new());
   while i < b.len() && insts.len() < max_insts {
     let version = consume_bits(b, &mut i, 3) as u8;
-    let type_id = consume_bits(b, &mut i, 3) as u8;
-    match type_id {
+    match consume_bits(b, &mut i, 3) as u8 {
       4 => {
         let mut val = 0;
         loop {
