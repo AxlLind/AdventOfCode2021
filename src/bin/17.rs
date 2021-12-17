@@ -11,7 +11,7 @@ fn try_vel(mut dx: i32, mut dy: i32) -> Option<i32> {
     y += dy;
     dx -= dx.signum();
     dy -= 1;
-    maxy = std::cmp::max(maxy,y);
+    if y > maxy { maxy = y; }
     match (TARGETX.contains(&x), TARGETY.contains(&y)) {
       (true,true) => return Some(maxy),
       (false,_) if dx == 0 => return None,
@@ -25,7 +25,5 @@ aoc2021::main! {
   let maxys = (0..100).cartesian_product(-260..1000)
     .filter_map(|(x,y)| try_vel(x,y))
     .collect::<Vec<_>>();
-  let p1 = *maxys.iter().max().unwrap();
-  let p2 = maxys.len();
-  (p1,p2)
+  (*maxys.iter().max().unwrap(), maxys.len())
 }
