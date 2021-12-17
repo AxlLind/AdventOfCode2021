@@ -22,7 +22,7 @@ fn try_vel(mut dx: i32, mut dy: i32) -> Option<i32> {
 }
 
 aoc2021::main! {
-  let maxys = (0..100).cartesian_product(-260..1000)
+  let maxys = (0..=67).cartesian_product(-260..1000)
     .filter_map(|(x,y)| try_vel(x,y))
     .collect::<Vec<_>>();
   (*maxys.iter().max().unwrap(), maxys.len())
