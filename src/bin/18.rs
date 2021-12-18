@@ -114,6 +114,14 @@ aoc2021::main! {
     .map(|l| parse_element(l.as_bytes(), 0).1)
     .collect::<Vec<_>>();
   let p1 = magnitude(&elements[1..].iter().fold(elements[0].clone(), |e1,e2| add(&e1,e2)));
-  let p2 = elements.iter().tuple_combinations().map(|(e1,e2)| magnitude(&add(e1,e2))).max().unwrap();
+  let p2 = elements.iter()
+    .tuple_combinations()
+    .map(|(e1,e2)| {
+      let a = magnitude(&add(e1,e2));
+      let b = magnitude(&add(e2,e1));
+      std::cmp::max(a,b)
+    })
+    .max()
+    .unwrap();
   (p1,p2)
 }
