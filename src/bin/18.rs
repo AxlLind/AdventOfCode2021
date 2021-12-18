@@ -92,27 +92,25 @@ impl Element {
     None
   }
 
-  fn reduce(&mut self) {
+  fn reduce(mut self) -> Self {
     loop {
       let d = self.depth();
       if d > 4 {
         if let Some((_,e2,_)) = self.explode(d) {
-          *self = e2;
+          self = e2;
           continue;
         }
       }
       match self.split() {
-        Some(e2) => *self = e2,
-        None => break,
+        Some(e2) => self = e2,
+        None => break self,
       }
     }
   }
 }
 
 fn add(e1: &Element, e2: &Element) -> Element {
-  let mut e = Element::Pair(e1.clone().boxed(), e2.clone().boxed());
-  e.reduce();
-  e
+  Element::Pair(e1.clone().boxed(), e2.clone().boxed()).reduce()
 }
 
 aoc2021::main! {
