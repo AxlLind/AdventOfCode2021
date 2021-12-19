@@ -48,13 +48,6 @@ fn merge_scan(total_scan: &mut HashSet<[i32;3]>, b: &[[i32;3]], rot: u8) -> Opti
   None
 }
 
-fn find_scan_merge(scans: &[Vec<[i32;3]>], total_scan: &mut HashSet<[i32;3]>) -> Option<([i32;3], usize)> {
-  (0..scans.len()).find_map(|i| (0..24)
-    .find_map(|rot| merge_scan(total_scan, &scans[i], rot))
-    .map(|d| (d, i))
-  )
-}
-
 aoc2021::main! {
   let mut scans = INPUT.split("\n\n")
     .map(|s| s.lines()
@@ -67,11 +60,15 @@ aoc2021::main! {
       .collect::<Vec<_>>()
     )
     .collect::<Vec<_>>();
-  let mut total_scan = scans.swap_remove(0).into_iter().collect();
+  let mut total_scan = scans.swap_remove(0).into_iter().collect::<HashSet<_>>();
   let mut dists = Vec::new();
-  while let Some((d,i)) = find_scan_merge(&scans, &mut total_scan) {
-    dists.push(d);
-    scans.swap_remove(i);
+  while !scans.is_empty() {
+    for i in (0..scans.len()).rev() {
+      if let Some(d) = (0..24).find_map(|rot| merge_scan(&mut total_scan, &scans[i], rot)) {
+        dists.push(d);
+        scans.remove(i);
+      }
+    }
   }
   let p1 = total_scan.len();
   let p2 = dists.iter()
