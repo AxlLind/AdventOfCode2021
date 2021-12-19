@@ -33,16 +33,18 @@ fn rotate([x,y,z]: [i32;3], rot: u8) -> [i32;3] {
   }
 }
 
-fn merge_scan(total_scan: &mut HashSet<[i32;3]>, scan: &[[i32;3]], rot: u8) -> Option<[i32;3]> {
-  let rotated_scan = scan.iter().map(|&v| rotate(v, rot)).collect::<Vec<_>>();
-  let distances = total_scan.iter()
-    .cartesian_product(&rotated_scan)
-    .map(|([x1,y1,z1], [x2,y2,z2])| [x1-x2, y1-y2, z1-z2]);
-  for [dx,dy,dz] in distances {
-    let translated = rotated_scan.iter().map(|[x3,y3,z3]| [x3+dx, y3+dy, z3+dz]);
-    if translated.clone().filter(|v| total_scan.contains(v)).count() >= 12 {
-      total_scan.extend(translated);
-      return Some([dx,dy,dz]);
+fn merge_scan(total_scan: &mut HashSet<[i32;3]>, scan: &[[i32;3]]) -> Option<[i32;3]> {
+  for rot in 0..24 {
+    let rotated_scan = scan.iter().map(|&v| rotate(v, rot)).collect::<Vec<_>>();
+    let distances = total_scan.iter()
+      .cartesian_product(&rotated_scan)
+      .map(|([x1,y1,z1], [x2,y2,z2])| [x1-x2, y1-y2, z1-z2]);
+    for [dx,dy,dz] in distances {
+      let translated = rotated_scan.iter().map(|[x,y,z]| [x+dx, y+dy, z+dz]);
+      if translated.clone().filter(|v| total_scan.contains(v)).count() >= 12 {
+        total_scan.extend(translated);
+        return Some([dx,dy,dz]);
+      }
     }
   }
   None
@@ -63,7 +65,7 @@ aoc2021::main! {
   let mut dists = Vec::new();
   while !scans.is_empty() {
     for i in (0..scans.len()).rev() {
-      if let Some(d) = (0..24).find_map(|rot| merge_scan(&mut total_scan, &scans[i], rot)) {
+      if let Some(d) = merge_scan(&mut total_scan, &scans[i]) {
         dists.push(d);
         scans.swap_remove(i);
       }
