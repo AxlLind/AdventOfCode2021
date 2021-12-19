@@ -41,7 +41,7 @@ fn rots(a: &[[i32;3]]) -> [Vec<[i32;3]>;24] {
   r
 }
 
-fn merge_scans(a: &[[i32;3]], b: &[[i32;3]]) -> Option<(Vec<[i32;3]>, [i32;3])> {
+fn merge_scans(a: &[[i32;3]], b: &[[i32;3]]) -> Option<([i32;3], Vec<[i32;3]>)> {
   let mut seta = a.iter().copied().collect::<HashSet<_>>();
   let distances = a.iter()
     .cartesian_product(b)
@@ -50,17 +50,17 @@ fn merge_scans(a: &[[i32;3]], b: &[[i32;3]]) -> Option<(Vec<[i32;3]>, [i32;3])> 
     let translated = b.iter().map(|[x3,y3,z3]| [x3+dx, y3+dy, z3+dz]);
     if translated.clone().filter(|v| seta.contains(v)).count() >= 12 {
       seta.extend(translated);
-      return Some((seta.into_iter().collect(), [dx,dy,dz]));
+      return Some(([dx,dy,dz], seta.into_iter().collect()));
     }
   }
   None
 }
 
-fn find_scan_merge(scans: &[Vec<[i32;3]>], scan: &[[i32;3]]) -> Option<(Vec<[i32;3]>, [i32;3], usize)> {
+fn find_scan_merge(scans: &[Vec<[i32;3]>], total_scan: &[[i32;3]]) -> Option<([i32;3], Vec<[i32;3]>, usize)> {
   (0..scans.len())
     .find_map(|i| rots(&scans[i]).iter()
-      .find_map(|r| merge_scans(&scan,&r))
-      .map(|(merged_scan, dist)| (merged_scan, dist, i))
+      .find_map(|r| merge_scans(&total_scan,&r))
+      .map(|(d, merged_scan)| (d, merged_scan, i))
     )
 }
 
@@ -78,7 +78,7 @@ aoc2021::main! {
     .collect::<Vec<_>>();
   let mut total_scan = scans.pop().unwrap();
   let mut dists = vec![[0; 3]];
-  while let Some((merged_scan, d, i)) = find_scan_merge(&scans, &total_scan) {
+  while let Some((d, merged_scan, i)) = find_scan_merge(&scans, &total_scan) {
     total_scan = merged_scan;
     dists.push(d);
     scans.swap_remove(i);
