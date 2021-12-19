@@ -67,8 +67,7 @@ aoc2021::main! {
       .collect::<Vec<_>>()
     )
     .collect::<Vec<_>>();
-  let mut total_scan = scans.pop()
-    .unwrap()
+  let mut total_scan = scans.swap_remove(0)
     .into_iter()
     .collect::<HashSet<_>>();
   let mut dists = vec![[0; 3]];
