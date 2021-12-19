@@ -42,14 +42,17 @@ fn rots(a: &[[i32;3]]) -> [Vec<[i32;3]>;24] {
 }
 
 fn merge_scans(a: &[[i32;3]], b: &[[i32;3]]) -> Option<(Vec<[i32;3]>, [i32;3])> {
-  let seta = a.iter().copied().collect::<HashSet<_>>();
-  for ([x1,y1,z1], [x2,y2,z2]) in a.iter().cartesian_product(b) {
-    let [dx,dy,dz] = [x1-x2, y1-y2, z1-z2];
+  let mut seta = a.iter().copied().collect::<HashSet<_>>();
+  let distances = a.iter()
+    .cartesian_product(b)
+    .map(|([x1,y1,z1], [x2,y2,z2])| [x1-x2, y1-y2, z1-z2]);
+  for [dx,dy,dz] in distances {
     let setb = b.iter()
       .map(|[x3,y3,z3]| [x3+dx, y3+dy, z3+dz])
-      .collect::<HashSet<_>>();
-    if seta.intersection(&setb).count() >= 12 {
-      return Some((seta.union(&setb).copied().collect(), [dx,dy,dz]));
+      .collect::<Vec<_>>();
+    if setb.iter().filter(|&v| seta.contains(v)).count() >= 12 {
+      seta.extend(setb);
+      return Some((seta.iter().copied().collect(), [dx,dy,dz]));
     }
   }
   None
