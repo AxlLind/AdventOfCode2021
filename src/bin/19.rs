@@ -10,9 +10,9 @@ fn rots(a: &[[i32;3]]) -> [Vec<[i32;3]>;24] {
   };
   macro_rules! rot {
     // rotate along xy plane
-    (true, $i:expr) => {r[$i].iter().map(|v| [v[1], -v[0], v[2]]).collect_vec()};
+    (true, $i:expr) => {r[$i].iter().map(|v| [v[1], -v[0], v[2]]).collect()};
     // rotate along xz plane
-    (false, $i:expr) => {r[$i].iter().map(|v| [v[2], v[1], -v[0]]).collect_vec()};
+    (false, $i:expr) => {r[$i].iter().map(|v| [v[2], v[1], -v[0]]).collect()};
   }
   r[0]  = a.to_vec();
   r[1]  = rot!(true,  0);
@@ -47,12 +47,10 @@ fn merge_scans(a: &[[i32;3]], b: &[[i32;3]]) -> Option<(Vec<[i32;3]>, [i32;3])> 
     .cartesian_product(b)
     .map(|([x1,y1,z1], [x2,y2,z2])| [x1-x2, y1-y2, z1-z2]);
   for [dx,dy,dz] in distances {
-    let setb = b.iter()
-      .map(|[x3,y3,z3]| [x3+dx, y3+dy, z3+dz])
-      .collect::<Vec<_>>();
-    if setb.iter().filter(|&v| seta.contains(v)).count() >= 12 {
-      seta.extend(setb);
-      return Some((seta.iter().copied().collect(), [dx,dy,dz]));
+    let translated = b.iter().map(|[x3,y3,z3]| [x3+dx, y3+dy, z3+dz]);
+    if translated.clone().filter(|v| seta.contains(v)).count() >= 12 {
+      seta.extend(translated);
+      return Some((seta.into_iter().collect(), [dx,dy,dz]));
     }
   }
   None
