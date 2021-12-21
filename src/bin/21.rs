@@ -22,7 +22,6 @@ fn regular_game(mut pos1: usize, mut pos2: usize) -> usize {
 }
 
 fn quantum_game(cache: &mut Cache, p1: usize, p2: usize, pos1: usize, pos2: usize) -> (usize,usize) {
-  if p1 >= 21 { return (1,0); }
   if p2 >= 21 { return (0,1); }
   if let Some(&score) = cache.get(&(p1,p2,pos1,pos2)) { return score; }
 
