@@ -53,6 +53,7 @@ fn quantum_game(cache: &mut Cache, p1: usize, p2: usize, pos1: usize, pos2: usiz
 
 aoc2021::main! {
   let p1 = regular_game(9,6);
-  let (p2,_) = quantum_game(&mut HashMap::new(),0,0,9,6,true);
+  let (s1,s2) = quantum_game(&mut HashMap::new(),0,0,9,6,true);
+  let p2 = if s1 > s2 {s1} else {s2};
   (p1,p2)
 }
