@@ -1,6 +1,5 @@
 use std::mem::swap;
 use hashbrown::HashMap;
-use itertools::iproduct;
 
 type Cache = HashMap<(usize,usize,usize,usize),(usize,usize)>;
 
@@ -26,7 +25,7 @@ fn quantum_game(cache: &mut Cache, s1: usize, s2: usize, pos1: usize, pos2: usiz
   if let Some(&score) = cache.get(&(s1,s2,pos1,pos2)) { return score; }
 
   let mut score = (0,0);
-  for die in iproduct!([1,2,3],[1,2,3],[1,2,3]).map(|(d1,d2,d3)| d1+d2+d3) {
+  for die in [3,4,4,4,5,5,5,5,5,5,6,6,6,6,6,6,6,7,7,7,7,7,7,8,8,8,9] {
     let pos1 = pos1 + die - if pos1+die > 10 {10} else {0};
     let (s1,s2) = quantum_game(cache,s2,s1+pos1,pos2,pos1);
     score = (score.0+s2, score.1+s1);
