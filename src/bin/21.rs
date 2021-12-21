@@ -10,7 +10,7 @@ fn regular_game(mut pos1: usize, mut pos2: usize) -> usize {
       pos1 += die;
       die = (die + 1) % 100;
     }
-    while pos1 > 10 { pos1 -= 10 }
+    pos1 = 1+(pos1-1)%10;
     s1 += pos1;
     nrolls += 3;
     swap(&mut pos1, &mut pos2);
@@ -25,7 +25,7 @@ fn quantum_game(cache: &mut Cache, s1: usize, s2: usize, pos1: usize, pos2: usiz
 
   let mut score = (0,0);
   for (die,times) in [(3,1),(4,3),(5,6),(6,7),(7,6),(8,3),(9,1)] {
-    let pos1 = pos1 + die - if pos1+die > 10 {10} else {0};
+    let pos1 = 1+(pos1+die-1)%10;
     let (s1,s2) = quantum_game(cache,s2,s1+pos1,pos2,pos1);
     score = (score.0+s2*times, score.1+s1*times);
   }
