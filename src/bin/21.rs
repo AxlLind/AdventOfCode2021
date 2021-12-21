@@ -1,3 +1,4 @@
+use std::mem::swap;
 use hashbrown::HashMap;
 use itertools::iproduct;
 
@@ -13,18 +14,11 @@ fn regular_game(mut pos1: usize, mut pos2: usize) -> usize {
     while pos1 > 10 { pos1 -= 10 }
     p1 += pos1;
     nrolls += 3;
-    if p1 >= 1000 { break }
-
-    for _ in 0..3 {
-      pos2 += die;
-      die = (die + 1) % 100;
-    }
-    while pos2 > 10 { pos2 -= 10 }
-    p2 += pos2;
-    nrolls += 3;
-    if p2 >= 1000 { break }
+    if p1 >= 1000 { break; }
+    swap(&mut pos1, &mut pos2);
+    swap(&mut p1, &mut p2);
   }
-  nrolls * if p1 >= 1000 {p2} else {p1}
+  nrolls * p2
 }
 
 fn quantum_game(cache: &mut Cache, p1: usize, p2: usize, pos1: usize, pos2: usize) -> (usize,usize) {
