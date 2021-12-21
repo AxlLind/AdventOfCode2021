@@ -5,7 +5,7 @@ type Cache = HashMap<(usize,usize,usize,usize),(usize,usize)>;
 
 fn regular_game(mut pos1: usize, mut pos2: usize) -> usize {
   let (mut s1, mut s2, mut die, mut nrolls) = (0,0,1,0);
-  loop {
+  while s2 < 1000 {
     for _ in 0..3 {
       pos1 += die;
       die = (die + 1) % 100;
@@ -13,11 +13,10 @@ fn regular_game(mut pos1: usize, mut pos2: usize) -> usize {
     while pos1 > 10 { pos1 -= 10 }
     s1 += pos1;
     nrolls += 3;
-    if s1 >= 1000 { break; }
     swap(&mut pos1, &mut pos2);
     swap(&mut s1, &mut s2);
   }
-  nrolls * s2
+  nrolls * s1
 }
 
 fn quantum_game(cache: &mut Cache, s1: usize, s2: usize, pos1: usize, pos2: usize) -> (usize,usize) {
