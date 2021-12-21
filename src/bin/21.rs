@@ -1,5 +1,5 @@
 use hashbrown::HashMap;
-use itertools::Itertools;
+use itertools::iproduct;
 
 type Cache = HashMap<(usize,usize,usize,usize,bool),(usize,usize)>;
 
@@ -36,7 +36,7 @@ fn play_game(cache: &mut Cache, p1: usize, p2: usize, pos1: usize, pos2: usize, 
     return score;
   }
   let mut score = (0,0);
-  for ((d1,d2),d3) in [1,2,3].iter().cartesian_product([1,2,3]).cartesian_product([1,2,3]) {
+  for (d1,d2,d3) in iproduct!([1,2,3],[1,2,3],[1,2,3]) {
     let die = d1+d2+d3;
     let (s1,s2) = if turn1 {
       let pos1 = pos1 + die - if pos1+die > 10 {10} else {0};
