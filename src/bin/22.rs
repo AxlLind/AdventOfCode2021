@@ -25,24 +25,20 @@ fn subcube(c1: Cube, c2: Cube) -> Option<Cube> {
 }
 
 fn corrected_volume(c: Cube, rest: &[Cube]) -> i64 {
-  let mut v = volume(c);
   let subcubes = rest.iter()
     .filter_map(|&c2| subcube(c2, c))
     .collect::<Vec<_>>();
-  for i in 0..subcubes.len() {
-    v -= corrected_volume(subcubes[i], &subcubes[i+1..]);
-  }
-  v
+  let vsubcubes = (0..subcubes.len())
+    .map(|i| corrected_volume(subcubes[i], &subcubes[i+1..]))
+    .sum::<i64>();
+  volume(c) - vsubcubes
 }
 
 fn total_volume(cubes: &[Cube]) -> i64 {
-  let mut v = 0;
-  for i in 0..cubes.len() {
-    if cubes[i].0 {
-      v += corrected_volume(cubes[i], &cubes[i+1..]);
-    }
-  }
-  v
+  (0..cubes.len())
+    .filter(|&i| cubes[i].0)
+    .map(|i| corrected_volume(cubes[i], &cubes[i+1..]))
+    .sum()
 }
 
 aoc2021::main! {
