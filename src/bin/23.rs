@@ -13,36 +13,31 @@ fn moves(maze: &Vec<Vec<char>>) -> Vec<(i64,Vec<Vec<char>>)> {
   let mut moves = Vec::new();
   for y in 0..maze[1].len() {
     // check moving into a room
-    match maze[1][y] {
-      'A'..='D' => {
-        let (room,exp) = match maze[1][y] {
-          'A' => (3,1),
-          'B' => (5,10),
-          'C' => (7,100),
-          'D' => (9,1000),
-          _ => unreachable!()
-        };
-        let mut cost =
-          if y > room && (room..y).all(|c| maze[1][c] == '.') {
-            y - room
-          } else if y < room && (y+1..=room).all(|c| maze[1][c] == '.') {
-            room - y
-          } else {
-            continue
-          };
-        let i = match (2..=room_len).take_while(|&i| maze[i][room] == '.').last() {
-          Some(i) => i,
-          _ => continue
-        };
-        if i != room_len && maze[i+1][room] != maze[1][y] { continue; }
-        let mut m = maze.clone();
-        m[i][room] = maze[1][y];
-        m[1][y] = '.';
-        cost += i-1;
-        moves.push(((cost * exp) as i64,m));
-      }
-      _ => {}
-    }
+    let (room,exp) = match maze[1][y] {
+      'A' => (3,1),
+      'B' => (5,10),
+      'C' => (7,100),
+      'D' => (9,1000),
+      _ => continue,
+    };
+    let mut cost =
+      if y > room && (room..y).all(|c| maze[1][c] == '.') {
+        y - room
+      } else if y < room && (y+1..=room).all(|c| maze[1][c] == '.') {
+        room - y
+      } else {
+        continue
+      };
+    let i = match (2..=room_len).take_while(|&i| maze[i][room] == '.').last() {
+      Some(i) => i,
+      _ => continue
+    };
+    if i != room_len && maze[i+1][room] != maze[1][y] { continue; }
+    let mut m = maze.clone();
+    m[i][room] = maze[1][y];
+    m[1][y] = '.';
+    cost += i-1;
+    moves.push(((cost * exp) as i64,m));
   }
   for (x,y) in (2..=room_len).cartesian_product([3,5,7,9]) {
     // check moving out of a room
@@ -52,35 +47,30 @@ fn moves(maze: &Vec<Vec<char>>) -> Vec<(i64,Vec<Vec<char>>)> {
     if (x+1..=room_len).any(|i| maze[i][y] == '.') {
       continue;
     }
-    match maze[x][y] {
-      'A'..='D' => {
-        let exp = match maze[x][y] {
-          'A' => 1,
-          'B' => 10,
-          'C' => 100,
-          'D' => 1000,
-          _ => unreachable!()
-        };
-        for i in y..maze[0].len() { // move left
-          if maze[1][i] != '.' { break; }
-          if ![1,2,4,6,8,10,11].contains(&i) { continue; }
-          let cost = x - 1 + i - y;
-          let mut m = maze.clone();
-          m[1][i] = maze[x][y];
-          m[x][y] = '.';
-          moves.push(((cost*exp) as i64,m));
-        }
-        for i in (1..=y).rev() { // move right
-          if maze[1][i] != '.' { break; }
-          if ![1,2,4,6,8,10,11].contains(&i) { continue; }
-          let cost = x - 1 + y - i;
-          let mut m = maze.clone();
-          m[1][i] = maze[x][y];
-          m[x][y] = '.';
-          moves.push(((cost*exp) as i64,m));
-        }
-      }
-      _ => {}
+    let exp = match maze[x][y] {
+      'A' => 1,
+      'B' => 10,
+      'C' => 100,
+      'D' => 1000,
+      _ => continue,
+    };
+    for i in y..maze[0].len() { // move left
+      if maze[1][i] != '.' { break; }
+      if ![1,2,4,6,8,10,11].contains(&i) { continue; }
+      let cost = x - 1 + i - y;
+      let mut m = maze.clone();
+      m[1][i] = maze[x][y];
+      m[x][y] = '.';
+      moves.push(((cost*exp) as i64,m));
+    }
+    for i in (1..=y).rev() { // move right
+      if maze[1][i] != '.' { break; }
+      if ![1,2,4,6,8,10,11].contains(&i) { continue; }
+      let cost = x - 1 + y - i;
+      let mut m = maze.clone();
+      m[1][i] = maze[x][y];
+      m[x][y] = '.';
+      moves.push(((cost*exp) as i64,m));
     }
   }
   moves
