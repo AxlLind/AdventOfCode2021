@@ -1,14 +1,15 @@
-use std::collections::BinaryHeap;
 use hashbrown::HashMap;
+use std::collections::BinaryHeap;
 use itertools::Itertools;
 
 static INPUT: &str = "#############\n#...........#\n###C#A#B#D###\n  #D#C#A#B#  \n  #########  ";
 
-fn right_configuration(maze: &Vec<Vec<char>>, size: usize) -> bool {
-  maze[2..(2+size)].iter().all(|l| itertools::equal(l[3..10].iter().copied(), "A#B#C#D".chars()))
+fn right_configuration(maze: &Vec<Vec<char>>) -> bool {
+  maze[2..(maze.len()-1)].iter().all(|l| itertools::equal(l[3..10].iter().copied(), "A#B#C#D".chars()))
 }
 
-fn moves(maze: &Vec<Vec<char>>, room_len: usize) -> Vec<(i64,Vec<Vec<char>>)> {
+fn moves(maze: &Vec<Vec<char>>) -> Vec<(i64,Vec<Vec<char>>)> {
+  let room_len = maze.len() - 2;
   let mut moves = Vec::new();
   for y in 0..maze[1].len() {
     // check moving into a room
@@ -90,11 +91,11 @@ fn shortest_path(maze: &Vec<Vec<char>>) -> i64 {
   let mut q = BinaryHeap::new();
   q.push((0,maze.clone()));
   while let Some((cost,m)) = q.pop() {
-    if right_configuration(&m, maze.len() - 3) { return -cost; }
+    if right_configuration(&m) { return -cost; }
     if let Some(&c) = dist.get(&m) {
       if -cost > c { continue; }
     }
-    for (nmoves, m) in moves(&m, maze.len() - 2) {
+    for (nmoves, m) in moves(&m) {
       let next_cost = -cost + nmoves;
       let &c = dist.get(&m).unwrap_or(&1000000);
       if c > next_cost {
