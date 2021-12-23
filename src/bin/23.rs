@@ -20,14 +20,10 @@ fn moves(maze: &Vec<Vec<char>>) -> Vec<(i64,Vec<Vec<char>>)> {
       'D' => (9,1000),
       _ => continue,
     };
-    let mut cost =
-      if y > room && (room..y).all(|c| maze[1][c] == '.') {
-        y - room
-      } else if y < room && (y+1..=room).all(|c| maze[1][c] == '.') {
-        room - y
-      } else {
-        continue
-      };
+    let (r0,r1) = if y > room {(room,y)} else {(y+1,room+1)};
+    if (r0..r1).any(|i| maze[1][i] != '.') {
+      continue;
+    }
     let i = match (2..=room_len).take_while(|&i| maze[i][room] == '.').last() {
       Some(i) => i,
       _ => continue
@@ -36,15 +32,12 @@ fn moves(maze: &Vec<Vec<char>>) -> Vec<(i64,Vec<Vec<char>>)> {
     let mut m = maze.clone();
     m[i][room] = maze[1][y];
     m[1][y] = '.';
-    cost += i-1;
-    moves.push(((cost * exp) as i64,m));
+    let energy = (r1-r0 + i-1) * exp;
+    moves.push((energy as i64,m));
   }
   for (x,y) in (2..=room_len).cartesian_product([3,5,7,9]) {
     // check moving out of a room
-    if (2..x).any(|i| maze[i][y] != '.') {
-      continue;
-    }
-    if (x+1..=room_len).any(|i| maze[i][y] == '.') {
+    if (2..x).any(|i| maze[i][y] != '.') || (x+1..=room_len).any(|i| maze[i][y] == '.') {
       continue;
     }
     let exp = match maze[x][y] {
