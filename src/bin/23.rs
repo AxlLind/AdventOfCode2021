@@ -1,5 +1,5 @@
-use hashbrown::HashMap;
 use std::collections::BinaryHeap;
+use hashbrown::HashMap;
 use itertools::Itertools;
 
 static INPUT: &str = "#############\n#...........#\n###C#A#B#D###\n  #D#C#A#B#  \n  #########  ";
@@ -14,7 +14,7 @@ fn moves(maze: &Vec<Vec<char>>, room_len: usize) -> Vec<(i64,Vec<Vec<char>>)> {
     // check moving into a room
     match maze[1][y] {
       'A'..='D' => {
-        let (idx,exp) = match maze[1][y] {
+        let (room,exp) = match maze[1][y] {
           'A' => (3,1),
           'B' => (5,10),
           'C' => (7,100),
@@ -22,17 +22,20 @@ fn moves(maze: &Vec<Vec<char>>, room_len: usize) -> Vec<(i64,Vec<Vec<char>>)> {
           _ => unreachable!()
         };
         let mut cost =
-          if y > idx && (idx..y).all(|c| maze[1][c] == '.') && maze[2][idx] == '.' {
-            y - idx
-          } else if y < idx && ((y+1)..=idx).all(|c| maze[1][c] == '.') && maze[2][idx] == '.' {
-            idx - y
+          if y > room && (room..y).all(|c| maze[1][c] == '.') {
+            y - room
+          } else if y < room && (y+1..=room).all(|c| maze[1][c] == '.') {
+            room - y
           } else {
             continue
           };
+        let i = match (2..=room_len).take_while(|&i| maze[i][room] == '.').last() {
+          Some(i) => i,
+          _ => continue
+        };
+        if i != room_len && maze[i+1][room] != maze[1][y] { continue; }
         let mut m = maze.clone();
-        let i = (2..=room_len).take_while(|&i| maze[i][idx] == '.').last().unwrap();
-        if i != room_len && m[i+1][idx] != maze[1][y] { continue; }
-        m[i][idx] = maze[1][y];
+        m[i][room] = maze[1][y];
         m[1][y] = '.';
         cost += i-1;
         moves.push(((cost * exp) as i64,m));
@@ -104,11 +107,7 @@ fn shortest_path(maze: &Vec<Vec<char>>) -> i64 {
 }
 
 aoc2021::main! {
-  let mut map = Vec::new();
-  for l in INPUT.lines() {
-    if l == "" { continue; }
-    map.push(l.chars().collect::<Vec<_>>());
-  }
+  let mut map = INPUT.lines().map(|l| l.chars().collect()).collect();
   let p1 = shortest_path(&map);
   map.insert(4, "  #D#C#B#A#  ".chars().collect());
   map.insert(4, "  #D#B#A#C#  ".chars().collect());
