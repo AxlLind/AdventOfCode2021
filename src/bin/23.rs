@@ -8,7 +8,7 @@ fn right_configuration(maze: &Vec<Vec<char>>) -> bool {
   maze[2..(maze.len()-1)].iter().all(|l| itertools::equal(l[3..10].iter().copied(), "A#B#C#D".chars()))
 }
 
-fn moves(maze: &Vec<Vec<char>>) -> Vec<(i64,Vec<Vec<char>>)> {
+fn moves(maze: &Vec<Vec<char>>) -> Vec<(usize,Vec<Vec<char>>)> {
   let room_len = maze.len() - 2;
   let mut moves = Vec::new();
   for y in 0..maze[1].len() {
@@ -32,14 +32,10 @@ fn moves(maze: &Vec<Vec<char>>) -> Vec<(i64,Vec<Vec<char>>)> {
     let mut m = maze.clone();
     m[i][room] = maze[1][y];
     m[1][y] = '.';
-    let energy = (r1-r0 + i-1) * exp;
-    moves.push((energy as i64,m));
+    moves.push(((r1-r0 + i-1) * exp,m));
   }
   for (x,y) in (2..=room_len).cartesian_product([3,5,7,9]) {
     // check moving out of a room
-    if (2..x).any(|i| maze[i][y] != '.') || (x+1..=room_len).any(|i| maze[i][y] == '.') {
-      continue;
-    }
     let exp = match maze[x][y] {
       'A' => 1,
       'B' => 10,
@@ -47,23 +43,24 @@ fn moves(maze: &Vec<Vec<char>>) -> Vec<(i64,Vec<Vec<char>>)> {
       'D' => 1000,
       _ => continue,
     };
+    if (2..x).any(|i| maze[i][y] != '.') || (x+1..=room_len).any(|i| maze[i][y] == '.') {
+      continue;
+    }
     for i in y..maze[0].len() { // move left
       if maze[1][i] != '.' { break; }
       if ![1,2,4,6,8,10,11].contains(&i) { continue; }
-      let cost = x - 1 + i - y;
       let mut m = maze.clone();
       m[1][i] = maze[x][y];
       m[x][y] = '.';
-      moves.push(((cost*exp) as i64,m));
+      moves.push(((x-1 + i-y) * exp,m));
     }
     for i in (1..=y).rev() { // move right
       if maze[1][i] != '.' { break; }
       if ![1,2,4,6,8,10,11].contains(&i) { continue; }
-      let cost = x - 1 + y - i;
       let mut m = maze.clone();
       m[1][i] = maze[x][y];
       m[x][y] = '.';
-      moves.push(((cost*exp) as i64,m));
+      moves.push(((x-1 + y-i) * exp,m));
     }
   }
   moves
@@ -79,7 +76,7 @@ fn shortest_path(maze: &Vec<Vec<char>>) -> i64 {
       if -cost > c { continue; }
     }
     for (nmoves, m) in moves(&m) {
-      let next_cost = -cost + nmoves;
+      let next_cost = -cost + nmoves as i64;
       let &c = dist.get(&m).unwrap_or(&1000000);
       if c > next_cost {
         dist.insert(m.clone(), next_cost);
