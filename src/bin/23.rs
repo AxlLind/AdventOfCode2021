@@ -8,6 +8,13 @@ fn right_configuration(maze: &Vec<Vec<u8>>) -> bool {
   maze[2..(maze.len()-1)].iter().all(|l| itertools::equal(l[3..10].iter().copied(), "A#B#C#D".bytes()))
 }
 
+fn make_move(maze: &Vec<Vec<u8>>, x0: usize, y0: usize, x1: usize, y1: usize) -> Vec<Vec<u8>> {
+  let mut m = maze.clone();
+  m[x1][y1] = m[x0][y0];
+  m[x0][y0] = b'.';
+  m
+}
+
 fn moves(maze: &Vec<Vec<u8>>) -> Vec<(usize,Vec<Vec<u8>>)> {
   let room_len = maze.len() - 2;
   let mut moves = Vec::new();
@@ -29,10 +36,7 @@ fn moves(maze: &Vec<Vec<u8>>) -> Vec<(usize,Vec<Vec<u8>>)> {
       _ => continue
     };
     if i != room_len && maze[i+1][room] != maze[1][y] { continue; }
-    let mut m = maze.clone();
-    m[i][room] = maze[1][y];
-    m[1][y] = b'.';
-    moves.push(((r1-r0 + i-1) * exp,m));
+    moves.push(((r1-r0 + i-1) * exp, make_move(maze, 1, y, i, room)));
   }
   for (x,y) in (2..=room_len).cartesian_product([3,5,7,9]) {
     // check moving out of a room
@@ -49,18 +53,12 @@ fn moves(maze: &Vec<Vec<u8>>) -> Vec<(usize,Vec<Vec<u8>>)> {
     for i in y..maze[0].len() { // move left
       if maze[1][i] != b'.' { break; }
       if ![1,2,4,6,8,10,11].contains(&i) { continue; }
-      let mut m = maze.clone();
-      m[1][i] = maze[x][y];
-      m[x][y] = b'.';
-      moves.push(((x-1 + i-y) * exp,m));
+      moves.push(((x-1 + i-y) * exp, make_move(maze, x, y, 1, i)));
     }
     for i in (1..=y).rev() { // move right
       if maze[1][i] != b'.' { break; }
       if ![1,2,4,6,8,10,11].contains(&i) { continue; }
-      let mut m = maze.clone();
-      m[1][i] = maze[x][y];
-      m[x][y] = b'.';
-      moves.push(((x-1 + y-i) * exp,m));
+      moves.push(((x-1 + y-i) * exp,make_move(maze, x, y, 1, i)));
     }
   }
   moves
