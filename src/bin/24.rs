@@ -54,9 +54,8 @@ fn find_modelnum(memo: &mut Cache, blocks: &[Vec<Instruction>], block: usize, z:
         Instruction::Inp(_) => unreachable!()
       }
     }
-    let z = regs[3];
-    if let Some(best) = find_modelnum(memo, blocks, block+1, z, range) {
-      memo.insert((z,block), Some(best*10 + digit));
+    if let Some(best) = find_modelnum(memo, blocks, block+1, regs[3], range) {
+      memo.insert((regs[3],block), Some(best*10 + digit));
       return Some(best*10 + digit)
     }
   }
