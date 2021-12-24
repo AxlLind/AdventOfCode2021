@@ -36,13 +36,13 @@ enum Instruction {
   Eql(usize, Source),
 }
 
-fn find_modelnum(memo: &mut Cache, insts: &[Instruction], pc: usize, z: i64, range: &[i64;9]) -> Option<i64> {
-  if let Some(&answer) = memo.get(&(z,pc)) { return answer; }
+fn find_modelnum(memo: &mut Cache, blocks: &[Vec<Instruction>], block: usize, z: i64, range: &[i64;9]) -> Option<i64> {
+  if let Some(&answer) = memo.get(&(z,block)) { return answer; }
 
   for &digit in range {
     let mut regs = [digit,0,0,z];
-    for pc in pc..pc+17 {
-      match insts[pc] {
+    for &inst in &blocks[block] {
+      match inst {
         Instruction::Add(a,b) => regs[a] += b.val(&regs),
         Instruction::Mul(a,b) => regs[a] *= b.val(&regs),
         Instruction::Div(a,b) => regs[a] /= b.val(&regs),
@@ -52,26 +52,26 @@ fn find_modelnum(memo: &mut Cache, insts: &[Instruction], pc: usize, z: i64, ran
       }
     }
     let z = regs[3];
-    if pc+17 == insts.len() {
+    if block+1 == blocks.len() {
       if z == 0 {
-        memo.insert((z,pc),Some(digit));
+        memo.insert((z,block),Some(digit));
         return Some(digit);
       }
       continue;
     }
-    if let Some(best) = find_modelnum(memo, insts, pc+18, z, range) {
-      memo.insert((z,pc), Some(best*10 + digit));
+    if let Some(best) = find_modelnum(memo, blocks, block+1, z, range) {
+      memo.insert((z,block), Some(best*10 + digit));
       return Some(best*10 + digit)
     }
   }
 
-  memo.insert((z,pc),None);
+  memo.insert((z,block),None);
   None
 }
 
-fn solve(insts: &[Instruction], biggest: bool) -> String {
+fn solve(blocks: &[Vec<Instruction>], biggest: bool) -> String {
   let range = if biggest {[9,8,7,6,5,4,3,2,1]} else {[1,2,3,4,5,6,7,8,9]};
-  let answer = find_modelnum(&mut Cache::new(), &insts, 1, 0, &range).unwrap();
+  let answer = find_modelnum(&mut Cache::new(), &blocks, 0, 0, &range).unwrap();
   answer.to_string().chars().rev().collect()
 }
 
@@ -93,5 +93,6 @@ aoc2021::main! {
       }
     })
     .collect::<Vec<_>>();
-  (solve(&insts, true), solve(&insts, false))
+  let blocks = insts.chunks(18).map(|c| c.iter().skip(1).copied().collect()).collect::<Vec<_>>();
+  (solve(&blocks, true), solve(&blocks, false))
 }
