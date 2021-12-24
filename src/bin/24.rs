@@ -78,18 +78,17 @@ fn solve(insts: &[Instruction], biggest: bool) -> String {
 aoc2021::main! {
   let insts = INPUT.lines()
     .map(|l| {
-      let (op, args) = l.split_once(' ').unwrap();
-      let src = match Source::from_str(&args[..1]) {
+      let src = match Source::from_str(&l[4..5]) {
         Source::Reg(src) => src,
         _ => unreachable!()
       };
-      match op {
+      match &l[..3] {
         "inp" => Instruction::Inp(src),
-        "add" => Instruction::Add(src, Source::from_str(&args[2..])),
-        "mul" => Instruction::Mul(src, Source::from_str(&args[2..])),
-        "div" => Instruction::Div(src, Source::from_str(&args[2..])),
-        "mod" => Instruction::Mod(src, Source::from_str(&args[2..])),
-        "eql" => Instruction::Eql(src, Source::from_str(&args[2..])),
+        "add" => Instruction::Add(src, Source::from_str(&l[6..])),
+        "mul" => Instruction::Mul(src, Source::from_str(&l[6..])),
+        "div" => Instruction::Div(src, Source::from_str(&l[6..])),
+        "mod" => Instruction::Mod(src, Source::from_str(&l[6..])),
+        "eql" => Instruction::Eql(src, Source::from_str(&l[6..])),
         _ => unreachable!()
       }
     })
