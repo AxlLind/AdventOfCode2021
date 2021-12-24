@@ -36,7 +36,7 @@ enum Instruction {
   Eql(usize, Source),
 }
 
-fn best(memo: &mut Cache, insts: &[Instruction], pc: usize, z: i64, range: &[i64;9]) -> Option<i64> {
+fn find_modelnum(memo: &mut Cache, insts: &[Instruction], pc: usize, z: i64, range: &[i64;9]) -> Option<i64> {
   if let Some(&answer) = memo.get(&(z,pc)) { return answer; }
 
   for &digit in range {
@@ -59,7 +59,7 @@ fn best(memo: &mut Cache, insts: &[Instruction], pc: usize, z: i64, range: &[i64
       }
       continue;
     }
-    if let Some(best) = best(memo, insts, pc+18, z, range) {
+    if let Some(best) = find_modelnum(memo, insts, pc+18, z, range) {
       memo.insert((z,pc), Some(best*10 + digit));
       return Some(best*10 + digit)
     }
@@ -71,7 +71,7 @@ fn best(memo: &mut Cache, insts: &[Instruction], pc: usize, z: i64, range: &[i64
 
 fn solve(insts: &[Instruction], biggest: bool) -> String {
   let range = if biggest {[9,8,7,6,5,4,3,2,1]} else {[1,2,3,4,5,6,7,8,9]};
-  let answer = best(&mut Cache::new(), &insts, 1, 0, &range).unwrap();
+  let answer = find_modelnum(&mut Cache::new(), &insts, 1, 0, &range).unwrap();
   answer.to_string().chars().rev().collect()
 }
 
