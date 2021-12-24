@@ -37,6 +37,9 @@ enum Instruction {
 }
 
 fn find_modelnum(memo: &mut Cache, blocks: &[Vec<Instruction>], block: usize, z: i64, range: &[i64;9]) -> Option<i64> {
+  if block == blocks.len() {
+    return if z == 0 {Some(0)} else {None};
+  }
   if let Some(&answer) = memo.get(&(z,block)) { return answer; }
 
   for &digit in range {
@@ -52,13 +55,6 @@ fn find_modelnum(memo: &mut Cache, blocks: &[Vec<Instruction>], block: usize, z:
       }
     }
     let z = regs[3];
-    if block+1 == blocks.len() {
-      if z == 0 {
-        memo.insert((z,block),Some(digit));
-        return Some(digit);
-      }
-      continue;
-    }
     if let Some(best) = find_modelnum(memo, blocks, block+1, z, range) {
       memo.insert((z,block), Some(best*10 + digit));
       return Some(best*10 + digit)
