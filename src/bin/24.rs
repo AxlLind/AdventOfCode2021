@@ -51,7 +51,7 @@ fn best(memo: &mut Cache, insts: &[Instruction], pc: usize, z: i64, range: &[i64
         Instruction::Inp(_) => unreachable!()
       }
     }
-    let z = reg[3];
+    let z = regs[3];
     if pc+17 == insts.len() {
       if z == 0 {
         memo.insert((z,pc),Some(digit));
