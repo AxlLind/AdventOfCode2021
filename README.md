@@ -1,6 +1,8 @@
 # AdventOfCode2020 :crab:
 Solutions to AoC 2021 problems in Rust :crab:
 
+See [timings.md](./timings.md) for execution time and output of each solution.
+
 ## Usage
 ```sh
 cargo run --release --bin [DAY] # run a specific day
