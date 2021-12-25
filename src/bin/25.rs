@@ -26,9 +26,7 @@ fn step(map: &mut Vec<Vec<u8>>, dr: usize, dc: usize) -> bool {
 }
 
 aoc2021::main! {
-  let mut map = INPUT.lines()
-    .map(|l| l.bytes().collect::<Vec<_>>())
-    .collect::<Vec<_>>();
+  let mut map = INPUT.lines().map(|l| l.bytes().collect()).collect();
   let mut round = 0;
   loop {
     let move1 = step(&mut map, 0, 1);
