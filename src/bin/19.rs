@@ -54,8 +54,7 @@ aoc2021::main! {
   let mut scans = INPUT.split("\n\n")
     .map(|s| s.lines().skip(1)
       .map(|l| {
-        let (a,tmp) = l.split_once(',').unwrap();
-        let (b,c) = tmp.split_once(',').unwrap();
+        let (a,b,c) = l.split(',').collect_tuple().unwrap();
         [a.parse().unwrap(), b.parse().unwrap(), c.parse().unwrap()]
       })
       .collect::<Vec<_>>()
