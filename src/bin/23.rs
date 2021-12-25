@@ -1,83 +1,90 @@
 use hashbrown::HashMap;
 use std::collections::BinaryHeap;
-use itertools::Itertools;
 
-static INPUT: &str = "#############\n#...........#\n###C#A#B#D###\n  #D#C#A#B#  \n  #########  ";
+static INPUT: [[u8;2];4] = [[b'C',b'D'], [b'A',b'C'], [b'B',b'A'], [b'D',b'B']];
+static INPUT2: [[u8;4];4] = [[b'C',b'D',b'D',b'D'], [b'A',b'C',b'B',b'C'], [b'B',b'B',b'A',b'A'], [b'D',b'A',b'C',b'B']];
 
-fn right_configuration(maze: &Vec<Vec<u8>>) -> bool {
-  maze.iter().skip(1).all(|l| itertools::equal(l[3..10].iter().copied(), "A#B#C#D".bytes()))
+type State<const N: usize> = ([u8;11], [[u8;N];4]);
+
+fn right_configuration<const N: usize>((_,rooms): &State<N>) -> bool {
+  for (room, c) in rooms.iter().zip("ABCD".bytes()) {
+    if room.iter().any(|&x| x != c) {
+      return false;
+    }
+  }
+  true
 }
 
-fn make_move(maze: &Vec<Vec<u8>>, x0: usize, y0: usize, x1: usize, y1: usize) -> Vec<Vec<u8>> {
-  let mut m = maze.clone();
-  m[x1][y1] = m[x0][y0];
-  m[x0][y0] = b'.';
-  m
+fn make_move<const N: usize>((mut corridor, mut rooms): State<N>, cost: usize, c: usize, room: usize, depth: usize) -> (usize, State<N>) {
+  let c0 = [2,4,6,8][room];
+  let energy = (depth + if c0 > c {c0-c} else {c-c0} + 1) * cost;
+  std::mem::swap(&mut corridor[c], &mut rooms[room][depth]);
+  (energy, (corridor, rooms))
 }
 
-fn moves(maze: &Vec<Vec<u8>>) -> Vec<(usize,Vec<Vec<u8>>)> {
-  let room_len = maze.len() - 1;
+fn moves<const N: usize>((corridor,rooms): State<N>) -> Vec<(usize,State<N>)> {
   let mut moves = Vec::new();
-  for y in 0..maze[0].len() {
-    // check moving into a room
-    let (room,exp) = match maze[0][y] {
-      b'A' => (3,1),
-      b'B' => (5,10),
-      b'C' => (7,100),
-      b'D' => (9,1000),
+  for c in 0..corridor.len() { // check moving into a room
+    let (room, cost) = match corridor[c] {
+      b'A' => (0,1),
+      b'B' => (1,10),
+      b'C' => (2,100),
+      b'D' => (3,1000),
       _ => continue,
     };
-    let (r0,r1) = if y > room {(room,y)} else {(y+1,room+1)};
-    if (r0..r1).any(|i| maze[0][i] != b'.') {
-      continue;
-    }
-    let i = match (1..=room_len).take_while(|&i| maze[i][room] == b'.').last() {
+    let c0 = [2,4,6,8][room];
+    let (r0,r1) = if c > c0 {(c0,c)} else {(c+1,c0+1)};
+    if (r0..r1).any(|i| corridor[i] != b'.') { continue; }
+    let i = match (0..N).take_while(|&i| rooms[room][i] == b'.').last() {
       Some(i) => i,
       _ => continue
     };
-    if i != room_len && maze[i+1][room] != maze[0][y] { continue; }
-    moves.push(((r1-r0 + i) * exp, make_move(maze, 0, y, i, room)));
+    if i+1 != N && rooms[room][i+1] != corridor[c] { continue; }
+    moves.push(make_move((corridor, rooms), cost, c, room, i));
   }
-  for (x,y) in (1..=room_len).cartesian_product([3,5,7,9]) {
-    // check moving out of a room
-    let exp = match maze[x][y] {
+  for room in 0..4 { // check moving out of a room
+    let i = match (0..N).find(|&i| rooms[room][i] != b'.') {
+      Some(i) => i,
+      _ => continue
+    };
+    let cost = match rooms[room][i] {
       b'A' => 1,
       b'B' => 10,
       b'C' => 100,
       b'D' => 1000,
       _ => continue,
     };
-    if (1..x).any(|i| maze[i][y] != b'.') || (x+1..=room_len).any(|i| maze[i][y] == b'.') {
-      continue;
+    let c0 = [2,4,6,8][room];
+    for c in c0..corridor.len() { // move right
+      if corridor[c] != b'.' { break; }
+      if ![2,4,6,8].contains(&c) {
+        moves.push(make_move((corridor, rooms), cost, c, room, i));
+      }
     }
-    for i in y..maze[0].len() { // move left
-      if maze[0][i] != b'.' { break; }
-      if ![1,2,4,6,8,10,11].contains(&i) { continue; }
-      moves.push(((x + i-y) * exp, make_move(maze, x, y, 0, i)));
-    }
-    for i in (1..=y).rev() { // move right
-      if maze[0][i] != b'.' { break; }
-      if ![1,2,4,6,8,10,11].contains(&i) { continue; }
-      moves.push(((x + y-i) * exp,make_move(maze, x, y, 0, i)));
+    for c in (0..c0).rev() { // move left
+      if corridor[c] != b'.' { break; }
+      if ![2,4,6,8].contains(&c) {
+        moves.push(make_move((corridor, rooms), cost, c, room, i));
+      }
     }
   }
   moves
 }
 
-fn shortest_path(maze: &Vec<Vec<u8>>) -> i64 {
+fn shortest_path<const N: usize>(state: State<N>) -> i64 {
   let mut dist = HashMap::new();
   let mut q = BinaryHeap::new();
-  q.push((0,maze.clone()));
+  q.push((0,state));
   while let Some((cost,m)) = q.pop() {
     if right_configuration(&m) { return -cost; }
     if let Some(&c) = dist.get(&m) {
       if -cost > c { continue; }
     }
-    for (nmoves, m) in moves(&m) {
-      let next_cost = -cost + nmoves as i64;
+    for (energy, m) in moves(m) {
+      let next_cost = -cost + energy as i64;
       let &c = dist.get(&m).unwrap_or(&1000000);
       if c > next_cost {
-        dist.insert(m.clone(), next_cost);
+        dist.insert(m, next_cost);
         q.push((-next_cost,m));
       }
     }
@@ -86,10 +93,7 @@ fn shortest_path(maze: &Vec<Vec<u8>>) -> i64 {
 }
 
 aoc2021::main! {
-  let mut map = INPUT.lines().skip(1).take(3).map(|l| l.bytes().collect()).collect();
-  let p1 = shortest_path(&map);
-  map.push("  #D#C#B#A#  ".bytes().collect());
-  map.push("  #D#B#A#C#  ".bytes().collect());
-  let p2 = shortest_path(&map);
+  let p1 = shortest_path(([b'.';11], INPUT));
+  let p2 = shortest_path(([b'.';11], INPUT2));
   (p1,p2)
 }
