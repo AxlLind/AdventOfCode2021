@@ -1,4 +1,4 @@
-# AdventOfCode2020 :crab:
+# AdventOfCode2021 :crab:
 Solutions to AoC 2021 problems in Rust :crab:
 
 See [timings.md](./timings.md) for execution time and output of each solution.
