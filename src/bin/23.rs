@@ -7,17 +7,13 @@ static INPUT2: [[u8;4];4] = [*b"CDDD", *b"ACBC", *b"BBAA", *b"DACB"];
 type State<const N: usize> = ([u8;11], [[u8;N];4]);
 
 fn right_configuration<const N: usize>((_,rooms): &State<N>) -> bool {
-  for (room, c) in rooms.iter().zip("ABCD".bytes()) {
-    if room.iter().any(|&x| x != c) {
-      return false;
-    }
-  }
-  true
+  rooms.iter().zip("ABCD".bytes()).all(|(room,c)| room.iter().all(|&x| x == c))
 }
 
-fn make_move<const N: usize>((mut corridor, mut rooms): State<N>, cost: usize, c: usize, room: usize, depth: usize) -> (usize, State<N>) {
+fn make_move<const N: usize>((mut corridor, mut rooms): State<N>, c: usize, room: usize, depth: usize) -> (usize, State<N>) {
+  let piece = if corridor[c] == b'.' {rooms[room][depth]} else {corridor[c]} - b'A';
   let c0 = [2,4,6,8][room];
-  let energy = (depth + if c0 > c {c0-c} else {c-c0} + 1) * cost;
+  let energy = (depth + if c0 > c {c0-c} else {c-c0} + 1) * [1,10,100,1000][piece as usize];
   std::mem::swap(&mut corridor[c], &mut rooms[room][depth]);
   (energy, (corridor, rooms))
 }
@@ -25,13 +21,8 @@ fn make_move<const N: usize>((mut corridor, mut rooms): State<N>, cost: usize, c
 fn moves<const N: usize>((corridor,rooms): State<N>) -> Vec<(usize,State<N>)> {
   let mut moves = Vec::new();
   for c in 0..corridor.len() { // check moving into a room
-    let (room, cost) = match corridor[c] {
-      b'A' => (0,1),
-      b'B' => (1,10),
-      b'C' => (2,100),
-      b'D' => (3,1000),
-      _ => continue,
-    };
+    if corridor[c] == b'.' { continue; }
+    let room = (corridor[c] - b'A') as usize;
     let c0 = [2,4,6,8][room];
     let (r0,r1) = if c > c0 {(c0,c)} else {(c+1,c0+1)};
     if (r0..r1).any(|i| corridor[i] != b'.') { continue; }
@@ -39,32 +30,25 @@ fn moves<const N: usize>((corridor,rooms): State<N>) -> Vec<(usize,State<N>)> {
       Some(i) => i,
       _ => continue
     };
-    if i+1 != N && rooms[room][i+1] != corridor[c] { continue; }
-    moves.push(make_move((corridor, rooms), cost, c, room, i));
+    if i+1 != N && (i+1..N).any(|d| rooms[room][d] != corridor[c]) { continue; }
+    moves.push(make_move((corridor, rooms), c, room, i));
   }
   for room in 0..4 { // check moving out of a room
     let i = match (0..N).find(|&i| rooms[room][i] != b'.') {
       Some(i) => i,
       _ => continue
     };
-    let cost = match rooms[room][i] {
-      b'A' => 1,
-      b'B' => 10,
-      b'C' => 100,
-      b'D' => 1000,
-      _ => continue,
-    };
     let c0 = [2,4,6,8][room];
     for c in c0..corridor.len() { // move right
       if corridor[c] != b'.' { break; }
       if ![2,4,6,8].contains(&c) {
-        moves.push(make_move((corridor, rooms), cost, c, room, i));
+        moves.push(make_move((corridor, rooms), c, room, i));
       }
     }
     for c in (0..c0).rev() { // move left
       if corridor[c] != b'.' { break; }
       if ![2,4,6,8].contains(&c) {
-        moves.push(make_move((corridor, rooms), cost, c, room, i));
+        moves.push(make_move((corridor, rooms), c, room, i));
       }
     }
   }
