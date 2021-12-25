@@ -1,8 +1,8 @@
 use hashbrown::HashMap;
 use std::collections::BinaryHeap;
 
-static INPUT: [[u8;2];4] = [[b'C',b'D'], [b'A',b'C'], [b'B',b'A'], [b'D',b'B']];
-static INPUT2: [[u8;4];4] = [[b'C',b'D',b'D',b'D'], [b'A',b'C',b'B',b'C'], [b'B',b'B',b'A',b'A'], [b'D',b'A',b'C',b'B']];
+static INPUT: [[u8;2];4] = [*b"CD", *b"AC", *b"BA", *b"DB"];
+static INPUT2: [[u8;4];4] = [*b"CDDD", *b"ACBC", *b"BBAA", *b"DACB"];
 
 type State<const N: usize> = ([u8;11], [[u8;N];4]);
 
