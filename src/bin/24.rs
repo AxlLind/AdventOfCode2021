@@ -24,28 +24,20 @@ static INPUT: &str = "inp w\nmul x 0\nadd x z\nmod x 26\ndiv z 1\nadd x 10\neql 
 // => X = (Z%26 + B) != I
 //    Z = (Z/A) * (25 * X + 1) + (I + C) * X
 
-fn find_modelnum(cache: &mut HashSet<(i64, usize)>, blocks: &[(i64,i64,i64)], block: usize, z: i64, range: &[i64]) -> Option<i64> {
+fn find_modelnum(cache: &mut HashSet<(usize,i64)>, blocks: &[(i64,i64,i64)], range: &[i64], block: usize, z: i64) -> Option<i64> {
   if block == blocks.len() {
     return if z == 0 {Some(0)} else {None};
   }
-  if cache.contains(&(z,block)) {
-    return None;
-  }
+  if cache.contains(&(block,z)) { return None; }
   let (a,b,c) = blocks[block];
   for &i in range {
-    let x = (z % 26 + b != i) as i64;
-    let z = (z/a) * (25*x + 1) + (i + c) * x;
-    if let Some(n) = find_modelnum(cache, blocks, block+1, z, range) {
-      return Some(n*10 + i)
+    let z = if z % 26 + b == i {z/a} else {(z/a) * 26 + i + c};
+    if let Some(n) = find_modelnum(cache, blocks, range, block+1, z) {
+      return Some(i * 10i64.pow(13 - block as u32) + n);
     }
   }
-  cache.insert((z,block));
+  cache.insert((block,z));
   None
-}
-
-fn solve(blocks: &[(i64,i64,i64)], range: [i64;9]) -> String {
-  let ans = find_modelnum(&mut HashSet::new(), &blocks, 0, 0, &range).unwrap();
-  ans.to_string().chars().rev().collect()
 }
 
 aoc2021::main! {
@@ -58,7 +50,7 @@ aoc2021::main! {
       (a,b,c)
     })
     .collect::<Vec<_>>();
-  let p1 = solve(&blocks, [9,8,7,6,5,4,3,2,1]);
-  let p2 = solve(&blocks, [1,2,3,4,5,6,7,8,9]);
+  let p1 = find_modelnum(&mut HashSet::new(), &blocks, &[9,8,7,6,5,4,3,2,1], 0, 0).unwrap();
+  let p2 = find_modelnum(&mut HashSet::new(), &blocks, &[1,2,3,4,5,6,7,8,9], 0, 0).unwrap();
   (p1,p2)
 }
