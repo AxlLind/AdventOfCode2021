@@ -1,5 +1,5 @@
-# AdventOfCode2021 :crab:
-Solutions to AoC 2021 problems in Rust :crab:
+# AdventOfCode2021 :christmas_tree:
+Solutions to AoC 2021 problems in Rust :crab: All solutions are quite short (under 100 lines) and efficient while still being readable and idiomatic.
 
 See [timings.md](./timings.md) for execution time and output of each solution.
 
