@@ -2,8 +2,8 @@ static INPUT: &str = "2056FA18025A00A4F52AB13FAB6CDA779E1B2012DB003301006A35C7D8
 static HEX_BITS: [&str; 16] = ["0000","0001","0010","0011","0100","0101","0110","0111","1000","1001","1010","1011","1100","1101","1110","1111"];
 
 enum Inst {
-  Literal(u8, usize),
-  Operator(u8, u8, Vec<Inst>),
+  Literal(usize, usize),
+  Operator(usize, u8, Vec<Inst>),
 }
 
 fn decode_hex(s: &str) -> Vec<u8> {
@@ -27,7 +27,7 @@ fn consume_bits(bits: &[u8], i: &mut usize, len: usize) -> usize {
 }
 
 fn parse_inst(b: &[u8], i: &mut usize) -> Inst {
-  let version = consume_bits(b,i,3) as u8;
+  let version = consume_bits(b,i,3);
   match consume_bits(b,i,3) as u8 {
     4 => {
       let mut val = 0;
@@ -46,11 +46,11 @@ fn parse_inst(b: &[u8], i: &mut usize) -> Inst {
           let endbit = *i + consume_bits(b,i,15);
           let mut insts = Vec::new();
           while *i < endbit {
-            insts.push(parse_inst(&b, i));
+            insts.push(parse_inst(b, i));
           }
           insts
         }
-        _ => (0..consume_bits(b,i,11)).map(|_| parse_inst(&b, i)).collect()
+        _ => (0..consume_bits(b,i,11)).map(|_| parse_inst(b, i)).collect()
       };
       Inst::Operator(version, id, insts)
     }
@@ -59,9 +59,8 @@ fn parse_inst(b: &[u8], i: &mut usize) -> Inst {
 
 fn version_sum(inst: &Inst) -> usize {
   match inst {
-    Inst::Literal(version, _) => *version as usize,
-    Inst::Operator(version, _, insts) =>
-      *version as usize + insts.iter().map(version_sum).sum::<usize>()
+    Inst::Literal(v, _) => *v,
+    Inst::Operator(v, _, insts) => *v + insts.iter().map(version_sum).sum::<usize>()
   }
 }
 

@@ -38,8 +38,8 @@ fn split(num: &mut Vec<(u32,u8)>) -> bool {
   true
 }
 
-fn add(n1: &Vec<(u32,u8)>, n2: &Vec<(u32,u8)>) -> Vec<(u32,u8)> {
-  let mut num = n1.iter().chain(n2).map(|&(n,d)| (n,d+1)).collect();
+fn add(n1: &[(u32,u8)], n2: &[(u32,u8)]) -> Vec<(u32,u8)> {
+  let mut num = n1.iter().chain(n2).map(|&(n,d)| (n,d+1)).collect::<Vec<_>>();
   loop {
     explode(&mut num);
     if !split(&mut num) { break }

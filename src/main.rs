@@ -5,7 +5,7 @@ use regex::Regex;
 static MS_REGEX: Lazy::<Regex> = Lazy::new(|| Regex::new(r"Time: (\d+)ms").unwrap());
 
 fn extract_time(s: &str) -> u32 {
-  let capture = MS_REGEX.captures_iter(&s).next().unwrap();
+  let capture = MS_REGEX.captures_iter(s).next().unwrap();
   capture[1].parse().unwrap()
 }
 

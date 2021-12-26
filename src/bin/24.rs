@@ -44,8 +44,8 @@ aoc2021::main! {
   let lines = INPUT.lines().collect::<Vec<_>>();
   let blocks = lines.chunks(18)
     .map(|block| {
-      let a = block[04][6..].parse().unwrap();
-      let b = block[05][6..].parse().unwrap();
+      let a = block[ 4][6..].parse().unwrap();
+      let b = block[ 5][6..].parse().unwrap();
       let c = block[15][6..].parse().unwrap();
       (a,b,c)
     })

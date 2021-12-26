@@ -9,7 +9,7 @@ fn part1((_,b): &(Vec<&[u8]>, Vec<&[u8]>)) -> usize {
 fn display_digit(perm: &[u8], s: &[u8]) -> Option<usize> {
   let mut panels = 0;
   for c in s.iter().map(|c| perm[(c - b'a') as usize]) {
-    panels |= 1 << c - b'a';
+    panels |= 1 << (c - b'a');
   }
   match panels {
     0b1111101 => Some(0),
@@ -28,13 +28,13 @@ fn display_digit(perm: &[u8], s: &[u8]) -> Option<usize> {
 
 fn try_permutation(perm: &[u8], (a,b): &(Vec<&[u8]>, Vec<&[u8]>)) -> Option<usize> {
   let invalid = a.iter()
-    .map(|s| display_digit(&perm, s))
+    .map(|s| display_digit(perm, s))
     .any(|o| o.is_none());
   if invalid { return None; }
   let ans = b.iter()
     .rev()
     .enumerate()
-    .map(|(i,s)| display_digit(&perm, s).unwrap() * 10usize.pow(i as u32))
+    .map(|(i,s)| display_digit(perm, s).unwrap() * 10usize.pow(i as u32))
     .sum();
   Some(ans)
 }
