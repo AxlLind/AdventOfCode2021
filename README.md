@@ -21,4 +21,4 @@ The puzzles unlock at `06:00` in the morning in my timezone. This is the second 
 
 Went very well this year compared to [last year](https://github.com/AxlLind/AdventOfCode2020/), top 1000 for `18/25` days. Set a new personal best of `153`!
 
-![leaderboard](./pictures/leaderboard.png)
+![leaderboard](./leaderboard.png)
