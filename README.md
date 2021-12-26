@@ -1,7 +1,9 @@
 # AdventOfCode2021 :christmas_tree:
-Solutions to AoC 2021 problems in Rust :crab: All solutions are quite short (under 100 lines) and efficient while still being readable and idiomatic.
+Solutions to all 25 AoC 2021 problems in Rust, using less than **100 lines** per day :crab: All solutions are quite short and efficient while still being readable and idiomatic. The code emits zero clippy warnings and has a total execution time of about `3.2s`.
 
 See [timings.md](./timings.md) for execution time and output of each solution.
+
+Thanks again for another amazing year of AoC, especially the subreddit community and of course [@ericwastl](https://twitter.com/ericwastl)! Overall, I thought 2021 was one of the best years yet. The difficult was just right. Definitely harder than 2020 I thought but not more than 2019.
 
 ## Usage
 ```sh
