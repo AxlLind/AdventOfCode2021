@@ -7,13 +7,11 @@ fn flash(flashed: &mut HashSet<(usize,usize)>, map: &mut [[u8;10];10], c: usize,
   if map[r][c] < 10 || !flashed.insert((r,c)) {
     return;
   }
-  let neighbours = [(r-1,c-1),(r-1,c),(r-1,c+1),(r,c-1),(r,c+1),(r+1,c-1),(r+1,c),(r+1,c+1)];
-  for &(r,c) in &neighbours {
-    if map.get(r).and_then(|row| row.get(c)).is_none() {
-      continue;
+  for (r,c) in [(r-1,c-1),(r-1,c),(r-1,c+1),(r,c-1),(r,c+1),(r+1,c-1),(r+1,c),(r+1,c+1)] {
+    if r < 10 && c < 10 {
+      map[r][c] += 1;
+      flash(flashed, map, c, r);
     }
-    map[r][c] += 1;
-    flash(flashed, map, c, r);
   }
 }
 
@@ -26,9 +24,7 @@ fn round(map: &mut [[u8;10];10]) -> usize {
     flash(&mut flashed, map, c, r);
   }
   for (r,c) in (0..10).cartesian_product(0..10) {
-    if map[r][c] > 9 {
-      map[r][c] = 0;
-    }
+    if map[r][c] > 9 { map[r][c] = 0 }
   }
   flashed.len()
 }
