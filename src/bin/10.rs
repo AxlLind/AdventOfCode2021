@@ -40,6 +40,6 @@ aoc2021::main! {
       None => fixed_scores.push(fixed_score(&stack)),
     }
   }
-  fixed_scores.sort();
+  fixed_scores.sort_unstable();
   (p1, fixed_scores[fixed_scores.len() / 2])
 }
