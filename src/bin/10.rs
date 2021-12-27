@@ -5,17 +5,11 @@ fn line_score(s: &str) -> (Vec<char>, Option<usize>) {
   let score = s.chars().find_map(|c| {
     match c {
       '('|'{'|'['|'<' => stack.push(c),
-      _ => match (stack.pop(), c) {
-        (Some('('), ')') => {},
-        (Some('['), ']') => {},
-        (Some('{'), '}') => {},
-        (Some('<'), '>') => {},
-        (_, ')') => return Some(3),
-        (_, ']') => return Some(57),
-        (_, '}') => return Some(1197),
-        (_, '>') => return Some(25137),
-        _ => unreachable!(),
-      },
+      ')' => if stack.pop() != Some('(') { return Some(3) }
+      ']' => if stack.pop() != Some('[') { return Some(57) }
+      '}' => if stack.pop() != Some('{') { return Some(1197) }
+      '>' => if stack.pop() != Some('<') { return Some(25137) }
+      _ => unreachable!(),
     }
     None
   });
