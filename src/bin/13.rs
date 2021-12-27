@@ -4,25 +4,21 @@ static POINTS: &str = "241,142\n57,889\n1131,239\n1076,828\n495,612\n656,775\n97
 static FOLDS: &str = "fold along x=655\nfold along y=447\nfold along x=327\nfold along y=223\nfold along x=163\nfold along y=111\nfold along x=81\nfold along y=55\nfold along x=40\nfold along y=27\nfold along y=13\nfold along y=6";
 
 fn fold_grid(points: &HashSet<(i32,i32)>, (dir,pos): (char,i32)) -> HashSet<(i32,i32)> {
-  points.iter()
-    .map(|&(x,y)| match (dir,x,y) {
-      ('x',x,y) if x < pos => (x,y),
-      ('x',x,y) => (pos*2 - x,y),
-      ('y',x,y) if y < pos => (x,y),
-      ('y',x,y) => (x,pos*2 - y),
-      _ => unreachable!()
-    })
-    .collect()
+  points.iter().map(|&(x,y)| match (dir,x,y) {
+    ('x',x,y) if x < pos => (x,y),
+    ('y',x,y) if y < pos => (x,y),
+    ('x',x,y) => (pos*2 - x,y),
+    ('y',x,y) => (x,pos*2 - y),
+    _ => unreachable!()
+  }).collect()
 }
 
-fn part2(grid: HashSet<(i32,i32)>, folds: &[(char,i32)]) {
-  let final_grid = folds.iter().fold(grid, |grid,&fold| fold_grid(&grid, fold));
-  let max_x = final_grid.iter().map(|&(x,_)| x).max().unwrap();
-  let max_y = final_grid.iter().map(|&(_,y)| y).max().unwrap();
-  for y in 0..=max_y {
-    for x in 0..=max_x {
-      let c = if final_grid.contains(&(x,y)) {'█'} else {' '};
-      print!("{}", c);
+fn print_grid(grid: &HashSet<(i32,i32)>) {
+  let xmax = grid.iter().map(|&(x,_)| x).max().unwrap();
+  let ymax = grid.iter().map(|&(_,y)| y).max().unwrap();
+  for y in 0..=ymax {
+    for x in 0..=xmax {
+      print!("{}", if grid.contains(&(x,y)) {'█'} else {' '});
     }
     println!();
   }
@@ -34,15 +30,12 @@ aoc2021::main! {
       let (a,b) = l.split_once(',').unwrap();
       (a.parse().unwrap(), b.parse().unwrap())
     })
-    .collect::<HashSet<_>>();
+    .collect();
   let folds = FOLDS.lines()
-    .map(|l| {
-      let tmp = l.split_whitespace().last().unwrap();
-      let (dir,pos) = tmp.split_once('=').unwrap();
-      (dir.as_bytes()[0] as char, pos.parse().unwrap())
-    })
+    .map(|s| (s.as_bytes()[11] as char, s[13..].parse().unwrap()))
     .collect::<Vec<_>>();
   let p1 = fold_grid(&grid, folds[0]).len();
-  part2(grid, &folds);
+  let final_grid = folds.iter().fold(grid, |grid, &fold| fold_grid(&grid, fold));
+  print_grid(&final_grid);
   (p1,"PFKLKCFP")
 }
