@@ -1,7 +1,7 @@
 # AdventOfCode2021 :christmas_tree:
 Solutions to all 25 AoC 2021 problems in Rust, using less than **100 lines** per day :crab:
 
-All solutions are quite short and efficient while still being readable and idiomatic. The code emits zero clippy warnings and has a total execution time of about `3.2s`.
+All solutions are quite short and efficient while still being readable and idiomatic. The code emits zero clippy warnings and has a total execution time of about `1.2s`.
 
 See [timings.md](./timings.md) for execution time and output of each solution.
 
