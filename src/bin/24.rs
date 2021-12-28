@@ -28,6 +28,7 @@ fn find_modelnum(cache: &mut HashSet<(usize,i64)>, blocks: &[(i64,i64,i64)], ran
   if block == blocks.len() {
     return if z == 0 {Some(0)} else {None};
   }
+  if z > 26i64.pow((14 - block) as u32) { return None; }
   if cache.contains(&(block,z)) { return None; }
   let (a,b,c) = blocks[block];
   for &i in range {
