@@ -23,12 +23,14 @@ static INPUT: &str = "inp w\nmul x 0\nadd x z\nmod x 26\ndiv z 1\nadd x 10\neql 
 //   17:  add z y    ; [I, (Z%26 + B) != I, (I + C) * X, (Z/A) * (25 * X + 1) + (I + C) * X]
 // => X = (Z%26 + B) != I
 //    Z = (Z/A) * (25 * X + 1) + (I + C) * X
+//
+// Analyzing this formula, we see that z will never go to zero if at block b `z > 26^b`
 
 fn find_modelnum(cache: &mut HashSet<(usize,i64)>, blocks: &[(i64,i64,i64)], range: &[i64], block: usize, z: i64) -> Option<i64> {
   if block == blocks.len() {
     return if z == 0 {Some(0)} else {None};
   }
-  if z > 26i64.pow((14 - block) as u32) { return None; }
+  if z > 26i64.pow(14 - block as u32) { return None; }
   if cache.contains(&(block,z)) { return None; }
   let (a,b,c) = blocks[block];
   for &i in range {
