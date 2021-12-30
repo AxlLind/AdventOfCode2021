@@ -8,7 +8,7 @@ INPUT = "#1 @ 483,830: 24x18\n#2 @ 370,498: 21x17\n#3 @ 403,823: 25x21\n#4 @ 619
 def solve() -> tuple[int,int]:
   squares = [[int(i) for i in re.findall("\d+", l)] for l in INPUT.split('\n')]
 
-  points = defaultdict(int)
+  points = defaultdict[tuple[int,int],int](int)
   for _,x,y,h,w in squares:
     for p in product(range(x,x+h), range(y,y+w)):
       points[p] += 1
