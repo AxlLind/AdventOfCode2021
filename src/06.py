@@ -13,17 +13,10 @@ def bounding_box(points: list[list[int]]) -> Iterable[tuple[int,int]]:
 def part1(points: list[list[int]]) -> int:
   closest = {}
   for x,y in bounding_box(points):
-    close, dist, single = 0,1e10,True
-    for i,(a,b) in enumerate(points):
-      d = abs(a-x) + abs(b-y)
-      if d == dist:
-        single = False
-      if d < dist:
-        single = True
-        dist = d
-        close = i
-    if single:
-      closest[(x,y)] = close
+    distances = [abs(a-x) + abs(b-y) for a,b in points]
+    d = min(distances)
+    if distances.count(d) == 1:
+      closest[(x,y)] = distances.index(d)
   return Counter(closest.values()).most_common(1)[0][1]
 
 def part2(points: list[list[int]]) -> int:
