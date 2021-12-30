@@ -1,6 +1,7 @@
 import time
+from typing import Any, Callable, Tuple
 
-def main(solver):
+def main(solver: Callable[[], Tuple[Any,Any]]):
   start = time.time()
   p1, p2 = solver()
   elapsed = int((time.time() - start) * 1000)
