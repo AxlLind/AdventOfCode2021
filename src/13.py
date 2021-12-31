@@ -28,21 +28,6 @@ def step(crosses: dict[tuple[int,int],str], carts: list[list[int]]) -> set[int]:
     carts[i] = [r,c,d,t]
   return crashes
 
-def part1(crosses: dict[tuple[int,int],str], carts: list[list[int]]):
-  while True:
-    crashes = step(crosses, carts)
-    if crashes:
-      break
-  r,c = carts[crashes.pop()][:2]
-  return f"{c},{r}"
-
-def part2(crosses: dict[tuple[int,int],str], carts: list[list[int]]):
-  while len(carts) > 1:
-    for i in reversed(sorted(step(crosses, carts))):
-      carts.pop(i)
-  r,c = carts[0][:2]
-  return f"{c},{r}"
-
 def solve():
   grid = [list(s) for s in INPUT.split('\n')]
   crosses, carts = {}, []
@@ -55,6 +40,13 @@ def solve():
       case '+': crosses[r,c] = '+',
       case '/': crosses[r,c] = '/',
       case '\\': crosses[r,c] = '\\',
-  return part1(crosses, carts[:]), part2(crosses, carts[:])
+  r1,c1 = None, None
+  while len(carts) > 1:
+    for i in reversed(sorted(step(crosses, carts))):
+      if not r1:
+        r1,c1 = carts[i][:2]
+      carts.pop(i)
+  r2,c2 = carts[0][:2]
+  return f"{c1},{r1}", f"{c2},{r2}"
 
 main(solve)
