@@ -5,16 +5,13 @@ INPUT = "position=< 20316, -30055> velocity=<-2,  3>\nposition=<-30043, -30055> 
 
 def print_grid(stars: list[list[int]]) -> bool:
   ymin, ymax = min(s[1] for s in stars), max(s[1] for s in stars)
-  if ymax-ymin > 15:
+  if ymax-ymin > 10:
     return False
   xmin, xmax = min(s[0] for s in stars), max(s[0] for s in stars)
   for y in range(ymin,ymax+1):
     row = ""
     for x in range(xmin,xmax+1):
-      if any(s[0]==x and s[1]==y for s in stars):
-        row += '█'
-      else:
-        row += ' '
+      row += '█' if any(s[0]==x and s[1]==y for s in stars) else ' '
     print(row)
   return True
 
