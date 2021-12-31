@@ -16,7 +16,7 @@ def move_cart(crosses: dict[tuple[int,int],str], cart: list[int]) -> list[int]:
     case '\\': d = [1,0,3,2][d]
   return [r+DR[d],c+DC[d],d,t]
 
-def step(crosses: dict[tuple[int,int],str], carts: list[list[int]]) -> set[int]:
+def step(crosses: dict[tuple[int,int],str], carts: list[list[int]]) -> list[int]:
   carts.sort()
   crashes = set()
   for i in range(len(carts)):
@@ -26,7 +26,7 @@ def step(crosses: dict[tuple[int,int],str], carts: list[list[int]]) -> set[int]:
         crashes.add(i)
         crashes.add(j)
     carts[i] = [r,c,d,t]
-  return crashes
+  return sorted(crashes)
 
 def solve():
   grid = [list(s) for s in INPUT.split('\n')]
@@ -42,7 +42,7 @@ def solve():
       case '\\': crosses[r,c] = '\\',
   r1,c1 = None, None
   while len(carts) > 1:
-    for i in reversed(sorted(step(crosses, carts))):
+    for i in reversed(step(crosses, carts)):
       if not r1:
         r1,c1 = carts[i][:2]
       carts.pop(i)
