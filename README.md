@@ -1,7 +1,7 @@
 # AdventOfCode2021 :christmas_tree:
-Solutions to all 25 AoC 2021 problems in Rust, using less than **100 lines** per day :crab:
+Solutions to all 25 AoC 2021 problems in Rust, using less than **100 lines** per day, with a total execution time of less than a second :crab:
 
-All solutions are quite short and efficient while still being readable and idiomatic. The code emits zero clippy warnings and has a total execution time of about `1.2s`. All solutions finish in under `0.7` seconds!
+All solutions are quite short and efficient while still being readable and idiomatic. The code emits zero clippy warnings and has a total execution time of about `0.85s`!
 
 See [timings.md](./timings.md) for execution time and output of each solution.
 
@@ -9,8 +9,8 @@ Thanks again for another amazing year of AoC, especially the subreddit community
 
 ## Usage
 ```sh
-cargo run --release --bin [DAY] # run a specific day
-cargo run --release             # run all days
+cargo run --release --bin DAY # run a specific day
+cargo run --release           # run all days
 ```
 
 ## Other years

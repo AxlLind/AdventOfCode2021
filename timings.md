@@ -1,31 +1,31 @@
 ## Timings
-The following table contains wall-clock timings of all 25 solutions, as well as the produced answer to both parts. The time includes computing both parts of the problem, using the timing method in [lib.rs](src/lib.rs). It was done on a `MacBook Pro (15-inch, 2017)` with a `2,8 GHz Quad-Core Intel Core i7` CPU.
+The following table contains wall-clock timings of all 25 solutions, as well as the produced answer to both parts. The time includes computing both parts of the problem, using the timing method in [lib.rs](src/lib.rs). It was done on an `Intel(R) Core(TM) i5-6600K CPU @ 3.5GHz`.
 
 | Day | Part 1         | Part 2           | Time (ms) |
 |-----|----------------|------------------|----------:|
 | 01  | 1624           | 1653             | 0         |
 | 02  | 1654760        | 1956047400       | 0         |
 | 03  | 3895776        | 7928162          | 0         |
-| 04  | 32844          | 4920             | 2         |
-| 05  | 7468           | 22364            | 11        |
+| 04  | 32844          | 4920             | 1         |
+| 05  | 7468           | 22364            | 10        |
 | 06  | 350149         | 1590327954513    | 0         |
 | 07  | 347509         | 98257206         | 1         |
-| 08  | 488            | 1040429          | 54        |
+| 08  | 488            | 1040429          | 19        |
 | 09  | 494            | 1048128          | 0         |
 | 10  | 390993         | 2391385187       | 0         |
-| 11  | 1713           | 501              | 1         |
-| 12  | 3485           | 85062            | 48        |
+| 11  | 1713           | 501              | 0         |
+| 12  | 3485           | 85062            | 31        |
 | 13  | 661            | PFKLKCFP         | 0         |
 | 14  | 2194           | 2360298895777    | 0         |
-| 15  | 739            | 3040             | 31        |
+| 15  | 739            | 3040             | 22        |
 | 16  | 917            | 2539428938709    | 0         |
-| 17  | 33670          | 4903             | 11        |
-| 18  | 4243           | 4701             | 18        |
-| 19  | 405            | 12306            | 643       |
-| 20  | 5395           | 17584            | 13        |
+| 17  | 33670          | 4903             | 9         |
+| 18  | 4243           | 4701             | 11        |
+| 19  | 405            | 12306            | 492       |
+| 20  | 5395           | 17584            | 9         |
 | 21  | 1004670        | 492043106122795  | 3         |
-| 22  | 570915         | 1268313839428137 | 10        |
-| 23  | 15358          | 51436            | 208       |
-| 24  | 98491959997994 | 61191516111321   | 26        |
-| 25  | 429            | 🎄               | 147       |
-|     |                | Total time:      | 1229ms    |
+| 22  | 570915         | 1268313839428137 | 3         |
+| 23  | 15358          | 51436            | 147       |
+| 24  | 98491959997994 | 61191516111321   | 19        |
+| 25  | 429            | 🎄               | 70        |
+|     |                | Total time:      | 847ms     |
