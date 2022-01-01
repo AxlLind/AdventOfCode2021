@@ -3,14 +3,14 @@ from itertools import product
 
 INPUT = 8979
 
-def part1(dp: list[list[list[int]]]) -> int:
+def part1(dp: list[list[list[int]]]) -> str:
   xmax,ymax,v = 0,0,0
   for x,y in product(range(1,297), repeat=2):
     if dp[x][y][3] > v:
       xmax,ymax,v = x,y,dp[x][y][3]
   return f"{xmax},{ymax}"
 
-def part2(dp: list[list[list[int]]]) -> int:
+def part2(dp: list[list[list[int]]]) -> str:
   xmax,ymax,sizemax,v = 0,0,0,0
   for size in range(2,300):
     for x,y in product(range(1,300-size), repeat=2):
