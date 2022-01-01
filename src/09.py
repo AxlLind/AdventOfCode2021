@@ -1,4 +1,4 @@
-from aoc import main
+import aoc
 from collections import defaultdict, deque
 
 INPUT = (455, 71223) # 455 players; last marble is worth 71223 points
@@ -15,9 +15,11 @@ def play(players: int, rounds: int) -> int:
       marbles.append(i)
   return max(scores.values())
 
-def solve() -> tuple[int,int]:
+@aoc.main
+def main() -> tuple[int,int]:
   p1 = play(INPUT[0], INPUT[1])
   p2 = play(INPUT[0], INPUT[1]*100)
   return p1,p2
 
-main(solve)
+if __name__ == "__main__":
+  main()

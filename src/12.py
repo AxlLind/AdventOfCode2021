@@ -1,4 +1,4 @@
-from aoc import main
+import aoc
 
 INPUT = "initial state: #...#...##..####..##.####.#...#...#.#.#.#......##....#....######.####.##..#..#..##.##..##....#######\n\n.#### => .\n...#. => .\n.##.. => #\n#.##. => .\n#..## => .\n##### => #\n####. => #\n.##.# => #\n#.### => .\n...## => #\n.#.## => #\n#..#. => #\n#.#.. => #\n.###. => #\n##.## => #\n##..# => .\n.#... => #\n###.# => .\n..##. => .\n..... => .\n###.. => #\n..#.# => .\n.#..# => #\n##... => #\n#.... => .\n##.#. => .\n..#.. => #\n....# => .\n#...# => .\n#.#.# => #\n..### => .\n.#.#. => #"
 
@@ -26,10 +26,12 @@ def part2(transitions: set[str], pots: set[int]) -> int:
     seen.add(pattern)
   assert False
 
-def solve() -> tuple[int,int]:
+@aoc.main
+def main() -> tuple[int,int]:
   state, rest = INPUT.split('\n\n')
   pots = {i for i,c in enumerate(state.split(": ").pop()) if c == '#'}
   transitions = {s[:5] for s in rest.split('\n') if s[-1] == '#'}
   return part1(transitions, pots), part2(transitions, pots)
 
-main(solve)
+if __name__ == "__main__":
+  main()

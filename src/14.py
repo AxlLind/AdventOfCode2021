@@ -1,8 +1,9 @@
-from aoc import main
+import aoc
 
 INPUT = 640441
 
-def solve():
+@aoc.main
+def main():
   res = [int(c) for c in str(INPUT)]
   e1,e2,recipes = 0,1,[3,7]
   while recipes[-len(res):] != res:
@@ -16,4 +17,5 @@ def solve():
     e2 = (e2 + recipes[e2] + 1) % len(recipes)
   return ''.join(str(i) for i in recipes[INPUT:INPUT+10]),len(recipes) - len(res)
 
-main(solve)
+if __name__ == "__main__":
+  main()

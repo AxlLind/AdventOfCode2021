@@ -1,4 +1,4 @@
-from aoc import main
+import aoc
 from itertools import product
 from collections import Counter
 from typing import Iterable
@@ -26,8 +26,10 @@ def part2(points: list[list[int]]) -> int:
     ans += total_dist < 10000
   return ans
 
-def solve():
+@aoc.main
+def main():
   points = [[int(i) for i in l.split(', ')] for l in INPUT.split('\n')]
   return part1(points), part2(points)
 
-main(solve)
+if __name__ == "__main__":
+  main()

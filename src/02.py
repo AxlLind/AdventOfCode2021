@@ -1,4 +1,4 @@
-from aoc import main
+import aoc
 from collections import Counter
 from itertools import combinations
 
@@ -15,8 +15,10 @@ def part2(ids: list[str]) -> str:
       return ''.join(ans)
   assert False
 
-def solve() -> tuple[int,str]:
+@aoc.main
+def main() -> tuple[int,str]:
   ids = INPUT.split('\n')
   return part1(ids), part2(ids)
 
-main(solve)
+if __name__ == "__main__":
+  main()

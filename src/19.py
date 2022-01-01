@@ -1,4 +1,4 @@
-from aoc import main
+import aoc
 
 INPUT = "#ip 3\naddi 3 16 3\nseti 1 6 5\nseti 1 8 2\nmulr 5 2 1\neqrr 1 4 1\naddr 1 3 3\naddi 3 1 3\naddr 5 0 0\naddi 2 1 2\ngtrr 2 4 1\naddr 3 1 3\nseti 2 3 3\naddi 5 1 5\ngtrr 5 4 1\naddr 1 3 3\nseti 1 8 3\nmulr 3 3 3\naddi 4 2 4\nmulr 4 4 4\nmulr 3 4 4\nmuli 4 11 4\naddi 1 6 1\nmulr 1 3 1\naddi 1 10 1\naddr 4 1 4\naddr 3 0 3\nseti 0 0 3\nsetr 3 9 1\nmulr 1 3 1\naddr 3 1 1\nmulr 3 1 1\nmuli 1 14 1\nmulr 1 3 1\naddr 4 1 4\nseti 0 4 0\nseti 0 0 3"
 
@@ -43,10 +43,12 @@ INPUT = "#ip 3\naddi 3 16 3\nseti 1 6 5\nseti 1 8 2\nmulr 5 2 1\neqrr 1 4 1\nadd
 def f(n: int) -> int:
   return sum(d+n//d for d in range(1, int(n**0.5)+1) if n % d == 0)
 
-def solve():
+@aoc.main
+def main():
   lines = INPUT.split('\n')
   a, b = [int(lines[n].split(' ')[2]) for n in [22,24]]
   n = 836 + 22 * a + b
   return f(n), f(n+10550400)
 
-main(solve)
+if __name__ == "__main__":
+  main()
