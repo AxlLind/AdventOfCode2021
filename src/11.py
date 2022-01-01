@@ -1,25 +1,22 @@
 from aoc import main
+from itertools import product
 
 INPUT = 8979
 
-def power_level(x: int, y: int) -> int:
+def power(x: int, y: int) -> int:
   return (((x+10) * y + INPUT) * (x+10) // 100) % 10 - 5
 
 def solve() -> tuple[str,str]:
-  grid = [[power_level(x,y) for y in range(301)] for x in range(301)]
   dp = [[[0]*300 for _ in range(300)] for _ in range(300)]
-  for x in range(1,300):
-    for y in range(1,300):
-      dp[x][y][1] = grid[x][y]
-      dp[x][y][2] = sum(grid[x][y:y+2]) + sum(grid[x+1][y:y+2])
-  for size in range(3,300):
-    for x in range(1,300-size):
-      for y in range(1,300-size):
-        dp[x][y][size] = grid[x][y] \
-                       + dp[x+1][y][size-1] \
-                       + dp[x][y+1][size-1] \
-                       - dp[x+1][y+1][size-2] \
-                       + grid[x+size-1][y+size-1]
+  for x,y in product(range(1,300), r=2):
+    dp[x][y][1] = power(x,y)
+  for size in range(2,300):
+    for x,y in product(range(1,300-size), r=2):
+      dp[x][y][size] = dp[x][y][1] \
+                     + dp[x+1][y][size-1] \
+                     + dp[x][y+1][size-1] \
+                     - dp[x+1][y+1][size-2] \
+                     + dp[x+size-1][y+size-1][1]
 
   x1,y1,n1,x2,y2,s2,n2 = 0,0,0,0,0,0,0
   for size in range(3,300):
