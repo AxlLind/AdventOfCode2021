@@ -36,10 +36,11 @@ INPUT = "#ip 5\nseti 123 0 3\nbani 3 456 3\neqri 3 72 3\naddr 3 5 5\nseti 0 0 5\
 # 30: seti 5 5 pc       ;
 
 def f(n: int, r2: int, r3: int) -> tuple[int,int,int]:
-  r3 = (((r3 + (r2 & 0xff)) & 0xffffff) * 65899)  & 0xffffff
-  while r2 >= 256:
-    r2 //= 256
+  while True:
     r3 = (((r3 + (r2 & 0xff)) & 0xffffff) * 65899)  & 0xffffff
+    if r2 < 256:
+      break
+    r2 //= 256
   return r3 | 0x10000, n, r3
 
 @aoc.main
