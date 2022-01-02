@@ -46,7 +46,7 @@ def f(n: int, r2: int, r3: int) -> tuple[int,int,int]:
 @aoc.main
 def main() -> tuple[int,int]:
   n = int(INPUT.split('\n')[8].split(' ')[1])
-  seen, r2, r3 = {}, 65536, n
+  seen, r2, r3 = dict[int,int](), 65536, n
   while True:
     r2,r3,res = f(n,r2,r3)
     if res in seen:
