@@ -2,6 +2,7 @@ import aoc
 import re
 from collections import defaultdict
 from heapq import heappush, heappop
+from itertools import product
 
 INPUT = "depth: 5913\ntarget: 8,701"
 Node = tuple[int,int,bool,bool]
@@ -15,16 +16,19 @@ def neighbors(cave: list[list[int]], node: Node) -> list[tuple[int,Node]]:
   for r1,c1 in [(r-1,c),(r+1,c),(r,c-1),(r,c+1)]:
     if r1 < 0 or r1 >= len(cave) or c1 < 0 or c1 >= len(cave[0]):
       continue
-    if cave[r1][c1] == 0 and not torch and not gear:
-      continue
-    if cave[r1][c1] == 1 and torch:
-      continue
-    if cave[r1][c1] == 2 and gear:
-      continue
-    ns.append((1,(r1,c1,torch,gear)))
+    match cave[r1][c1]:
+      case 0:
+        if torch or gear:
+          ns.append((1,(r1,c1,torch,gear)))
+      case 1:
+        if not torch:
+          ns.append((1,(r1,c1,torch,gear)))
+      case 2:
+        if not gear:
+          ns.append((1,(r1,c1,torch,gear)))
   return ns
 
-def dijkstra(cave, start, target) -> int:
+def dijkstra(cave: list[list[int]], start: Node, target: Node) -> int:
   q, costs = [(0,start)], defaultdict[Node,int](lambda: 10000)
   costs[start] = 0
   while q:
@@ -44,16 +48,14 @@ def build_cave(depth: int, rows: int, cols: int) -> tuple[int, list[list[int]]]:
     cave[r][0] = (r * 16807 + depth) % 20183
   for c in range(len(cave[0])):
     cave[0][c] = (c * 48271 + depth) % 20183
-  for r in range(1,len(cave)):
-    for c in range(1,len(cave[0])):
-      cave[r][c] = (cave[r-1][c] * cave[r][c-1] + depth) % 20183
+  for r,c in product(range(1,len(cave)), range(1,len(cave[0]))):
+    cave[r][c] = (cave[r-1][c] * cave[r][c-1] + depth) % 20183
   cave[rows][cols] = depth % 20183
   risk = 0
-  for r in range(len(cave)):
-    for c in range(len(cave[0])):
-      cave[r][c] %= 3
-      if r <= rows and c <= cols:
-        risk += cave[r][c]
+  for r,c in product(range(len(cave)), range(len(cave[0]))):
+    cave[r][c] %= 3
+    if r <= rows and c <= cols:
+      risk += cave[r][c]
   return risk,cave
 
 @aoc.main
