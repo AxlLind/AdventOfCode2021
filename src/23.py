@@ -15,7 +15,7 @@ def part2(bots: list[list[int]]) -> int:
   opt.maximize(sum(If(abs(x-x1) + abs(y-y1) + abs(z-z1) <= r, 1, 0) for x1,y1,z1,r in bots))
   opt.minimize(abs(x) + abs(y) + abs(z))
   opt.check()
-  return sum(opt.model()[v].as_long() for v in [x,y,z])
+  return opt.model().eval(abs(x) + abs(y) + abs(z))
 
 @aoc.main
 def main() -> tuple[int,int]:
