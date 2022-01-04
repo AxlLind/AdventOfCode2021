@@ -1,7 +1,5 @@
 import aoc
 
-INPUT = "#ip 5\nseti 123 0 3\nbani 3 456 3\neqri 3 72 3\naddr 3 5 5\nseti 0 0 5\nseti 0 5 3\nbori 3 65536 2\nseti 832312 1 3\nbani 2 255 1\naddr 3 1 3\nbani 3 16777215 3\nmuli 3 65899 3\nbani 3 16777215 3\ngtir 256 2 1\naddr 1 5 5\naddi 5 1 5\nseti 27 7 5\nseti 0 2 1\naddi 1 1 4\nmuli 4 256 4\ngtrr 4 2 4\naddr 4 5 5\naddi 5 1 5\nseti 25 1 5\naddi 1 1 1\nseti 17 0 5\nsetr 1 7 2\nseti 7 2 5\neqrr 3 0 1\naddr 1 5 5\nseti 5 5 5"
-
 # Function reverse-engineered by hand
 # 00: seti 123 0 3      ;
 # 01: bani 3 456 3      ;
@@ -43,9 +41,9 @@ def f(n: int, r2: int, r3: int) -> tuple[int,int,int]:
     r2 //= 256
   return r3 | 0x10000, n, r3
 
-@aoc.main
-def main() -> tuple[int,int]:
-  n = int(INPUT.split('\n')[8].split(' ')[1])
+@aoc.main('21')
+def main(indata: str) -> tuple[int,int]:
+  n = int(indata.split('\n')[8].split(' ')[1])
   seen, r2, r3 = dict[int,int](), 65536, n
   while True:
     r2,r3,res = f(n,r2,r3)

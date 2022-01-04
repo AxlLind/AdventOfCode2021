@@ -3,7 +3,6 @@ import re
 from dataclasses import dataclass
 from copy import deepcopy
 
-INPUT = "Immune System:\n123 units each with 8524 hit points with an attack that does 612 slashing damage at initiative 11\n148 units each with 4377 hit points (weak to slashing, bludgeoning) with an attack that does 263 cold damage at initiative 1\n6488 units each with 2522 hit points (weak to fire) with an attack that does 3 bludgeoning damage at initiative 19\n821 units each with 8034 hit points (immune to cold, bludgeoning) with an attack that does 92 cold damage at initiative 17\n1163 units each with 4739 hit points (weak to cold) with an attack that does 40 bludgeoning damage at initiative 14\n1141 units each with 4570 hit points (weak to fire, slashing) with an attack that does 32 radiation damage at initiative 18\n108 units each with 2954 hit points with an attack that does 262 radiation damage at initiative 8\n4752 units each with 6337 hit points (weak to bludgeoning, cold; immune to slashing) with an attack that does 13 cold damage at initiative 20\n4489 units each with 9894 hit points (weak to slashing) with an attack that does 20 slashing damage at initiative 12\n331 units each with 12535 hit points with an attack that does 300 slashing damage at initiative 15\n\nInfection:\n853 units each with 13840 hit points (weak to bludgeoning, cold) with an attack that does 26 fire damage at initiative 3\n450 units each with 62973 hit points (weak to slashing) with an attack that does 220 fire damage at initiative 13\n3777 units each with 35038 hit points (weak to cold) with an attack that does 18 radiation damage at initiative 7\n96 units each with 43975 hit points (immune to bludgeoning; weak to cold, slashing) with an attack that does 862 radiation damage at initiative 16\n1536 units each with 14280 hit points (weak to cold, fire; immune to bludgeoning) with an attack that does 18 slashing damage at initiative 2\n3696 units each with 36133 hit points (weak to radiation; immune to cold, fire) with an attack that does 18 bludgeoning damage at initiative 10\n3126 units each with 39578 hit points (weak to cold) with an attack that does 22 radiation damage at initiative 4\n1128 units each with 13298 hit points (weak to bludgeoning, slashing) with an attack that does 23 fire damage at initiative 6\n7539 units each with 6367 hit points (weak to fire; immune to radiation) with an attack that does 1 slashing damage at initiative 5\n1886 units each with 45342 hit points (weak to fire, cold) with an attack that does 45 cold damage at initiative 9"
 PARSE_REGEX = "(\d+) units each with (\d+) hit points( \(.*\))? with an attack that does (\d+) ([a-z]+) damage at initiative (\d+)"
 
 @dataclass
@@ -72,9 +71,9 @@ def fight(teams: list[list[Unit]]) -> tuple[int,int]:
   winner = 0 if teams[0] else 1
   return winner, sum(u.units for u in teams[winner])
 
-@aoc.main
-def main():
-  teams = [[Unit.parse(l) for l in s.split('\n')[1:]] for s in INPUT.split("\n\n")]
+@aoc.main('24')
+def main(indata: str) -> tuple[int,int]:
+  teams = [[Unit.parse(l) for l in s.split('\n')[1:]] for s in indata.split("\n\n")]
   winner,p1 = fight(teams)
   while winner != 0:
     for u in teams[0]:

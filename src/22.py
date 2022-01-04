@@ -4,7 +4,6 @@ from collections import defaultdict
 from heapq import heappush, heappop
 from itertools import product
 
-INPUT = "depth: 5913\ntarget: 8,701"
 Node = tuple[int,int,bool,bool]
 
 def neighbors(cave: list[list[int]], node: Node) -> list[tuple[int,Node]]:
@@ -29,7 +28,7 @@ def neighbors(cave: list[list[int]], node: Node) -> list[tuple[int,Node]]:
   return ns
 
 def dijkstra(cave: list[list[int]], start: Node, target: Node) -> int:
-  q, costs = [(0,start)], defaultdict[Node,int](lambda: 10000)
+  q, costs = [(0,start)], defaultdict[Node,int](lambda: 100000)
   costs[start] = 0
   while q:
     cost,here = heappop(q)
@@ -58,9 +57,9 @@ def build_cave(depth: int, rows: int, cols: int) -> tuple[int, list[list[int]]]:
       risk += cave[r][c]
   return risk,cave
 
-@aoc.main
-def main() -> tuple[int,int]:
-  depth,rows,cols = [int(i) for i in re.findall("\d+", INPUT)]
+@aoc.main('22')
+def main(indata: str) -> tuple[int,int]:
+  depth,rows,cols = [int(i) for i in re.findall("\d+", indata)]
   p1, cave = build_cave(depth,rows,cols)
   return p1, dijkstra(cave, (0,0,True,False), (rows,cols,True,False))
 

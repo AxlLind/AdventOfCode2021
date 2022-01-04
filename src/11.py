@@ -1,8 +1,6 @@
 import aoc
 from itertools import product
 
-INPUT = 8979
-
 def part1(dp: list[list[list[int]]]) -> str:
   xmax,ymax,v = 0,0,0
   for x,y in product(range(1,297), repeat=2):
@@ -18,11 +16,12 @@ def part2(dp: list[list[list[int]]]) -> str:
         xmax,ymax,sizemax,v = x,y,size,dp[x][y][size]
   return f"{xmax},{ymax},{sizemax}"
 
-@aoc.main
-def main() -> tuple[str,str]:
-  dp = [[[0]*300 for _ in range(300)] for size in range(300)]
+@aoc.main('11')
+def main(indata: str) -> tuple[str,str]:
+  rackid = int(indata)
+  dp = [[[0]*300 for _ in range(300)] for _ in range(300)]
   for x,y in product(range(1,300), repeat=2):
-    dp[x][y][1] = (((x+10) * y + INPUT) * (x+10) // 100) % 10 - 5
+    dp[x][y][1] = (((x+10) * y + rackid) * (x+10) // 100) % 10 - 5
   for size in range(2,300):
     for x,y in product(range(1,300-size), repeat=2):
       dp[x][y][size] = dp[x][y][1] \

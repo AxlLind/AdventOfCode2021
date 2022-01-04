@@ -3,8 +3,6 @@ from itertools import product
 from collections import Counter
 from typing import Iterable
 
-INPUT = "260, 78\n42, 40\n87, 276\n219, 124\n166, 137\n341, 138\n82, 121\n114, 174\n218, 289\n61, 358\n328, 164\n279, 50\n218, 107\n273, 320\n192, 349\n354, 103\n214, 175\n128, 196\n237, 67\n333, 150\n98, 260\n166, 217\n92, 212\n55, 165\n205, 138\n321, 199\n285, 148\n217, 130\n357, 319\n160, 67\n63, 75\n345, 123\n316, 220\n41, 253\n240, 245\n201, 124\n336, 166\n95, 301\n55, 181\n219, 315\n209, 237\n317, 254\n314, 300\n242, 295\n295, 293\n285, 263\n330, 204\n112, 106\n348, 49\n81, 185"
-
 def bounding_box(points: list[list[int]]) -> Iterable[tuple[int,int]]:
   xmin, xmax = min(x for x,_ in points), max(x for x,_ in points)
   ymin, ymax = min(y for _,y in points), max(y for _,y in points)
@@ -26,9 +24,9 @@ def part2(points: list[list[int]]) -> int:
     ans += total_dist < 10000
   return ans
 
-@aoc.main
-def main():
-  points = [[int(i) for i in l.split(', ')] for l in INPUT.split('\n')]
+@aoc.main('06')
+def main(indata: str):
+  points = [[int(i) for i in l.split(', ')] for l in indata.split('\n')]
   return part1(points), part2(points)
 
 if __name__ == "__main__":
