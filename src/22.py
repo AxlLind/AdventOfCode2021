@@ -42,7 +42,7 @@ def dijkstra(cave: list[list[int]], start: Node, target: Node) -> int:
   assert False
 
 def build_cave(depth: int, rows: int, cols: int) -> tuple[int, list[list[int]]]:
-  cave = [[0 for _ in range(2*cols)] for _ in range(2*rows)]
+  cave = [[0 for _ in range(10*cols)] for _ in range(10*rows)]
   for r in range(len(cave)):
     cave[r][0] = (r * 16807 + depth) % 20183
   for c in range(len(cave[0])):
