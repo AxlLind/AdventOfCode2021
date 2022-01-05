@@ -9,7 +9,7 @@ def step(transitions: set[str], pots: set[int]) -> set[int]:
   return new_pots
 
 def part1(transitions: set[str], pots: set[int]) -> int:
-  for i in range(20):
+  for _ in range(20):
     pots = step(transitions, pots)
   return sum(pots)
 
@@ -27,7 +27,7 @@ def part2(transitions: set[str], pots: set[int]) -> int:
 @aoc.main('12')
 def main(indata: str) -> tuple[int,int]:
   state, rest = indata.split('\n\n')
-  pots = {i for i,c in enumerate(state.split(": ").pop()) if c == '#'}
+  pots = {i for i,c in enumerate(state.split(": ")[-1]) if c == '#'}
   transitions = {s[:5] for s in rest.split('\n') if s[-1] == '#'}
   return part1(transitions, pots), part2(transitions, pots)
 
