@@ -1,17 +1,17 @@
 import aoc
 import re
 
-def print_grid(stars: list[list[int]]) -> bool:
+def print_grid(stars: list[list[int]]) -> str | None:
   ymin, ymax = min(s[1] for s in stars), max(s[1] for s in stars)
   if ymax-ymin > 10:
-    return False
+    return None
   xmin, xmax = min(s[0] for s in stars), max(s[0] for s in stars)
+  grid = '\n'
   for y in range(ymin,ymax+1):
-    row = ""
+    grid += '\n'
     for x in range(xmin,xmax+1):
-      row += '█' if any(s[0]==x and s[1]==y for s in stars) else ' '
-    print(row)
-  return True
+      grid += '█' if any(s[0]==x and s[1]==y for s in stars) else ' '
+  return grid
 
 @aoc.main('10')
 def main(indata: str) -> tuple[str,int]:
@@ -21,8 +21,8 @@ def main(indata: str) -> tuple[str,int]:
       s[0] += s[2]
       s[1] += s[3]
     steps += 1
-    if print_grid(stars):
-      return "RBCZAEPP", steps
+    if grid := print_grid(stars):
+      return grid, steps
   assert False
 
 if __name__ == "__main__":
