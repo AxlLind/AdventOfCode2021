@@ -5,9 +5,9 @@ from collections import defaultdict
 sys.setrecursionlimit(10000)
 
 def fill(m: dict[tuple[int,int],str], x: int, y: int, d: int) -> None:
-  if m[x,y] == '|':
-    fill(m,x+d,y,d)
+  while m[x,y] == '|':
     m[x,y] = '~'
+    x += d
 
 def flow(m: dict[tuple[int,int],str], ymax: int, x: int, y: int, d: int) -> bool:
   if y > ymax:
@@ -35,7 +35,7 @@ def main(indata: str) -> tuple[int,int]:
     hori = l[0] == 'x'
     for t in range(a,b+1):
       m[(s,t) if hori else (t,s)] = '#'
-  ymin,ymax = min(y for _,y in m), max(y for _,y in m)
+  ymin, ymax = min(y for _,y in m), max(y for _,y in m)
   flow(m,ymax,500,0,0)
   water = sum(m[x,y] == '~' for x,y in m if y >= ymin)
   flows = sum(m[x,y] == '|' for x,y in m if y >= ymin)
