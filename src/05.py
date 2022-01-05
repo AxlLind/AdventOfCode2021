@@ -1,11 +1,9 @@
 import aoc
 
 def react(init: str, c: str = '') -> int:
-  s = [x for x in init if x != c and x != c.upper()]
+  s = [x for x in init if x.lower() != c]
   for i in range(len(s)-1, -1, -1):
-    if i+1 >= len(s):
-      continue
-    if s[i] != s[i+1] and s[i].upper() == s[i+1].upper():
+    if i+1 < len(s) and s[i] != s[i+1] and s[i].upper() == s[i+1].upper():
       s.pop(i)
       s.pop(i)
   return len(s)
