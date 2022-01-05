@@ -7,8 +7,9 @@ def main(indata: str) -> tuple[int,int]:
   for x in cycle(nums):
     s += x
     if s in seen:
-      return sum(nums), s
+      break
     seen.add(s)
+  return sum(nums), s
 
 if __name__ == "__main__":
   main()
