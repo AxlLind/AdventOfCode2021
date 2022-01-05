@@ -4,12 +4,12 @@ import sys
 from collections import defaultdict
 sys.setrecursionlimit(10000)
 
-def fill(m,x,y,d):
+def fill(m: dict[tuple[int,int],str], x: int, y: int, d: int) -> None:
   if m[x,y] == '|':
     fill(m,x+d,y,d)
     m[x,y] = '~'
 
-def flow(m, ymax, x, y, d):
+def flow(m: dict[tuple[int,int],str], ymax: int, x: int, y: int, d: int) -> bool:
   if y > ymax:
     return True
   if m[x,y] != '.':
