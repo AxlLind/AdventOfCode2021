@@ -3,7 +3,7 @@ from collections import Counter
 from itertools import combinations
 
 def part1(ids: list[str]) -> int:
-  c = Counter()
+  c = Counter[int]()
   for l in ids:
     c.update(set(Counter(l).values()))
   return c[2]*c[3]
