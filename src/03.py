@@ -12,7 +12,8 @@ def main(indata: str) -> tuple[int,int]:
       points[p] += 1
   for p2,x,y,h,w in squares:
     if all(points[p] == 1 for p in product(range(x,x+h), range(y,y+w))):
-      return sum(c > 1 for c in points.values()), p2
+      break
+  return sum(c > 1 for c in points.values()), p2
 
 if __name__ == "__main__":
   main()
