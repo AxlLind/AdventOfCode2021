@@ -34,10 +34,7 @@ def main(indata: str) -> tuple[int,int]:
     s,a,b = [int(i) for i in re.findall("\d+",l)]
     hori = l[0] == 'x'
     for t in range(a,b+1):
-      if hori:
-        m[s,t] = '#'
-      else:
-        m[t,s] = '#'
+      m[(s,t) if hori else (t,s)] = '#'
   ymin,ymax = min(y for _,y in m), max(y for _,y in m)
   flow(m,ymax,500,0,0)
   water = sum(m[x,y] == '~' for x,y in m if y >= ymin)
