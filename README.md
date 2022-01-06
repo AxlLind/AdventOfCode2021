@@ -11,10 +11,11 @@ clj -M src/DAY.clj
 ```
 
 ## Other years
-- [2021](https://github.com/AxlLind/AdventOfCode2021/) in Rust 🦀
-- [2020](https://github.com/AxlLind/AdventOfCode2020/) in Rust 🦀
-- [2019](https://github.com/AxlLind/AdventOfCode2019/) in Rust 🦀
+- [2021](https://github.com/AxlLind/AdventOfCode2021/) in Rust :crab:
+- [2020](https://github.com/AxlLind/AdventOfCode2020/) in Rust :crab:
+- [2019](https://github.com/AxlLind/AdventOfCode2019/) in Rust :crab:
+- [2018](https://github.com/AxlLind/AdventOfCode2018/) in Python :snake:
 - [2017](https://github.com/AxlLind/AdventOfCode2017/) in Haskell λ
-- [2016](https://github.com/AxlLind/AdventOfCode2016/) in OCaml 🐫
+- [2016](https://github.com/AxlLind/AdventOfCode2016/) in OCaml :camel:
 
 ![end-screen](./end-screen.png)
