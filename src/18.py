@@ -1,5 +1,5 @@
 import aoc
-from itertools import product
+from collections import Counter
 
 def step(grid: list[str], times: int) -> list[str]:
   for _ in range(times):
@@ -24,12 +24,8 @@ def step(grid: list[str], times: int) -> list[str]:
   return grid
 
 def resource_value(grid: list[str]) -> int:
-  trees,yards = 0,0
-  for r,c in product(range(len(grid)), range(len(grid[0]))):
-    match grid[r][c]:
-      case '|': trees += 1
-      case '#': yards += 1
-  return trees * yards
+  c = Counter(tile for row in grid for tile in row)
+  return c['#'] * c['|']
 
 @aoc.main('18')
 def main(indata: str) -> tuple[int,int]:
@@ -40,8 +36,8 @@ def main(indata: str) -> tuple[int,int]:
     grid = step(grid,1)
     s = ''.join(''.join(row) for row in grid)
     if s in seen:
-      left = (1000000000 - seen[s] - 1) % (i - seen[s])
-      grid = step(grid, left)
+      left = (1000000000 - seen[s] - 1) % (i-seen[s])
+      grid = step(grid,left)
       break
     seen[s] = i
   return p1, resource_value(grid)
