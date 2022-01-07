@@ -1,56 +1,58 @@
 import aoc
 from collections import defaultdict, deque
 
+class RegexType:
+  SIMPLE = 0
+  OR = 1
+  LIST = 2
+
+Regex = tuple[RegexType, str | list['Regex']]
 Graph = dict[tuple[int,int],set[tuple[int,int]]]
-Regex = str | tuple['Regex'] | list['Regex']
 
 def parse_regexor(s: str, i: int) -> tuple[int,Regex]:
-  regexor = []
+  regexes = []
   while i < len(s) and s[i] != ')':
     if s[i] == '|':
       i += 1
     i,r = parse_regex(s,i)
-    regexor.append(r)
-  return i+1, (regexor,)
+    regexes.append(r)
+  return i+1, (RegexType.OR, regexes)
 
 def parse_regex(s: str, i: int) -> tuple[int,Regex]:
   r = []
-  while i < len(s) and s[i] != '|' and s[i] != ')':
+  while i < len(s) and s[i] not in "|)":
     if s[i] == '(':
       i,r1 = parse_regexor(s,i+1)
     else:
       iprev = i
       while i < len(s) and s[i] in "NSEW":
         i += 1
-      r1 = s[iprev:i]
+      r1 = (RegexType.SIMPLE, s[iprev:i])
     r.append(r1)
-  return i,r
+  return i, (RegexType.LIST, r)
 
 def apply_regex(m: Graph, regex: Regex, coords: set[tuple[int,int]]) -> set[tuple[int,int]]:
-  newcoords = set()
-
-  if isinstance(regex,str):
-    for r,c in coords:
-      for d in regex:
-        rr,cc = r,c
-        match d:
-          case 'N': r -= 1
-          case 'S': r += 1
-          case 'E': c += 1
-          case 'W': c -= 1
-        m[rr,cc].add((r,c))
-        m[r,c].add((rr,cc))
-      newcoords.add((r,c))
-    return newcoords
-
-  if isinstance(regex, tuple):
-    for re in regex[0]:
-      newcoords = newcoords.union(apply_regex(m,re,coords))
-    return newcoords
-
-  for re in regex:
-    coords = apply_regex(m, re, coords)
-  return coords
+  match regex[0]:
+    case RegexType.SIMPLE:
+      newcoords = set()
+      for r,c in coords:
+        for d in regex[1]:
+          rr,cc = r,c
+          match d:
+            case 'N': r -= 1
+            case 'S': r += 1
+            case 'E': c += 1
+            case 'W': c -= 1
+          m[rr,cc].add((r,c))
+          m[r,c].add((rr,cc))
+        newcoords.add((r,c))
+      return newcoords
+    case RegexType.OR:
+      return set.union(*(apply_regex(m,re,coords) for re in regex[1]))
+    case RegexType.LIST:
+      for re in regex[1]:
+        coords = apply_regex(m,re,coords)
+      return coords
 
 def bfs_distances(m: Graph) -> list[int]:
   q, dist = deque([(0,0)]), {(0,0): 0}
