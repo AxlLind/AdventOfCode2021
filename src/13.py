@@ -5,7 +5,7 @@ DR,DC = [0,1,0,-1],[1,0,-1,0]
 
 def move_cart(crosses: dict[tuple[int,int],str], cart: list[int]) -> list[int]:
   r,c,d,t = cart
-  match crosses.get((r,c), " ")[0]:
+  match crosses.get((r,c)):
     case '+':
       match t:
         case 0: d = [3,0,1,2][d]
@@ -22,8 +22,7 @@ def step(crosses: dict[tuple[int,int],str], carts: list[list[int]]) -> list[int]
     r,c,d,t = move_cart(crosses, carts[i])
     for j in range(len(carts)):
       if carts[j][0] == r and carts[j][1] == c:
-        crashes.add(i)
-        crashes.add(j)
+        crashes |= {i,j}
     carts[i] = [r,c,d,t]
   return sorted(crashes)
 
@@ -32,13 +31,13 @@ def main(indata: str):
   grid, crosses, carts = indata.split('\n'), {}, []
   for r,c in product(range(len(grid)), range(len(grid[0]))):
     match grid[r][c]:
-      case '>': carts.append([r,c,0,0])
-      case 'v': carts.append([r,c,1,0])
-      case '<': carts.append([r,c,2,0])
-      case '^': carts.append([r,c,3,0])
-      case '+': crosses[r,c] = '+',
-      case '/': crosses[r,c] = '/',
-      case '\\': crosses[r,c] = '\\',
+      case '>':  carts.append([r,c,0,0])
+      case 'v':  carts.append([r,c,1,0])
+      case '<':  carts.append([r,c,2,0])
+      case '^':  carts.append([r,c,3,0])
+      case '+':  crosses[r,c] = "+"
+      case '/':  crosses[r,c] = '/'
+      case '\\': crosses[r,c] = '\\'
   r1,c1 = None,None
   while len(carts) > 1:
     for i in reversed(step(crosses, carts)):
