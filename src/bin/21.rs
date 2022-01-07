@@ -1,5 +1,6 @@
 use std::mem::swap;
 use hashbrown::HashMap;
+use itertools::Itertools;
 
 type Cache = HashMap<(usize,usize,usize,usize),(usize,usize)>;
 
@@ -34,7 +35,12 @@ fn quantum_game(cache: &mut Cache, s1: usize, s2: usize, pos1: usize, pos2: usiz
   score
 }
 
-aoc2021::main! {
-  let (s1,s2) = quantum_game(&mut HashMap::new(),0,0,9,6);
-  (regular_game(9,6), std::cmp::max(s1,s2))
+#[aoc::main("21")]
+fn main(input: &str) -> (usize,usize) {
+  let (a,b) = input.lines()
+    .map(|l| l.split_once(": ").unwrap().1.parse().unwrap())
+    .collect_tuple()
+    .unwrap();
+  let (s1,s2) = quantum_game(&mut HashMap::new(),0,0,a,b);
+  (regular_game(a,b), std::cmp::max(s1,s2))
 }

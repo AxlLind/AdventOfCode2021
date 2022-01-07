@@ -1,8 +1,6 @@
 use hashbrown::HashMap;
 use std::collections::BinaryHeap;
-
-static INPUT: [[u8;2];4] = [*b"CD", *b"AC", *b"BA", *b"DB"];
-static INPUT2: [[u8;4];4] = [*b"CDDD", *b"ACBC", *b"BBAA", *b"DACB"];
+use itertools::Itertools;
 
 type State<const N: usize> = ([u8;11], [[u8;N];4]);
 
@@ -76,8 +74,12 @@ fn shortest_path<const N: usize>(state: State<N>) -> i64 {
   unreachable!()
 }
 
-aoc2021::main! {
-  let p1 = shortest_path(([b'.';11], INPUT));
-  let p2 = shortest_path(([b'.';11], INPUT2));
+#[aoc::main("23")]
+fn main(input: &str) -> (i64,i64) {
+  let (l1,l2) = input.lines().skip(2).take(2).map(|s| s.as_bytes()).collect_tuple().unwrap();
+  let inp1 = [[l1[3], l2[3]],[l1[5], l2[5]],[l1[7], l2[7]],[l1[9], l2[9]]];
+  let inp2 = [[l1[3], b'D', b'D', l2[3]],[l1[5], b'C', b'B', l2[5]],[l1[7], b'B', b'A', l2[7]],[l1[9], b'A', b'C', l2[9]]];
+  let p1 = shortest_path(([b'.';11], inp1));
+  let p2 = shortest_path(([b'.';11], inp2));
   (p1,p2)
 }

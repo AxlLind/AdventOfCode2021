@@ -1,4 +1,5 @@
-static INPUT: &str = "2056FA18025A00A4F52AB13FAB6CDA779E1B2012DB003301006A35C7D882200C43289F07A5A192D200C1BC011969BA4A485E63D8FE4CC80480C00D500010F8991E23A8803104A3C425967260020E551DC01D98B5FEF33D5C044C0928053296CDAFCB8D4BDAA611F256DE7B945220080244BE59EE7D0A5D0E6545C0268A7126564732552F003194400B10031C00C002819C00B50034400A70039C009401A114009201500C00B00100D00354300254008200609000D39BB5868C01E9A649C5D9C4A8CC6016CC9B4229F3399629A0C3005E797A5040C016A00DD40010B8E508615000213112294749B8D67EC45F63A980233D8BCF1DC44FAC017914993D42C9000282CB9D4A776233B4BF361F2F9F6659CE5764EB9A3E9007ED3B7B6896C0159F9D1EE76B3FFEF4B8FCF3B88019316E51DA181802B400A8CFCC127E60935D7B10078C01F8B50B20E1803D1FA21C6F300661AC678946008C918E002A72A0F27D82DB802B239A63BAEEA9C6395D98A001A9234EA620026D1AE5CA60A900A4B335A4F815C01A800021B1AE2E4441006A0A47686AE01449CB5534929FF567B9587C6A214C6212ACBF53F9A8E7D3CFF0B136FD061401091719BC5330E5474000D887B24162013CC7EDDCDD8E5E77E53AF128B1276D0F980292DA0CD004A7798EEEC672A7A6008C953F8BD7F781ED00395317AF0726E3402100625F3D9CB18B546E2FC9C65D1C20020E4C36460392F7683004A77DB3DB00527B5A85E06F253442014A00010A8F9106108002190B61E4750004262BC7587E801674EB0CCF1025716A054AD47080467A00B864AD2D4B193E92B4B52C64F27BFB05200C165A38DDF8D5A009C9C2463030802879EB55AB8010396069C413005FC01098EDD0A63B742852402B74DF7FDFE8368037700043E2FC2C8CA00087C518990C0C015C00542726C13936392A4633D8F1802532E5801E84FDF34FCA1487D367EF9A7E50A43E90";
+use std::collections::VecDeque;
+
 static HEX_BITS: [&str; 16] = ["0000","0001","0010","0011","0100","0101","0110","0111","1000","1001","1010","1011","1100","1101","1110","1111"];
 
 enum Inst {
@@ -6,7 +7,7 @@ enum Inst {
   Operator(usize, u8, Vec<Inst>),
 }
 
-fn decode_hex(s: &str) -> Vec<u8> {
+fn decode_hex(s: &str) -> VecDeque<u8> {
   s.bytes()
     .map(|c| match c {
       b'0'..=b'9' => HEX_BITS[(c - b'0') as usize],
@@ -17,22 +18,21 @@ fn decode_hex(s: &str) -> Vec<u8> {
     .collect()
 }
 
-fn consume_bits(bits: &[u8], i: &mut usize, len: usize) -> usize {
+fn consume_bits(bits: &mut VecDeque<u8>, len: usize) -> usize {
   let mut x = 0;
-  for j in 0..len {
-    x = (x<<1) | bits[*i+j] as usize;
+  for b in bits.drain(0..len) {
+    x = (x<<1) | b as usize;
   }
-  *i += len;
   x
 }
 
-fn parse_inst(b: &[u8], i: &mut usize) -> Inst {
-  let version = consume_bits(b,i,3);
-  match consume_bits(b,i,3) as u8 {
+fn parse_inst(b: &mut VecDeque<u8>) -> Inst {
+  let version = consume_bits(b,3);
+  match consume_bits(b,3) as u8 {
     4 => {
       let mut val = 0;
       loop {
-        let x = consume_bits(b,i,5);
+        let x = consume_bits(b,5);
         val = (val << 4) + (x & 0xf);
         if x >> 4 == 0 {
           break;
@@ -41,16 +41,17 @@ fn parse_inst(b: &[u8], i: &mut usize) -> Inst {
       Inst::Literal(version, val)
     }
     id => {
-      let insts = match consume_bits(b,i,1) {
+      let insts = match consume_bits(b,1) {
         0 => {
-          let endbit = *i + consume_bits(b,i,15);
+          let nbits = consume_bits(b,15);
+          let mut q = b.drain(0..nbits).collect::<VecDeque<_>>();
           let mut insts = Vec::new();
-          while *i < endbit {
-            insts.push(parse_inst(b, i));
+          while !q.is_empty() {
+            insts.push(parse_inst(&mut q));
           }
           insts
         }
-        _ => (0..consume_bits(b,i,11)).map(|_| parse_inst(b, i)).collect()
+        _ => (0..consume_bits(b,11)).map(|_| parse_inst(b)).collect()
       };
       Inst::Operator(version, id, insts)
     }
@@ -80,9 +81,9 @@ fn value(inst: &Inst) -> usize {
   }
 }
 
-aoc2021::main! {
-  let inst = parse_inst(&decode_hex(INPUT), &mut 0);
-  let p1 = version_sum(&inst);
-  let p2 = value(&inst);
-  (p1,p2)
+#[aoc::main("16")]
+fn main(input: &str) -> (usize,usize) {
+  let mut bits = decode_hex(input);
+  let inst = parse_inst(&mut bits);
+  (version_sum(&inst), value(&inst))
 }

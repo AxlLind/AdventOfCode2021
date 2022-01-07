@@ -1,9 +1,7 @@
 use hashbrown::HashSet;
 use itertools::Itertools;
 
-static INPUT: [[u8;10];10] = [[4,7,8,1,6,2,3,8,8,8],[1,7,8,4,1,5,6,1,1,4],[3,2,6,5,6,4,5,1,2,2],[4,3,7,1,5,5,1,4,1,4],[3,3,7,7,1,5,4,8,8,6],[7,8,8,2,3,1,4,4,5,5],[6,4,2,1,3,4,8,6,8,1],[7,1,7,5,4,2,4,2,8,7],[5,4,8,8,2,4,2,1,8,4],[2,4,4,8,5,6,8,2,6,1]];
-
-fn flash(flashed: &mut HashSet<(usize,usize)>, map: &mut [[u8;10];10], c: usize, r: usize) {
+fn flash(flashed: &mut HashSet<(usize,usize)>, map: &mut [Vec<u8>], c: usize, r: usize) {
   if map[r][c] < 10 || !flashed.insert((r,c)) {
     return;
   }
@@ -15,7 +13,7 @@ fn flash(flashed: &mut HashSet<(usize,usize)>, map: &mut [[u8;10];10], c: usize,
   }
 }
 
-fn round(map: &mut [[u8;10];10]) -> usize {
+fn round(map: &mut [Vec<u8>]) -> usize {
   let mut flashed = HashSet::new();
   for (r,c) in (0..10).cartesian_product(0..10) {
     map[r][c] += 1;
@@ -29,9 +27,12 @@ fn round(map: &mut [[u8;10];10]) -> usize {
   flashed.len()
 }
 
-aoc2021::main! {
-  let mut map = INPUT;
+#[aoc::main("11")]
+fn main(input: &str) -> (usize,usize) {
+  let mut map = input.lines()
+    .map(|l| l.bytes().map(|b| b - b'0').collect::<Vec<_>>())
+    .collect::<Vec<_>>();
   let p1 = (0..100).map(|_| round(&mut map)).sum::<usize>();
   let p2 = (100..).find(|_| round(&mut map) == 100).unwrap();
-  (p1,p2)
+  (p1,p2+1)
 }

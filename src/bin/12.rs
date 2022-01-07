@@ -1,7 +1,5 @@
 use hashbrown::HashMap;
 
-static INPUT: &str = "ex-NL\nex-um\nql-wv\nVF-fo\nVF-ql\nstart-VF\nend-tg\nwv-ZQ\nwv-um\nNL-start\nlx-ex\nex-wv\nex-fo\nsb-start\num-end\nfo-ql\nNL-sb\nNL-fo\ntg-NL\nVF-sb\nfo-wv\nex-VF\nql-sb\nend-wv";
-
 fn num_paths<'a>(
   graph: &HashMap<&'a str, Vec<&'a str>>,
   src: &'a str,
@@ -25,9 +23,10 @@ fn num_paths<'a>(
   ans
 }
 
-aoc2021::main! {
+#[aoc::main("12")]
+fn main(input: &str) -> (usize,usize) {
   let mut graph = HashMap::new();
-  for l in INPUT.lines() {
+  for l in input.lines() {
     let (a,b) = l.split_once('-').unwrap();
     graph.entry(a).or_insert(Vec::new()).push(b);
     graph.entry(b).or_insert(Vec::new()).push(a);
