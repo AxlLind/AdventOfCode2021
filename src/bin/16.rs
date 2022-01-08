@@ -7,20 +7,9 @@ enum Inst {
   Operator(usize, u8, Vec<Inst>),
 }
 
-fn decode_hex(s: &str) -> VecDeque<u8> {
-  s.bytes()
-    .map(|c| match c {
-      b'0'..=b'9' => HEX_BITS[(c - b'0') as usize],
-      b'A'..=b'F' => HEX_BITS[(c - b'A') as usize + 10],
-      _ => unreachable!(),
-    })
-    .flat_map(|bits| bits.bytes().map(|b| b - b'0'))
-    .collect()
-}
-
-fn consume_bits(bits: &mut VecDeque<u8>, len: usize) -> usize {
+fn consume_bits(bits: &mut VecDeque<u8>, n: usize) -> usize {
   let mut x = 0;
-  for b in bits.drain(0..len) {
+  for b in bits.drain(0..n) {
     x = (x<<1) | b as usize;
   }
   x
@@ -30,13 +19,10 @@ fn parse_inst(b: &mut VecDeque<u8>) -> Inst {
   let version = consume_bits(b,3);
   match consume_bits(b,3) as u8 {
     4 => {
-      let mut val = 0;
-      loop {
-        let x = consume_bits(b,5);
+      let (mut val, mut x) = (0,!0);
+      while x >> 4 != 0 {
+        x = consume_bits(b,5);
         val = (val << 4) + (x & 0xf);
-        if x >> 4 == 0 {
-          break;
-        }
       }
       Inst::Literal(version, val)
     }
@@ -60,15 +46,15 @@ fn parse_inst(b: &mut VecDeque<u8>) -> Inst {
 
 fn version_sum(inst: &Inst) -> usize {
   match inst {
-    Inst::Literal(v, _) => *v,
-    Inst::Operator(v, _, insts) => *v + insts.iter().map(version_sum).sum::<usize>()
+    Inst::Literal(v,_) => *v,
+    Inst::Operator(v,_,insts) => *v + insts.iter().map(version_sum).sum::<usize>()
   }
 }
 
 fn value(inst: &Inst) -> usize {
   match inst {
-    Inst::Literal(_, val) => *val as usize,
-    Inst::Operator(_, id, insts) => match id {
+    Inst::Literal(_,val) => *val as usize,
+    Inst::Operator(_,id,insts) => match id {
       0 => insts.iter().map(value).sum(),
       1 => insts.iter().map(value).product(),
       2 => insts.iter().map(value).min().unwrap(),
@@ -83,7 +69,14 @@ fn value(inst: &Inst) -> usize {
 
 #[aoc::main("16")]
 fn main(input: &str) -> (usize,usize) {
-  let mut bits = decode_hex(input);
+  let mut bits = input.bytes()
+    .map(|c| match c {
+      b'0'..=b'9' => HEX_BITS[(c - b'0') as usize],
+      b'A'..=b'F' => HEX_BITS[(c - b'A') as usize + 10],
+      _ => unreachable!(),
+    })
+    .flat_map(|bits| bits.bytes().map(|b| b - b'0'))
+    .collect();
   let inst = parse_inst(&mut bits);
   (version_sum(&inst), value(&inst))
 }
