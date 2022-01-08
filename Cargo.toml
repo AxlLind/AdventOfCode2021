@@ -1,7 +1,7 @@
 [package]
 name = "aoc"
 version = "0.1.0"
-authors = ["Axel Lindeberg <axel.ew.lindeberg@gmail.com>"]
+authors = ["Axel Lindeberg"]
 edition = "2021"
 default-run = "aoc"
 
@@ -13,5 +13,8 @@ itertools = "0.10"
 hashbrown = "0.11"
 regex = "1.5"
 once_cell = "1.9"
+
+# lib proc-macro dependencies
+reqwest = { version = "0.11", features = ["blocking"] }
 syn = { version = "1.0", features = ["full"] }
 quote = "1.0"
