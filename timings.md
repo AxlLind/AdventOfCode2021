@@ -28,4 +28,4 @@ The following table contains wall-clock timings of all 25 solutions, as well as 
 | 23  | 15358          | 51436            | 147       |
 | 24  | 98491959997994 | 61191516111321   | 19        |
 | 25  | 429            | 🎄               | 70        |
-|     |                | Total time:      | 846ms     |
+|     |                | Total time:      | 844ms     |
