@@ -20,7 +20,7 @@ The following table contains wall-clock timings of all 25 solutions, as well as 
 | 15  | 739            | 3040             | 21        |
 | 16  | 917            | 2536453523344    | 0         |
 | 17  | 33670          | 4903             | 9         |
-| 18  | 4243           | 4701             | 11        |
+| 18  | 4243           | 4701             | 6         |
 | 19  | 405            | 12306            | 492       |
 | 20  | 5395           | 17584            | 9         |
 | 21  | 1004670        | 492043106122795  | 2         |
@@ -28,4 +28,4 @@ The following table contains wall-clock timings of all 25 solutions, as well as 
 | 23  | 15358          | 51436            | 147       |
 | 24  | 98491959997994 | 61191516111321   | 19        |
 | 25  | 429            | 🎄               | 70        |
-|     |                | Total time:      | 844ms     |
+|     |                | Total time:      | 839ms     |
