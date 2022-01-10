@@ -8,7 +8,7 @@ fn right_configuration<const N: usize>((_,rooms): &State<N>) -> bool {
   rooms.iter().zip("ABCD".bytes()).all(|(room,c)| room.iter().all(|&x| x == c))
 }
 
-fn make_move<const N: usize>((mut corridor, mut rooms): State<N>, c: usize, room: usize, depth: usize) -> (usize, State<N>) {
+fn make_move<const N: usize>((mut corridor, mut rooms): State<N>, c: usize, room: usize, depth: usize) -> (usize,State<N>) {
   let piece = if corridor[c] == b'.' {rooms[room][depth]} else {corridor[c]} - b'A';
   let c0 = [2,4,6,8][room];
   let energy = (depth + if c0 > c {c0-c} else {c-c0} + 1) * [1,10,100,1000][piece as usize];
@@ -28,7 +28,7 @@ fn moves<const N: usize>((corridor,rooms): State<N>) -> Vec<(usize,State<N>)> {
       Some(i) => i,
       _ => continue
     };
-    if i+1 != N && (i+1..N).any(|d| rooms[room][d] != corridor[c]) { continue; }
+    if (i+1..N).any(|d| rooms[room][d] != corridor[c]) { continue; }
     moves.push(make_move((corridor, rooms), c, room, i));
   }
   for room in 0..4 { // check moving out of a room
@@ -37,14 +37,12 @@ fn moves<const N: usize>((corridor,rooms): State<N>) -> Vec<(usize,State<N>)> {
       _ => continue
     };
     let c0 = [2,4,6,8][room];
-    for c in c0..corridor.len() { // move right
-      if corridor[c] != b'.' { break; }
+    for c in (c0..corridor.len()).take_while(|&c| corridor[c] == b'.') { // move right
       if ![2,4,6,8].contains(&c) {
         moves.push(make_move((corridor, rooms), c, room, i));
       }
     }
-    for c in (0..c0).rev() { // move left
-      if corridor[c] != b'.' { break; }
+    for c in ((0..c0).rev()).take_while(|&c| corridor[c] == b'.') { // move left
       if ![2,4,6,8].contains(&c) {
         moves.push(make_move((corridor, rooms), c, room, i));
       }
