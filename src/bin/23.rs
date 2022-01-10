@@ -37,16 +37,11 @@ fn moves<const N: usize>((corridor,rooms): State<N>) -> Vec<(usize,State<N>)> {
       _ => continue
     };
     let c0 = [2,4,6,8][room];
-    for c in (c0..corridor.len()).take_while(|&c| corridor[c] == b'.') { // move right
-      if ![2,4,6,8].contains(&c) {
-        moves.push(make_move((corridor, rooms), c, room, i));
-      }
-    }
-    for c in ((0..c0).rev()).take_while(|&c| corridor[c] == b'.') { // move left
-      if ![2,4,6,8].contains(&c) {
-        moves.push(make_move((corridor, rooms), c, room, i));
-      }
-    }
+    let valid_moves = (c0..corridor.len()).take_while(|&c| corridor[c] == b'.')
+      .chain((0..c0).rev().take_while(|&c| corridor[c] == b'.'))
+      .filter(|c| ![2,4,6,8].contains(c))
+      .map(|c| make_move((corridor,rooms), c, room, i));
+    moves.extend(valid_moves);
   }
   moves
 }
