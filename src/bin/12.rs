@@ -23,7 +23,7 @@ fn num_paths<'a>(
   ans
 }
 
-#[aoc::main("12")]
+#[aoc::main(12)]
 fn main(input: &str) -> (usize,usize) {
   let mut graph = HashMap::new();
   for l in input.lines() {

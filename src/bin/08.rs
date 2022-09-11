@@ -44,7 +44,7 @@ fn part2(display: &(Vec<&[u8]>, Vec<&[u8]>)) -> usize {
     .unwrap()
 }
 
-#[aoc::main("08")]
+#[aoc::main(08)]
 fn main(input: &str) -> (usize,usize) {
   let displays = input.lines()
     .map(|l| {

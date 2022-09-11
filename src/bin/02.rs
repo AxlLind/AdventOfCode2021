@@ -1,6 +1,6 @@
 use itertools::Itertools;
 
-#[aoc::main("02")]
+#[aoc::main(02)]
 fn main(input: &str) -> (usize,usize) {
   let ops = input.split_whitespace()
     .tuples()

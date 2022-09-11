@@ -39,7 +39,7 @@ fn total_volume(cubes: &[Cube]) -> i64 {
     .sum()
 }
 
-#[aoc::main("22")]
+#[aoc::main(22)]
 fn main(input: &str) -> (i64,i64) {
   let cubes = input.lines()
     .map(|l| {

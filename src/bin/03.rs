@@ -21,7 +21,7 @@ fn part2(nums: &[u32], oxygen: u32) -> u32 {
   nums[0]
 }
 
-#[aoc::main("03")]
+#[aoc::main(03)]
 fn main(input: &str) -> (u32,u32) {
   let input = input.lines()
     .map(|l| u32::from_str_radix(l,2).unwrap())

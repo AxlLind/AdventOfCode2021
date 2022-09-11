@@ -43,7 +43,7 @@ fn part2(draws: &[usize], boards: &[Vec<Vec<usize>>]) -> usize {
   unreachable!()
 }
 
-#[aoc::main("04")]
+#[aoc::main(04)]
 fn main(input: &str) -> (usize,usize) {
   let mut blocks = input.split("\n\n");
   let draws = blocks.next()

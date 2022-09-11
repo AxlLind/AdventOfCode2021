@@ -5,7 +5,7 @@ use syn::{parse_macro_input, AttributeArgs, ItemFn, NestedMeta, Lit, Ident};
 #[proc_macro_attribute]
 pub fn main(args: TokenStream, input: TokenStream) -> TokenStream {
   let day = match &parse_macro_input!(args as AttributeArgs)[..] {
-    [NestedMeta::Lit(Lit::Str(s))] => s.value(),
+    [NestedMeta::Lit(Lit::Int(day))] => day.token().to_string(),
     _ => panic!("Expected one string argument")
   };
 
@@ -14,11 +14,11 @@ pub fn main(args: TokenStream, input: TokenStream) -> TokenStream {
 
   let input_path = format!("../../inputs/{}.in", day);
   let tokens = quote! {
+    const INPUT: &str = include_str!(#input_path);
+    #aoc_solution
     fn main() {
-      #aoc_solution
-      let input = include_str!(#input_path);
       let now = ::std::time::Instant::now();
-      let (p1,p2) = aoc_solution(input.trim_end());
+      let (p1,p2) = aoc_solution(INPUT.trim_end());
       let time = now.elapsed().as_millis();
       println!("Part one: {}", p1);
       println!("Part two: {}", p2);

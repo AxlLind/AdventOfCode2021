@@ -32,7 +32,7 @@ fn part2(grid: &[Vec<u8>]) -> usize {
   cs.iter().sorted().rev().take(3).product()
 }
 
-#[aoc::main("09")]
+#[aoc::main(09)]
 fn main(input: &str) -> (usize,usize) {
   let grid = input.lines()
     .map(|l| l.bytes().map(|c| c - b'0').collect())

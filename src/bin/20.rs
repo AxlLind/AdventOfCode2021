@@ -17,7 +17,7 @@ fn enhance(m: &[u8], grid: &[Vec<u8>], val: u8) -> Vec<Vec<u8>> {
   ans
 }
 
-#[aoc::main("20")]
+#[aoc::main(20)]
 fn main(input: &str) -> (usize,usize) {
   let (m, rest) = input.split_once("\n\n").unwrap();
   let mut grid = rest.lines()

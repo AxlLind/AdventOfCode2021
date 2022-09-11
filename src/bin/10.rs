@@ -24,7 +24,7 @@ fn fixed_score(stack: &[char]) -> usize {
   })
 }
 
-#[aoc::main("10")]
+#[aoc::main(10)]
 fn main(input: &str) -> (usize,usize) {
   let (mut p1, mut fixed_scores) = (0, Vec::new());
   for (stack,score) in input.lines().map(line_score) {

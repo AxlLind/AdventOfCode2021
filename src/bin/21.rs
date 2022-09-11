@@ -35,7 +35,7 @@ fn quantum_game(cache: &mut Cache, s1: usize, s2: usize, pos1: usize, pos2: usiz
   score
 }
 
-#[aoc::main("21")]
+#[aoc::main(21)]
 fn main(input: &str) -> (usize,usize) {
   let (a,b) = input.lines()
     .map(|l| l.split_once(": ").unwrap().1.parse().unwrap())

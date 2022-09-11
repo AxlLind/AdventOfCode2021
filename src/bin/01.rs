@@ -1,6 +1,6 @@
 use itertools::Itertools;
 
-#[aoc::main("01")]
+#[aoc::main(01)]
 fn main(input: &str) -> (usize,usize) {
   let nums = input.lines()
     .map(|s| s.parse::<i32>().unwrap())

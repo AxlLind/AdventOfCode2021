@@ -23,7 +23,7 @@ fn grid_to_string(grid: &HashSet<(i32,i32)>) -> String {
   s
 }
 
-#[aoc::main("13")]
+#[aoc::main(13)]
 fn main(input: &str) -> (usize,String) {
   let (points, folds) = input.split_once("\n\n").unwrap();
   let grid = points.lines()

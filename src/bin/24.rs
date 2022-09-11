@@ -41,7 +41,7 @@ fn find_modelnum(cache: &mut HashSet<(usize,i64)>, blocks: &[(i64,i64,i64)], ran
   None
 }
 
-#[aoc::main("24")]
+#[aoc::main(24)]
 fn main(input: &str) -> (i64,i64) {
   let lines = input.lines().collect::<Vec<_>>();
   let blocks = lines.chunks(18)

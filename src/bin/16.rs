@@ -67,7 +67,7 @@ fn value(inst: &Inst) -> usize {
   }
 }
 
-#[aoc::main("16")]
+#[aoc::main(16)]
 fn main(input: &str) -> (usize,usize) {
   let mut bits = input.bytes()
     .map(|c| match c {

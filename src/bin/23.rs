@@ -67,7 +67,7 @@ fn shortest_path<const N: usize>(state: State<N>) -> i64 {
   unreachable!()
 }
 
-#[aoc::main("23")]
+#[aoc::main(23)]
 fn main(input: &str) -> (i64,i64) {
   let (l1,l2) = input.lines().skip(2).take(2).map(|s| s.as_bytes()).collect_tuple().unwrap();
   let inp1 = [[l1[3], l2[3]],[l1[5], l2[5]],[l1[7], l2[7]],[l1[9], l2[9]]];

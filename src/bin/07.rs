@@ -2,7 +2,7 @@ use itertools::Itertools;
 
 fn gauss(n: i32) -> i32 { n * (n + 1) / 2 }
 
-#[aoc::main("07")]
+#[aoc::main(07)]
 fn main(input: &str) -> (i32,i32) {
   let ints = input.split(',')
     .map(|s| s.parse::<i32>().unwrap())

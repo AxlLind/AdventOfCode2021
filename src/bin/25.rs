@@ -23,7 +23,7 @@ fn step(map: &mut Vec<Vec<u8>>, dr: usize, dc: usize) -> bool {
   moved
 }
 
-#[aoc::main("25")]
+#[aoc::main(25)]
 fn main(input: &str) -> (usize,char) {
   let mut map = input.lines().map(|l| l.bytes().collect()).collect();
   let mut round = 0;

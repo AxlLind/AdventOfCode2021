@@ -6,7 +6,7 @@ fn simulate_fishes(mut fishes: [usize;9], size: usize) -> usize {
   fishes.iter().sum()
 }
 
-#[aoc::main("06")]
+#[aoc::main(06)]
 fn main(input: &str) -> (usize,usize) {
   let mut fishes = [0;9];
   for s in input.split(',') {

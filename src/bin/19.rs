@@ -48,7 +48,7 @@ fn merge_scan(total_scan: &mut HashSet<[i32;3]>, scan: &[[i32;3]]) -> Option<[i3
   None
 }
 
-#[aoc::main("19")]
+#[aoc::main(19)]
 fn main(input: &str) -> (usize,i32) {
   let mut scans = input.split("\n\n")
     .map(|s| s.lines().skip(1)

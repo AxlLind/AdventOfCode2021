@@ -22,7 +22,7 @@ fn shortest_path(maze: &[Vec<i32>]) -> i32 {
   unreachable!()
 }
 
-#[aoc::main("15")]
+#[aoc::main(15)]
 fn main(input: &str) -> (i32,i32) {
   let maze = input.lines()
     .map(|l| l.bytes().map(|c| (c - b'0') as i32).collect::<Vec<_>>())

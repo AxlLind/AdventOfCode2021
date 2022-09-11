@@ -22,7 +22,7 @@ fn parse_range(s: &str) -> (i32,i32) {
   (a.parse().unwrap(), b.parse().unwrap())
 }
 
-#[aoc::main("17")]
+#[aoc::main(17)]
 fn main(input: &str) -> (i32,usize) {
   let (xrange, yrange) = input[15..].split_once(", y=").unwrap();
   let (xmin,xmax) = parse_range(xrange);

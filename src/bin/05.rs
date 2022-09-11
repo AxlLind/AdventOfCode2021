@@ -16,7 +16,7 @@ fn num_overlapping(lines: impl Iterator<Item=(i32,i32,i32,i32)>) -> usize {
   points.values().filter(|&&n| n > 1).count()
 }
 
-#[aoc::main("05")]
+#[aoc::main(05)]
 fn main(input: &str) -> (usize,usize) {
   let lines = input.lines()
     .filter_map(|l| l.split(" -> ")

@@ -65,7 +65,7 @@ fn magnitude(mut num: Vec<(u32,u8)>) -> u32 {
   num[0].0
 }
 
-#[aoc::main("18")]
+#[aoc::main(18)]
 fn main(input: &str) -> (u32,u32) {
   let nums = input.lines().map(parse_num).collect::<Vec<_>>();
   let p1 = magnitude(nums[1..].iter().fold(nums[0].clone(), |n1,n2| add(&n1,n2)));

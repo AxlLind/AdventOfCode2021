@@ -21,7 +21,7 @@ fn simulate_polymer(init: &str, recipies: &HashMap<(char,char),char>, steps: usi
   max - min
 }
 
-#[aoc::main("14")]
+#[aoc::main(14)]
 fn main(input: &str) -> (usize,usize) {
   let (init, ingredients) = input.split_once("\n\n").unwrap();
   let recipies = ingredients.lines()

@@ -27,7 +27,7 @@ fn round(map: &mut [Vec<u8>]) -> usize {
   flashed.len()
 }
 
-#[aoc::main("11")]
+#[aoc::main(11)]
 fn main(input: &str) -> (usize,usize) {
   let mut map = input.lines()
     .map(|l| l.bytes().map(|b| b - b'0').collect::<Vec<_>>())
