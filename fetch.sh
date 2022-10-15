@@ -1,5 +1,6 @@
 #!/bin/bash
 set -euo pipefail
+SCRIPT_DIR=$(realpath "$(dirname "$0")")
 
 if [[ $# != 1 ]]; then
   echo "Please provide a day number."
@@ -18,4 +19,4 @@ if [[ -z "${AOC_SESSION-""}" ]]; then
 fi
 
 URL="https://adventofcode.com/2021/day/$(("10#$1" + 0))/input"
-curl -f "$URL" --cookie "session=$AOC_SESSION" -s | tee "./inputs/$1.in"
+curl "$URL" --cookie "session=$AOC_SESSION" -s | tee "$SCRIPT_DIR/inputs/$1.in"
