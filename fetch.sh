@@ -20,5 +20,7 @@ fi
 
 mkdir -p "$SCRIPT_DIR/inputs"
 
-URL="https://adventofcode.com/2022/day/$(($1 + 0))/input"
-curl "$URL" --cookie "session=$AOC_SESSION" -s | tee "$SCRIPT_DIR/inputs/$1.in"
+curl -s "https://adventofcode.com/2022/day/$(($1 + 0))/input" \
+    --cookie "session=$AOC_SESSION" \
+    -H 'User-Agent: Bash script at github.com/AxlLind/AdventOfCode2022' \
+    | tee "$SCRIPT_DIR/inputs/$1.in"
