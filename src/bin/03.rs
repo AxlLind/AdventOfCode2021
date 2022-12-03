@@ -9,24 +9,20 @@ fn value(c: u8) -> usize {
 }
 
 fn same_chars(a: &[u8], b: &[u8]) -> Vec<u8> {
-  a.iter()
-    .cartesian_product(b)
-    .filter(|(c1,c2)| c1 == c2)
-    .map(|(&c,_)| c)
-    .collect()
+  a.iter().copied().filter(|c| b.contains(c)).collect()
 }
 
 #[aoc::main(03)]
 fn main(input: &str) -> (usize, usize) {
   let p1 = input.lines()
     .map(|l| l.as_bytes())
-    .map(|l| same_chars(&l[0..l.len()/2], &l[l.len()/2..]))
+    .map(|l| same_chars(&l[..l.len()/2], &l[l.len()/2..]))
     .map(|c| value(c[0]))
     .sum();
   let p2 = input.lines()
     .map(|l| l.as_bytes())
     .tuples()
-    .map(|(a,b,c)| same_chars(&same_chars(a, b), c))
+    .map(|(a,b,c)| same_chars(a, &same_chars(b, c)))
     .map(|c| value(c[0]))
     .sum();
   (p1, p2)
