@@ -14,13 +14,12 @@ fn same_chars(a: &[u8], b: &[u8]) -> Vec<u8> {
 
 #[aoc::main(03)]
 fn main(input: &str) -> (usize, usize) {
-  let p1 = input.lines()
-    .map(|l| l.as_bytes())
+  let lines = input.lines().map(|l| l.as_bytes()).collect::<Vec<_>>();
+  let p1 = lines.iter()
     .map(|l| same_chars(&l[..l.len()/2], &l[l.len()/2..]))
     .map(|c| value(c[0]))
     .sum();
-  let p2 = input.lines()
-    .map(|l| l.as_bytes())
+  let p2 = lines.iter()
     .tuples()
     .map(|(a,b,c)| same_chars(a, &same_chars(b, c)))
     .map(|c| value(c[0]))
