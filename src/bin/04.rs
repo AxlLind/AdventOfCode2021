@@ -1,5 +1,3 @@
-use std::cmp::{min, max};
-
 #[aoc::main(04)]
 fn main(input: &str) -> (usize, usize) {
   let pairs = input.lines().filter_map(|l| {
@@ -12,7 +10,7 @@ fn main(input: &str) -> (usize, usize) {
     .filter(|(x1,y1,x2,y2)| (x1 <= x2 && y1 >= y2) || (x2 <= x1 && y2 >= y1))
     .count();
   let p2 = pairs.iter()
-    .filter(|(x1,y1,x2,y2)| max(x1,x2) <= min(y1,y2))
+    .filter(|(x1,y1,x2,y2)| y1 >= x2 && x1 <= y2)
     .count();
   (p1, p2)
 }
