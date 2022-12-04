@@ -16,6 +16,7 @@ cargo run --release             # run all days
 ```
 
 ## Other years
+- [2022](https://github.com/AxlLind/AdventOfCode2022/) in Rust :crab:
 - [2021](https://github.com/AxlLind/AdventOfCode2021/) in Rust :crab:
 - [2019](https://github.com/AxlLind/AdventOfCode2019/) in Rust :crab:
 - [2018](https://github.com/AxlLind/AdventOfCode2018/) in Python :snake:
