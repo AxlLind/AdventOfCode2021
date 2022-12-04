@@ -21,6 +21,7 @@ done
 Note that at the time of writing `mypy` does not support 3.10 syntax, which means it fails on a lot of the days.
 
 ## Other years
+- [2022](https://github.com/AxlLind/AdventOfCode2022/) in Rust :crab:
 - [2021](https://github.com/AxlLind/AdventOfCode2021/) in Rust :crab:
 - [2020](https://github.com/AxlLind/AdventOfCode2020/) in Rust :crab:
 - [2019](https://github.com/AxlLind/AdventOfCode2019/) in Rust :crab:
