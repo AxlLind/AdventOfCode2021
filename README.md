@@ -11,6 +11,7 @@ To run any of the solutions use the command `cargo run --release --bin DAY_NUMBE
 You can see the output and wall-clock timing for each solution [here](./Output.md).
 
 ## Other years
+- [2022](https://github.com/AxlLind/AdventOfCode2022/) in Rust :crab:
 - [2021](https://github.com/AxlLind/AdventOfCode2021/) in Rust :crab:
 - [2020](https://github.com/AxlLind/AdventOfCode2020/) in Rust :crab:
 - [2018](https://github.com/AxlLind/AdventOfCode2018/) in Python :snake:
