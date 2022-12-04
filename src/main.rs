@@ -1,8 +1,6 @@
 use std::{fs, process::Command, error::Error};
 use itertools::Itertools;
 
-static BIN_DIR: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/src/bin/");
-
 fn extract_microseconds(output: &str) -> Result<usize, Box<dyn Error>> {
   let out = output.lines().last().unwrap();
   let time = if out.ends_with("ms") {
@@ -14,9 +12,8 @@ fn extract_microseconds(output: &str) -> Result<usize, Box<dyn Error>> {
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
-  let days = fs::read_dir(BIN_DIR)?
-    .filter_map(Result::ok)
-    .filter_map(|p| Some(p.path().file_stem()?.to_str()?.to_string()))
+  let days = fs::read_dir(concat!(env!("CARGO_MANIFEST_DIR"), "/src/bin/"))?
+    .filter_map(|p| p.ok()?.path().file_stem()?.to_str().map(str::to_string))
     .sorted()
     .collect::<Vec<_>>();
   let mut total_time = 0;
