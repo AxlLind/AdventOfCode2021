@@ -5,21 +5,19 @@ static BIN_DIR: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/src/bin");
 
 fn extract_microseconds(output: &str) -> usize {
   let out = output.lines().last().unwrap();
-  let time = if out.ends_with("ms") {
-    &out["Time: ".len()..out.len()-2]
+  if out.ends_with("ms") {
+    out["Time: ".len()..out.len()-2].parse::<usize>().unwrap() * 1000
   } else {
-    &out["Time: ".len()..out.len()-3]
-  };
-  time.parse::<usize>().unwrap() * if out.ends_with("ms") {1000} else {1}
+    out["Time: ".len()..out.len()-3].parse::<usize>().unwrap()
+  }
 }
 
 fn main() {
-  let bin_dir = Path::new(BIN_DIR);
-  let total_time = fs::read_dir(&bin_dir).unwrap()
-    .filter_map(|p| Some(p.ok()?.path().file_stem()?.to_str()?.parse::<usize>().ok()?))
+  let total_time = fs::read_dir(&Path::new(BIN_DIR))
+    .unwrap()
+    .filter_map(|p| Some(p.ok()?.path().file_stem()?.to_str()?.to_string()))
     .sorted()
-    .map(|day_num| {
-      let day = format!("{:0>2}", day_num);
+    .map(|day| {
       let cmd = Command::new("cargo")
         .args(&["run", "--release", "--bin", &day])
         .output()
