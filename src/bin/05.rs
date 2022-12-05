@@ -26,7 +26,7 @@ fn part_two(instructions: &[(usize, usize, usize)], mut stacks: Vec<Vec<char>>) 
 fn main(input: &str) -> (String, String) {
   let (boxes, rest) = input.split_once("\n\n").unwrap();
   let mut stacks = vec![vec![]; 9];
-  for l in boxes.lines().rev().map(str::as_bytes).filter(|l| l[0] == b'[') {
+  for l in boxes.lines().rev().skip(1).map(str::as_bytes) {
     for i in 0..stacks.len() {
       let c = l[i*4+1];
       if c.is_ascii_alphabetic() {
