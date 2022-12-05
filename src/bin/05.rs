@@ -1,6 +1,6 @@
 use itertools::Itertools;
 
-fn part_one(instructions: &[(usize, usize, usize)], stacks: &mut Vec<Vec<char>>) -> String {
+fn part_one(instructions: &[(usize, usize, usize)], mut stacks: Vec<Vec<char>>) -> String {
   for &(times, from, to) in instructions {
     for _ in 0..times {
       let item = stacks[from-1].pop().unwrap();
@@ -10,7 +10,7 @@ fn part_one(instructions: &[(usize, usize, usize)], stacks: &mut Vec<Vec<char>>)
   stacks.iter().map(|s| s.last().unwrap()).join("")
 }
 
-fn part_two(instructions: &[(usize, usize, usize)], stacks: &mut Vec<Vec<char>>) -> String {
+fn part_two(instructions: &[(usize, usize, usize)], mut stacks: Vec<Vec<char>>) -> String {
   for &(times, from, to) in instructions {
     let len = stacks[to-1].len() + times;
     stacks[to-1].resize(len, 'x');
@@ -41,7 +41,7 @@ fn main(input: &str) -> (String, String) {
       .unwrap()
     )
     .collect::<Vec<_>>();
-  let p1 = part_one(&instructions, &mut stacks.clone());
-  let p2 = part_two(&instructions, &mut stacks);
+  let p1 = part_one(&instructions, stacks.clone());
+  let p2 = part_two(&instructions, stacks);
   (p1,p2)
 }
