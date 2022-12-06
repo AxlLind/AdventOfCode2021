@@ -1,3 +1,4 @@
+#[allow(clippy::identity_op)]
 fn score(rounds: &[(char, char)]) -> usize {
   rounds.iter().map(|(a,b)| match (a,b) {
     ('A', 'Y') => 6 + 2,

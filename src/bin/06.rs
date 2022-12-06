@@ -1,10 +1,8 @@
 use itertools::Itertools;
 
 fn find_unique_chunk(input: &str, size: usize) -> usize {
-  (size..input.len()).find(|&i| input.as_bytes()[i-size..i]
-    .iter()
-    .tuple_combinations()
-    .all(|(a,b)| a != b)
+  (size..input.len()).find(|&i|
+    input.as_bytes()[i-size..i].iter().tuple_combinations().all(|(a,b)| a != b)
   ).unwrap()
 }
 
