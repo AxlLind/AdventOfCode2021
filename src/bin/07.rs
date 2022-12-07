@@ -20,9 +20,8 @@ fn compute_dir_size<'a>(fs: &HashMap<PathBuf, HashSet<(i64, &'a str)>>, sizes: &
 fn main(input: &str) -> (i64, i64) {
   let mut fs = HashMap::new();
   let mut pwd = PathBuf::new();
-  for l in input.split("$").skip(1).map(|l| l.trim()) {
-    let cmd = l.lines().next().unwrap();
-    match cmd.trim() {
+  for l in input.split('$').skip(1) {
+    match l.trim().lines().next().unwrap() {
       "ls" => {
         let entries = l.lines()
           .skip(1)
@@ -34,7 +33,7 @@ fn main(input: &str) -> (i64, i64) {
         fs.entry(pwd.clone()).or_insert(HashSet::new()).extend(entries);
       }
       "cd .." => { pwd.pop(); },
-      _ => { pwd.push(cmd.split_once(' ').unwrap().1); }
+      cd_dir => { pwd.push(cd_dir.split_once(' ').unwrap().1); }
     }
   }
 
