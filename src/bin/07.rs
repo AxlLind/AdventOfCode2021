@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 use hashbrown::{HashMap, HashSet};
 
-fn compute_dir_size<'a>(fs: &HashMap<PathBuf, HashSet<(i64, &'a str)>>, sizes: &mut HashMap<PathBuf, i64>, dir: &PathBuf) {
+fn compute_dir_size(fs: &HashMap<PathBuf, HashSet<(i64, &str)>>, sizes: &mut HashMap<PathBuf, i64>, dir: &PathBuf) {
   if sizes.contains_key(dir) {
     return;
   }
