@@ -23,13 +23,10 @@ fn main(input: &str) -> (i64, i64) {
   for l in input.split('$').skip(1) {
     match l.trim().lines().next().unwrap() {
       "ls" => {
-        let entries = l.lines()
-          .skip(1)
-          .map(|output| {
-            let (x, f) = output.split_once(' ').unwrap();
-            let size = if x == "dir" {-1} else {x.parse::<i64>().unwrap()};
-            (size, f)
-          });
+        let entries = l.lines().skip(1).map(|output| {
+          let (size, f) = output.split_once(' ').unwrap();
+          (size.parse::<i64>().unwrap_or(-1), f)
+        });
         fs.entry(pwd.clone()).or_insert(HashSet::new()).extend(entries);
       }
       "cd .." => { pwd.pop(); },
