@@ -1,13 +1,12 @@
 use hashbrown::HashSet;
 
-fn simulate_rope(moves: &[(isize, isize, usize)], followers: usize) -> usize {
-  let mut rope = vec![(0isize, 0isize); followers + 1];
-  let mut visited = HashSet::new();
+fn simulate_rope(moves: &[(i32, i32, usize)], followers: usize) -> usize {
+  let mut rope = vec![(0i32, 0i32); followers + 1];
+  let mut visited = HashSet::with_capacity(10000);
   visited.insert((0,0));
   for &(dx, dy, len) in moves {
     for _ in 0..len {
-      rope[0].0 += dx;
-      rope[0].1 += dy;
+      rope[0] = (rope[0].0 + dx, rope[0].1 + dy);
       for i in 1..rope.len() {
         let (xh, yh) = rope[i-1];
         if (xh - rope[i].0).abs() > 1 || (yh - rope[i].1).abs() > 1 {
@@ -15,7 +14,7 @@ fn simulate_rope(moves: &[(isize, isize, usize)], followers: usize) -> usize {
           rope[i].1 += (yh - rope[i].1).signum();
         }
       }
-      visited.insert((rope.last().unwrap().0, rope.last().unwrap().1));
+      visited.insert(rope[followers]);
     }
   }
   visited.len()
