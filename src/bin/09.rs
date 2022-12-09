@@ -3,7 +3,6 @@ use hashbrown::HashSet;
 fn simulate_rope(moves: &[(i32, i32, usize)], followers: usize) -> usize {
   let mut rope = vec![(0i32, 0i32); followers + 1];
   let mut visited = HashSet::with_capacity(10000);
-  visited.insert((0,0));
   for &(dx, dy, len) in moves {
     for _ in 0..len {
       rope[0] = (rope[0].0 + dx, rope[0].1 + dy);
