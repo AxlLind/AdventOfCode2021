@@ -8,10 +8,10 @@ fn simulate_rope(moves: &[(i32, i32, usize)], followers: usize) -> usize {
     for _ in 0..len {
       rope[0] = (rope[0].0 + dx, rope[0].1 + dy);
       for i in 1..rope.len() {
-        let (xh, yh) = rope[i-1];
-        if (xh - rope[i].0).abs() > 1 || (yh - rope[i].1).abs() > 1 {
-          rope[i].0 += (xh - rope[i].0).signum();
-          rope[i].1 += (yh - rope[i].1).signum();
+        let (dx, dy) = (rope[i-1].0 - rope[i].0, rope[i-1].1 - rope[i].1);
+        if dx.abs() > 1 || dy.abs() > 1 {
+          rope[i].0 += dx.signum();
+          rope[i].1 += dy.signum();
         }
       }
       visited.insert(rope[followers]);
