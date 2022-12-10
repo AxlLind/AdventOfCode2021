@@ -18,7 +18,7 @@ fn compute_dir_size(fs: &HashMap<PathBuf, HashSet<(i64, &str)>>, sizes: &mut Has
 
 #[aoc::main(07)]
 fn main(input: &str) -> (i64, i64) {
-  let mut fs = HashMap::new();
+  let mut fs = HashMap::<_, HashSet<_>>::new();
   let mut pwd = PathBuf::new();
   for l in input.split('$').skip(1) {
     match l.trim().lines().next().unwrap() {
@@ -27,7 +27,7 @@ fn main(input: &str) -> (i64, i64) {
           let (size, f) = output.split_once(' ').unwrap();
           (size.parse::<i64>().unwrap_or(-1), f)
         });
-        fs.entry(pwd.clone()).or_insert(HashSet::new()).extend(entries);
+        fs.entry(pwd.clone()).or_default().extend(entries);
       }
       "cd .." => { pwd.pop(); },
       cd_dir => { pwd.push(cd_dir.split_once(' ').unwrap().1); }

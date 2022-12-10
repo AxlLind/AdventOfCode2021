@@ -1,7 +1,7 @@
 use std::cmp::max;
 use itertools::Itertools;
 
-fn examine_tree(grid: &Vec<Vec<u8>>, r: usize, c: usize) -> (bool, usize) {
+fn examine_tree(grid: &[Vec<u8>], r: usize, c: usize) -> (bool, usize) {
   let tree = grid[r][c];
   let (mut invisible, mut score) = (true, 1);
   for (dr, dc) in [(-1,0), (0,-1), (1,0), (0,1)] {
