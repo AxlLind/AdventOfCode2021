@@ -1,7 +1,7 @@
 #[derive(Clone, Copy, Debug)]
-enum Op { Add(u32), Mul(u32), Special }
+enum Op { Add(u64), Mul(u64), Special }
 
-fn simulate(mut monkies: Vec<(Vec<u32>, Op, u32, usize, usize)>, rounds: usize, f: impl Fn(u32) -> u32) -> usize {
+fn simulate(mut monkies: Vec<(Vec<u64>, Op, u64, usize, usize)>, rounds: usize, f: impl Fn(u64) -> u64) -> usize {
   let mut inspections = vec![0; monkies.len()];
   for _ in 0..rounds {
     for i in 0..monkies.len() {
@@ -28,7 +28,7 @@ fn main(input: &str) -> (usize, usize) {
   let monkies = input.split("\n\n").map(|m| {
     let mut items = m.split_whitespace()
       .filter_map(|x|
-        x.parse::<u32>().or(x[0..x.len()-1].parse::<u32>()).ok()
+        x.parse::<u64>().or(x[0..x.len()-1].parse::<u64>()).ok()
       )
       .skip(1)
       .collect::<Vec<_>>();
@@ -43,8 +43,8 @@ fn main(input: &str) -> (usize, usize) {
     };
     (items, op, rest[0], rest[1] as usize, rest[2] as usize)
   }).collect::<Vec<_>>();
-  let modulus = monkies.iter().map(|m| m.2).product::<u32>();
+  let modulus = monkies.iter().map(|m| m.2).product::<u64>();
   let p1 = simulate(monkies.clone(), 20, |x| x / 3);
-  let p2 = simulate(monkies.clone(), 1000, |x| x % modulus);
+  let p2 = simulate(monkies, 10000, |x| x % modulus);
   (p1,p2)
 }
