@@ -1,3 +1,5 @@
+use itertools::Itertools;
+
 #[derive(Clone, Copy, Debug)]
 enum Op { Add(u64), Mul(u64), Special }
 
@@ -26,22 +28,16 @@ fn simulate(mut monkies: Vec<(Vec<u64>, Op, u64, usize, usize)>, rounds: usize, 
 #[aoc::main(11)]
 fn main(input: &str) -> (usize, usize) {
   let monkies = input.split("\n\n").map(|m| {
-    let mut items = m.split_whitespace()
-      .filter_map(|x|
-        x.parse::<u64>().or(x[0..x.len()-1].parse::<u64>()).ok()
-      )
-      .skip(1)
-      .collect::<Vec<_>>();
-    let rest_len = if m.contains("old * old") {3} else {4};
-    let mut rest = items.split_off(items.len() - rest_len);
-    let op = if m.contains("old * old") {
-      Op::Special
-    } else if m.contains(" + ") {
-      Op::Add(rest.remove(0))
-    } else {
-      Op::Mul(rest.remove(0))
+    let (l1, l2, l3, l4, l5) = m.lines().skip(1).map(|l| l.trim()).collect_tuple().unwrap();
+    let items = l1["Starting items: ".len()..].split(", ").map(|x| x.parse::<u64>().unwrap()).collect::<Vec<_>>();
+    let op = match l2["Operation: new = old * ".len()..].parse::<u64>() {
+      Ok(v) => if l2.contains('+') {Op::Add(v)} else {Op::Mul(v)},
+      _ => Op::Special
     };
-    (items, op, rest[0], rest[1] as usize, rest[2] as usize)
+    let div = l3["Test: divisible by ".len()..].parse::<u64>().unwrap();
+    let m1 = l4["If true: throw to monkey ".len()..].parse::<usize>().unwrap();
+    let m2 = l5["If false: throw to monkey ".len()..].parse::<usize>().unwrap();
+    (items, op, div, m1, m2)
   }).collect::<Vec<_>>();
   let modulus = monkies.iter().map(|m| m.2).product::<u64>();
   let p1 = simulate(monkies.clone(), 20, |x| x / 3);
