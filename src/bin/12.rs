@@ -3,8 +3,8 @@ use itertools::Itertools;
 
 fn bfs(grid: &[Vec<u8>], start: &[(usize, usize)], goal: (usize, usize)) -> Option<usize> {
   let mut visited = vec![vec![false; grid[0].len()]; grid.len()];
-  let mut queue = start.iter().map(|&s| (s, 0)).collect::<VecDeque<_>>();
-  while let Some(((x, y), len)) = queue.pop_front() {
+  let mut queue = start.iter().map(|&(x,y)| (x, y, 0)).collect::<VecDeque<_>>();
+  while let Some((x, y, len)) = queue.pop_front() {
     if (x, y) == goal {
       return Some(len);
     }
@@ -13,7 +13,7 @@ fn bfs(grid: &[Vec<u8>], start: &[(usize, usize)], goal: (usize, usize)) -> Opti
       let Some(&square) = grid.get(nx).and_then(|row| row.get(ny)) else { continue };
       if grid[x][y] + 1 >= square && !visited[nx][ny] {
         visited[nx][ny] = true;
-        queue.push_back(((nx, ny), len + 1));
+        queue.push_back((nx, ny, len + 1));
       }
     }
   }
