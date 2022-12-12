@@ -5,9 +5,8 @@ fn bfs(grid: &[Vec<u8>], start: (usize, usize), goal: (usize, usize)) -> Option<
   let mut visited = vec![vec![false; grid[0].len()]; grid.len()];
   let mut queue = VecDeque::new();
   queue.push_back((start, 0));
-  loop {
-    let ((x, y), len) = queue.pop_front()?;
-    if (x,y) == goal {
+  while let Some(((x, y), len)) = queue.pop_front() {
+    if (x, y) == goal {
       return Some(len);
     }
     for (dx, dy) in [(0,-1), (-1,0), (0,1), (1,0)] {
@@ -19,6 +18,7 @@ fn bfs(grid: &[Vec<u8>], start: (usize, usize), goal: (usize, usize)) -> Option<
       }
     }
   }
+  None
 }
 
 #[aoc::main(12)]
@@ -31,7 +31,6 @@ fn main(input: &str) -> (usize, usize) {
   let p2 = (0..grid.len()).cartesian_product(0..grid[0].len())
     .filter(|&(x,y)| grid[x][y] == b'a')
     .filter_map(|start| bfs(&grid, start, (gx, gy)))
-    .min()
-    .unwrap();
-  (bfs(&grid, (sx, sy), (gx, gy)).unwrap(), p2)
+    .min();
+  (bfs(&grid, (sx, sy), (gx, gy)).unwrap(), p2.unwrap())
 }
