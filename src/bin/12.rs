@@ -1,10 +1,9 @@
 use std::collections::VecDeque;
 use itertools::Itertools;
 
-fn bfs(grid: &[Vec<u8>], start: (usize, usize), goal: (usize, usize)) -> Option<usize> {
+fn bfs(grid: &[Vec<u8>], start: &[(usize, usize)], goal: (usize, usize)) -> Option<usize> {
   let mut visited = vec![vec![false; grid[0].len()]; grid.len()];
-  let mut queue = VecDeque::new();
-  queue.push_back((start, 0));
+  let mut queue = start.iter().map(|&s| (s, 0)).collect::<VecDeque<_>>();
   while let Some(((x, y), len)) = queue.pop_front() {
     if (x, y) == goal {
       return Some(len);
@@ -28,9 +27,8 @@ fn main(input: &str) -> (usize, usize) {
   let (gx, gy) = (0..grid.len()).cartesian_product(0..grid[0].len()).find(|&(x,y)| grid[x][y] == b'E').unwrap();
   grid[sx][sy] = b'a';
   grid[gx][gy] = b'z';
-  let p2 = (0..grid.len()).cartesian_product(0..grid[0].len())
+  let positions = (0..grid.len()).cartesian_product(0..grid[0].len())
     .filter(|&(x,y)| grid[x][y] == b'a')
-    .filter_map(|start| bfs(&grid, start, (gx, gy)))
-    .min();
-  (bfs(&grid, (sx, sy), (gx, gy)).unwrap(), p2.unwrap())
+    .collect::<Vec<_>>();
+  (bfs(&grid, &[(sx, sy)], (gx, gy)).unwrap(), bfs(&grid, &positions, (gx, gy)).unwrap())
 }
