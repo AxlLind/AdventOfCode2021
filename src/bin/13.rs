@@ -1,12 +1,12 @@
 use itertools::Itertools;
 use serde_json::Value;
-use std::cmp::Ordering;
+use std::cmp::{max, Ordering};
 
 fn comp(a: &Value, b: &Value) -> Ordering {
   match (a,b) {
     (Value::Number(x), Value::Number(y)) => x.as_u64().unwrap().cmp(&y.as_u64().unwrap()),
     (Value::Array(a), Value::Array(b)) => {
-      for i in 0..std::cmp::max(a.len(), b.len()) {
+      for i in 0..max(a.len(), b.len()) {
         match (a.get(i), b.get(i)) {
           (None, _) => return Ordering::Less,
           (_, None) => return Ordering::Greater,
@@ -41,6 +41,6 @@ fn main(input: &str) -> (usize, usize) {
   ];
   signals.extend(beacons.iter().cloned());
   signals.sort_by(comp);
-  let p2 = signals.iter().positions(|b| beacons.contains(b)).product();
+  let p2 = signals.iter().positions(|b| beacons.contains(b)).map(|i| i + 1).product();
   (p1,p2)
 }
