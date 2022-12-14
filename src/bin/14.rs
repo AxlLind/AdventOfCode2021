@@ -1,20 +1,13 @@
+use std::cmp::max;
 use itertools::Itertools;
 
 fn simulate(mut map: Vec<Vec<bool>>, floor: usize, breakpoint: usize) -> usize {
   for ans in 0.. {
     let (mut x, mut y) = (500, 0);
-    while y + 1 != floor {
-      if !map[x][y+1] {
-        y += 1;
-      } else if !map[x-1][y+1] {
-        x -= 1;
-        y += 1;
-      } else if !map[x+1][y+1] {
-        x += 1;
-        y += 1;
-      } else {
-        break;
-      }
+    while y + 1 < floor {
+      let Some(&dx) = [0,-1,1].iter().find(|&&dx| !map[x + dx as usize][y+1]) else { break };
+      x += dx as usize;
+      y += 1;
     }
     if y == breakpoint { return ans; }
     map[x][y] = true;
@@ -32,7 +25,7 @@ fn main(input: &str) -> (usize, usize) {
       (a.parse::<usize>().unwrap(), b.parse::<usize>().unwrap())
     });
     for ((x1,y1),(x2,y2)) in coords.tuple_windows() {
-      max_y = std::cmp::max(max_y, std::cmp::max(y1, y2));
+      max_y = max(max_y, max(y1, y2));
       let (mut x1,mut y1,x2,y2) = (x1 as isize,y1 as isize,x2 as isize,y2 as isize);
       let dx = (x2 - x1).signum();
       let dy = (y2 - y1).signum();
