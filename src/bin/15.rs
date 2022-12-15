@@ -1,16 +1,14 @@
 use itertools::Itertools;
 
-fn part_one(beacons: &[(i64,i64,i64,i64)]) -> i64 {
-  let mut ends = vec![];
-  for &(x,y,dx,dy) in beacons {
-    let left = (x - dx).abs() + (y - dy).abs() - (2000000 - y).abs();
-    if left >= 0 {
-      ends.extend_from_slice(&[(x - left, true), (x + left + 1, false)]);
-    }
-  }
-  ends.sort();
+fn part_one(beacons: &[(i64,i64,i64)]) -> i64 {
+  let compressed = beacons.iter()
+    .map(|&(x,y,d)| (x, d - (2000000 - y).abs()))
+    .filter(|&(_,left)| left >= 0)
+    .flat_map(|(x,left)| [(x - left, true), (x + left + 1, false)])
+    .sorted()
+    .collect::<Vec<_>>();
   let (mut ans, mut prev, mut inside) = (-1, 0, 0);
-  for &(x, start) in &ends {
+  for &(x, start) in &compressed {
     if inside > 0 { ans += x - prev }
     inside += if start {1} else {-1};
     prev = x;
@@ -18,22 +16,18 @@ fn part_one(beacons: &[(i64,i64,i64,i64)]) -> i64 {
   ans
 }
 
-fn part_two(beacons: &[(i64,i64,i64,i64)]) -> i64 {
-  for &(x,y,dx,dy) in beacons {
-    let dist = (x - dx).abs() + (y - dy).abs();
+fn part_two(beacons: &[(i64,i64,i64)]) -> i64 {
+  for &(x,y,d) in beacons {
     for (dir_x, dir_y) in [(-1,-1), (-1,1), (1,-1), (1,1)] {
-      for d in 0..dist {
-        let bx = x + dir_x * d;
-        let by = y + dir_y * (dist + 1 - d);
+      for dist in 0..d {
+        let bx = x + dir_x * dist;
+        let by = y + dir_y * (d + 1 - dist);
         if bx < 0 || by < 0 || bx > 4000000 || by > 4000000 {
           break;
         }
-        let found = beacons.iter().all(|&(x,y,dx,dy)| {
-          let d1 = (x - dx).abs() + (y - dy).abs();
-          let d2 = (bx - x).abs() + (by - y).abs();
-          d2 >= d1
-        });
-        if found { return bx * 4000000 + by; }
+        if beacons.iter().all(|&(x,y,d)| (bx - x).abs() + (by - y).abs() >= d) {
+          return bx * 4000000 + by;
+        }
       }
     }
   }
@@ -47,6 +41,7 @@ fn main(input: &str) -> (i64, i64) {
       .filter(|w| !w.is_empty())
       .map(|w| w.parse::<i64>().unwrap())
       .collect_tuple()
+      .map(|(x,y,dx,dy)| (x, y, (x - dx).abs() + (y - dy).abs()))
       .unwrap()
   ).collect::<Vec<_>>();
   (part_one(&beacons), part_two(&beacons))
