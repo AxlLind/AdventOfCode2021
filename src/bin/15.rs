@@ -7,11 +7,10 @@ fn part_one(beacons: &[(i64,i64,i64)]) -> i64 {
     .flat_map(|(x,left)| [(x - left, true), (x + left + 1, false)])
     .sorted()
     .collect::<Vec<_>>();
-  let (mut ans, mut prev, mut inside) = (-1, 0, 0);
-  for &(x, start) in &compressed {
+  let (mut ans, mut inside) = (-1, 1);
+  for ((prev, _), &(x, start)) in compressed.iter().tuple_windows() {
     if inside > 0 { ans += x - prev }
     inside += if start {1} else {-1};
-    prev = x;
   }
   ans
 }
