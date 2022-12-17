@@ -17,12 +17,12 @@ fn can_fit(map: &[[u8; 7]], rock: &[(usize, usize)], h: usize, w: usize) -> bool
 }
 
 fn column_heights(map: &[[u8; 7]]) -> [usize; 7] {
-  let mut hash = [0; 7];
+  let mut heights = [0; 7];
   let h = get_height(map);
   for i in 0..7 {
-    hash[i] = (0..h).find(|&x| map[h - x][i] == b'#').unwrap_or(usize::MAX);
+    heights[i] = (0..h).find(|&x| map[h - x][i] == b'#').unwrap_or(usize::MAX);
   }
-  hash
+  heights
 }
 
 #[aoc::main(17)]
@@ -45,9 +45,7 @@ fn main(input: &str) -> (usize, usize) {
       }
       h -= 1;
     }
-    for (dh, dw) in rock {
-      map[h + dh][w + dw] = b'#';
-    }
+    for (dh, dw) in rock { map[h+dh][w+dw] = b'#' }
 
     let key = (i % ROCKS.len(), t % input.len(), column_heights(&map));
     if let Some((idx, height)) = cache.get(&key) {
@@ -57,7 +55,6 @@ fn main(input: &str) -> (usize, usize) {
     } else {
       cache.insert(key, (i, get_height(&map)));
     }
-
     i += 1;
   }
   let p1 = *cache.values().find(|&&(i,_)| i == 2021).map(|(_,h)| h).unwrap();
