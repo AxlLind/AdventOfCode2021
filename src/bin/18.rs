@@ -11,12 +11,12 @@ fn main(input: &str) -> (usize, usize) {
     .filter_map(|l| l.split(',').map(|x| x.parse().unwrap()).collect_tuple())
     .collect::<HashSet<_>>();
   let max = drops.iter().flat_map(|&(x,y,z)| [x,y,z]).max().unwrap() + 1;
-  let (mut seen, mut q) = (HashSet::new(), vec![(0,0,0)]);
-  while let Some(p) = q.pop() {
+  let (mut seen, mut stack) = (HashSet::new(), vec![(0,0,0)]);
+  while let Some(p) = stack.pop() {
     for (x,y,z) in sides(p) {
       if !drops.contains(&(x,y,z)) && !seen.contains(&(x,y,z)) && [x,y,z].iter().all(|&i| -1 <= i && i <= max) {
         seen.insert((x,y,z));
-        q.push((x,y,z));
+        stack.push((x,y,z));
       }
     }
   }
