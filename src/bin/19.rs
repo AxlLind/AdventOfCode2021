@@ -41,6 +41,23 @@ fn max_geodes((ore_ore_cost, clay_ore_cost, obs_ore_cost, obs_clay_cost, geo_ore
       continue;
     }
     seen.insert(state);
+
+    if state.ore >= geo_ore_cost && state.obsidian >= geo_obs_cost {
+      let mut state = earn(state);
+      state.ore -= geo_ore_cost;
+      state.obsidian -= geo_obs_cost;
+      state.geode_robots += 1;
+      q.push_back((len+1, state));
+      continue;
+    }
+    if state.obsidian_robots < geo_obs_cost && state.ore >= obs_ore_cost && state.clay >= obs_clay_cost {
+      let mut state = earn(state);
+      state.ore -= obs_ore_cost;
+      state.clay -= obs_clay_cost;
+      state.obsidian_robots += 1;
+      q.push_back((len+1, state));
+      continue;
+    }
     if state.ore_robots < max_ore_cost && state.ore >= ore_ore_cost {
       let mut state = earn(state);
       state.ore -= ore_ore_cost;
@@ -53,22 +70,7 @@ fn max_geodes((ore_ore_cost, clay_ore_cost, obs_ore_cost, obs_clay_cost, geo_ore
       state.clay_robots += 1;
       q.push_back((len+1, state));
     }
-    if state.obsidian_robots < geo_obs_cost && state.ore >= obs_ore_cost && state.clay >= obs_clay_cost {
-      let mut state = earn(state);
-      state.ore -= obs_ore_cost;
-      state.clay -= obs_clay_cost;
-      state.obsidian_robots += 1;
-      q.push_back((len+1, state));
-    }
-    if state.ore >= geo_ore_cost && state.obsidian >= geo_obs_cost {
-      let mut state = earn(state);
-      state.ore -= geo_ore_cost;
-      state.obsidian -= geo_obs_cost;
-      state.geode_robots += 1;
-      q.push_back((len+1, state));
-    } else {
-      q.push_back((len+1, earn(state)));
-    }
+    q.push_back((len+1, earn(state)));
   }
   ans
 }
