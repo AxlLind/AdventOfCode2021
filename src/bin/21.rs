@@ -44,7 +44,14 @@ fn main(input: &str) -> (i64, &str) {
       _ => Op::Num(rest.parse().unwrap()),
     };
     (name, op)
-  }).collect();
-  println!("{} = {}", val(&monkies, "tfjf"), get_eq(&monkies, "vtsj"));
+  }).collect::<HashMap<_,_>>();
+  let (a, b) = match &monkies["root"] {
+    Op::Add(m1, m2) => (m1,m2),
+    Op::Sub(m1, m2) => (m1,m2),
+    Op::Mul(m1, m2) => (m1,m2),
+    Op::Div(m1, m2) => (m1,m2),
+    _ => unreachable!(),
+  };
+  println!("{} = {}", val(&monkies, b), get_eq(&monkies, a));
   (val(&monkies, "root"), "glhf -> https://www.mathpapa.com/equation-solver/")
 }
