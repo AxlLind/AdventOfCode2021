@@ -9,28 +9,28 @@ enum Op {
   Div(String, String),
 }
 
-fn search(monkies: &HashMap<String, Op>, cache: &mut HashMap<String, i64>, name: &str) -> i64 {
+fn val(monkies: &HashMap<String, Op>, cache: &mut HashMap<String, i64>, name: &str) -> i64 {
   if let Some(&v) = cache.get(name) {
     return v;
   }
   let v = match &monkies[name] {
     Op::Num(i) => *i,
-    Op::Add(m1, m2) => search(monkies, cache, &m1) + search(monkies, cache, &m2),
-    Op::Sub(m1, m2) => search(monkies, cache, &m1) - search(monkies, cache, &m2),
-    Op::Mul(m1, m2) => search(monkies, cache, &m1) * search(monkies, cache, &m2),
-    Op::Div(m1, m2) => search(monkies, cache, &m1) / search(monkies, cache, &m2),
+    Op::Add(m1, m2) => val(monkies, cache, &m1) + val(monkies, cache, &m2),
+    Op::Sub(m1, m2) => val(monkies, cache, &m1) - val(monkies, cache, &m2),
+    Op::Mul(m1, m2) => val(monkies, cache, &m1) * val(monkies, cache, &m2),
+    Op::Div(m1, m2) => val(monkies, cache, &m1) / val(monkies, cache, &m2),
   };
   cache.insert(name.to_string(), v);
   v
 }
 
-fn print_eq(monkies: &HashMap<String, Op>, name: &str) -> String {
+fn get_eq(monkies: &HashMap<String, Op>, name: &str) -> String {
   match &monkies[name] {
     Op::Num(i) => i.to_string(),
-    Op::Add(m1, m2) => format!("({} + {})", print_eq(monkies, &m1), print_eq(monkies, &m2)),
-    Op::Sub(m1, m2) => format!("({} - {})", print_eq(monkies, &m1), print_eq(monkies, &m2)),
-    Op::Mul(m1, m2) => format!("({} * {})", print_eq(monkies, &m1), print_eq(monkies, &m2)),
-    Op::Div(m1, m2) => format!("({} / {})", print_eq(monkies, &m1), print_eq(monkies, &m2)),
+    Op::Add(m1, m2) => format!("({} + {})", get_eq(monkies, &m1), get_eq(monkies, &m2)),
+    Op::Sub(m1, m2) => format!("({} - {})", get_eq(monkies, &m1), get_eq(monkies, &m2)),
+    Op::Mul(m1, m2) => format!("({} * {})", get_eq(monkies, &m1), get_eq(monkies, &m2)),
+    Op::Div(m1, m2) => format!("({} / {})", get_eq(monkies, &m1), get_eq(monkies, &m2)),
   }
 }
 
@@ -48,8 +48,8 @@ fn main(input: &str) -> (i64, &str) {
     (name.to_string(), op)
   }).collect::<HashMap<_,_>>();
   let mut values = HashMap::new();
+  let p1 = val(&monkies, &mut values, "root");
   monkies.insert("humn".to_string(), Op::Num(-1337));
-  println!("{} = {}", search(&monkies, &mut values, "tfjf"), print_eq(&monkies, "vtsj").replace("-1337", "x"));
-  let p1 = search(&monkies, &mut values, "root");
+  println!("{} = {}", val(&monkies, &mut values, "tfjf"), get_eq(&monkies, "vtsj").replace("-1337", "x"));
   (p1,"glhf -> https://www.mathpapa.com/equation-solver/")
 }
