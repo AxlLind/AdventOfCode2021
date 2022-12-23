@@ -21,7 +21,7 @@ fn main(input: &str) -> (usize, usize) {
   let mut max_y = 0;
   for l in input.lines() {
     let coords = l.split(" -> ").map(|x| {
-      let (a,b) = x.split_once(",").unwrap();
+      let (a,b) = x.split_once(',').unwrap();
       (a.parse::<usize>().unwrap(), b.parse::<usize>().unwrap())
     });
     for ((x1,y1),(x2,y2)) in coords.tuple_windows() {

@@ -12,10 +12,10 @@ enum Op<'a> {
 fn val(monkies: &HashMap<&str, Op>, name: &str) -> i64 {
   match &monkies[name] {
     Op::Num(i) => *i,
-    Op::Add(m1, m2) => val(monkies, &m1) + val(monkies, &m2),
-    Op::Sub(m1, m2) => val(monkies, &m1) - val(monkies, &m2),
-    Op::Mul(m1, m2) => val(monkies, &m1) * val(monkies, &m2),
-    Op::Div(m1, m2) => val(monkies, &m1) / val(monkies, &m2),
+    Op::Add(m1, m2) => val(monkies, m1) + val(monkies, m2),
+    Op::Sub(m1, m2) => val(monkies, m1) - val(monkies, m2),
+    Op::Mul(m1, m2) => val(monkies, m1) * val(monkies, m2),
+    Op::Div(m1, m2) => val(monkies, m1) / val(monkies, m2),
   }
 }
 
@@ -25,10 +25,10 @@ fn get_eq(monkies: &HashMap<&str, Op>, name: &str) -> String {
   }
   match &monkies[name] {
     Op::Num(i) => i.to_string(),
-    Op::Add(m1, m2) => format!("({} + {})", get_eq(monkies, &m1), get_eq(monkies, &m2)),
-    Op::Sub(m1, m2) => format!("({} - {})", get_eq(monkies, &m1), get_eq(monkies, &m2)),
-    Op::Mul(m1, m2) => format!("({} * {})", get_eq(monkies, &m1), get_eq(monkies, &m2)),
-    Op::Div(m1, m2) => format!("({} / {})", get_eq(monkies, &m1), get_eq(monkies, &m2)),
+    Op::Add(m1, m2) => format!("({} + {})", get_eq(monkies, m1), get_eq(monkies, m2)),
+    Op::Sub(m1, m2) => format!("({} - {})", get_eq(monkies, m1), get_eq(monkies, m2)),
+    Op::Mul(m1, m2) => format!("({} * {})", get_eq(monkies, m1), get_eq(monkies, m2)),
+    Op::Div(m1, m2) => format!("({} / {})", get_eq(monkies, m1), get_eq(monkies, m2)),
   }
 }
 

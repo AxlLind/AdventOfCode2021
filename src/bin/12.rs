@@ -22,7 +22,7 @@ fn bfs(grid: &[Vec<u8>], start: &[(usize, usize)], goal: (usize, usize)) -> Opti
 
 #[aoc::main(12)]
 fn main(input: &str) -> (usize, usize) {
-  let mut grid = input.lines().map(|l| l.as_bytes().iter().copied().collect::<Vec<_>>()).collect::<Vec<_>>();
+  let mut grid = input.lines().map(|l| l.as_bytes().to_vec()).collect::<Vec<_>>();
   let (sx, sy) = (0..grid.len()).cartesian_product(0..grid[0].len()).find(|&(x,y)| grid[x][y] == b'S').unwrap();
   let (gx, gy) = (0..grid.len()).cartesian_product(0..grid[0].len()).find(|&(x,y)| grid[x][y] == b'E').unwrap();
   grid[sx][sy] = b'a';

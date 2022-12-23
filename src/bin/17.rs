@@ -17,12 +17,9 @@ fn can_fit(map: &[[u8; 7]], rock: &[(usize, usize)], h: usize, w: usize) -> bool
 }
 
 fn column_heights(map: &[[u8; 7]]) -> [usize; 7] {
-  let mut heights = [0; 7];
-  let h = get_height(map);
-  for i in 0..7 {
-    heights[i] = (0..h).find(|&x| map[h - x][i] == b'#').unwrap_or(usize::MAX);
-  }
-  heights
+  let height = get_height(map);
+  macro_rules! h { ($i:expr) => { (0..height).find(|&x| map[height - x][$i] == b'#').unwrap_or(usize::MAX) }}
+  [h!(0), h!(1), h!(2), h!(3), h!(4), h!(5), h!(6)]
 }
 
 #[aoc::main(17)]

@@ -36,7 +36,7 @@ fn part_two(beacons: &[(i64,i64,i64)]) -> i64 {
 #[aoc::main(15)]
 fn main(input: &str) -> (i64, i64) {
   let beacons = input.lines().map(|l|
-    l.split(|c: char| !c.is_digit(10) && c != '-')
+    l.split(|c: char| !c.is_ascii_digit() && c != '-')
       .filter_map(|w| w.parse::<i64>().ok())
       .collect_tuple()
       .map(|(x,y,dx,dy)| (x, y, (x - dx).abs() + (y - dy).abs()))
