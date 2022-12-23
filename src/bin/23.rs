@@ -37,15 +37,15 @@ fn main(input: &str) -> (usize, usize) {
         }
       }
     }
-    let mut not_done = false;
+    let mut moved = false;
     for (pos, props) in proposals {
       if props.len() == 1 {
-        not_done = true;
+        moved = true;
         state.remove(&props[0]);
         state.insert(pos);
       }
     }
-    if !not_done {
+    if !moved {
       p2 = t+1;
       break;
     }
