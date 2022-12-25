@@ -17,3 +17,8 @@ cargo run --release           # run all days
 - [2017](https://github.com/AxlLind/AdventOfCode2017/) in Haskell λ
 - [2016](https://github.com/AxlLind/AdventOfCode2016/) in OCaml :camel:
 - [2015](https://github.com/AxlLind/AdventOfCode2015/) in Clojure λ
+
+## Leaderboard
+This year I finally reached my goal of ending up on the leaderboard. On [day 19, part 1](./src/bin/19.rs) I got 25th in the world.
+
+![leaderboard placements](./leaderboard.png)
