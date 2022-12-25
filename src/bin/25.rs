@@ -1,18 +1,9 @@
-fn todec(s: &str) -> i64 {
-  s.chars().fold(0, |n, d| {
-    n * 5 + match d {
-      '2' => 2,
-      '1' => 1,
-      '0' => 0,
-      '-' => -1,
-      '=' => -2,
-      _ => unreachable!()
-    }
-  })
+fn todec(s: &str) -> usize {
+  s.chars().fold(0, |n, d| n * 5 + "=-012".chars().position(|x| x == d).unwrap() - 2)
 }
 
-fn tosnafu(n: i64) -> String {
-  if n == 0 {"".to_string()} else {tosnafu((n+2)/5) + ["0","1","2","=","-"][n as usize % 5]}
+fn tosnafu(n: usize) -> String {
+  if n == 0 {"".to_string()} else {tosnafu((n+2)/5) + ["0","1","2","=","-"][n % 5]}
 }
 
 #[aoc::main(25)]
