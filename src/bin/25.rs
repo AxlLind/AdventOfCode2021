@@ -12,15 +12,7 @@ fn todec(s: &str) -> i64 {
 }
 
 fn tosnafu(n: i64) -> String {
-  match n % 5 {
-    0 if n == 0 => "".to_string(),
-    0 => tosnafu(n / 5) + "0",
-    1 => tosnafu(n / 5) + "1",
-    2 => tosnafu(n / 5) + "2",
-    3 => tosnafu((n + 2) / 5) + "=",
-    4 => tosnafu((n + 1) / 5) + "-",
-    _ => unreachable!(),
-  }
+  if n == 0 {"".to_string()} else {tosnafu((n+2)/5) + ["0","1","2","=","-"][n as usize % 5]}
 }
 
 #[aoc::main(25)]
