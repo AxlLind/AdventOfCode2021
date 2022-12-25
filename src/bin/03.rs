@@ -14,7 +14,7 @@ fn same_chars(a: &[u8], b: &[u8]) -> Vec<u8> {
 
 #[aoc::main(03)]
 fn main(input: &str) -> (usize, usize) {
-  let lines = input.lines().map(|l| l.as_bytes()).collect::<Vec<_>>();
+  let lines = input.lines().map(str::as_bytes).collect::<Vec<_>>();
   let p1 = lines.iter()
     .map(|l| same_chars(&l[..l.len()/2], &l[l.len()/2..]))
     .map(|c| value(c[0]))

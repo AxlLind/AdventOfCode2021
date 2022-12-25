@@ -27,7 +27,7 @@ fn simulate(mut monkies: Vec<(Vec<u64>, Op, u64, usize, usize)>, rounds: usize, 
 #[aoc::main(11)]
 fn main(input: &str) -> (usize, usize) {
   let monkies = input.split("\n\n").map(|m| {
-    let (l1, l2, l3, l4, l5) = m.lines().skip(1).map(|l| l.trim()).collect_tuple().unwrap();
+    let (l1, l2, l3, l4, l5) = m.lines().skip(1).map(str::trim).collect_tuple().unwrap();
     (
       l1["Starting items: ".len()..].split(", ").map(|x| x.parse().unwrap()).collect(),
       l2["Operation: new = old * ".len()..].parse().map(|v| if l2.contains('+') {Op::Add(v)} else {Op::Mul(v)}).unwrap_or(Op::Special),

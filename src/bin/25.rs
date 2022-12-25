@@ -3,7 +3,7 @@ fn todec(s: &str) -> usize {
 }
 
 fn tosnafu(n: usize) -> String {
-  if n == 0 {"".to_string()} else {tosnafu((n+2)/5) + ["0","1","2","=","-"][n % 5]}
+  if n == 0 {String::new()} else {tosnafu((n+2)/5) + ["0","1","2","=","-"][n % 5]}
 }
 
 #[aoc::main(25)]
