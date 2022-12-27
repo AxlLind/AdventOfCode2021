@@ -11,9 +11,10 @@ fn main(input: &str) -> (usize, usize) {
       .map(move |(y,_)| (x as i32, y as i32))
     )
     .collect::<HashSet<_>>();
+  state.reserve(5000);
   let (mut p1, mut p2) = (0,0);
+  let mut proposals = HashMap::<_,Vec<_>>::with_capacity(10000);
   for t in 0.. {
-    let mut proposals = HashMap::<_,Vec<_>>::new();
     for &(x,y) in &state {
       let ns = [
         state.contains(&(x-1,y-1)), state.contains(&(x-1,y)), state.contains(&(x-1,y+1)),
@@ -38,7 +39,7 @@ fn main(input: &str) -> (usize, usize) {
       }
     }
     let mut moved = false;
-    for (pos, props) in proposals {
+    for (pos, props) in proposals.drain() {
       if props.len() == 1 {
         moved = true;
         state.remove(&props[0]);

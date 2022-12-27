@@ -25,7 +25,7 @@ fn earn(mut state: State) -> State {
 
 fn max_geodes((ore_ore_cost, clay_ore_cost, obs_ore_cost, obs_clay_cost, geo_ore_cost, geo_obs_cost): (u32,u32,u32,u32,u32,u32), time: u32) -> u32 {
   let max_ore_cost = *[ore_ore_cost, clay_ore_cost, obs_ore_cost, geo_ore_cost].iter().max().unwrap();
-  let (mut seen, mut q) = (HashSet::new(), VecDeque::new());
+  let (mut seen, mut q) = (HashSet::with_capacity(100000), VecDeque::with_capacity(100000));
   q.push_back((0, State { ore_robots: 1, ..State::default() }));
   let mut ans = 0;
   while let Some((len, state)) = q.pop_front() {
