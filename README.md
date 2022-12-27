@@ -3,6 +3,8 @@ Solutions to all 25 AoC 2022 in Rust :crab: Using less than 100 lines per day, a
 
 I really liked 2022, it was a good AoC year. It was the year I finally reached my goal of hitting the top 100, 25th place on [day 19](./src/bin/19.rs)!
 
+For execution time of each solution, see [timings.md](./timings.md).
+
 ## Usage
 ```sh
 cargo run --release --bin DAY # run a specific day
