@@ -1,7 +1,7 @@
 fn parse_game(line: &str) -> Option<(usize, usize)> {
   let (game_id, game) = line.trim_start_matches("Game ").split_once(':')?;
   let (mut r, mut g, mut b, mut possible) = (0, 0, 0, true);
-  for action in game.split(|c| c == ';' || c == ',') {
+  for action in game.split([';', ',']) {
     let (n, color) = action.trim().split_once(' ')?;
     let n = n.parse().ok()?;
     match color.as_bytes()[0] {
