@@ -8,13 +8,12 @@ fn main(input: &str) -> (usize, usize) {
         for s in game.split(',') {
           let (n, color) = s.trim().split_once(' ')?;
           let n = n.parse().ok()?;
-          let limit = match color.as_bytes()[0] {
-            b'r' => {r = r.max(n); 12},
-            b'g' => {g = g.max(n); 13},
-            b'b' => {b = b.max(n); 14},
+          match color.as_bytes()[0] {
+            b'r' => {possible &= n <= 12; r = r.max(n)},
+            b'g' => {possible &= n <= 13; g = g.max(n)},
+            b'b' => {possible &= n <= 14; b = b.max(n)},
             _ => unreachable!(),
-          };
-          possible &= n <= limit;
+          }
         }
       }
       Some((if possible {game_id.parse().ok()?} else {0}, r * g * b))
