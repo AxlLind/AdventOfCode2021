@@ -1,7 +1,7 @@
 use hashbrown::HashMap;
 
 #[aoc::main(03)]
-fn main(input: &str) -> (i32, i32) {
+fn main(input: &str) -> (usize, usize) {
   let lines = input.split('\n').map(str::as_bytes).collect::<Vec<_>>();
   let mut symbols = HashMap::new();
   for (r, l) in lines.iter().enumerate() {
@@ -21,7 +21,7 @@ fn main(input: &str) -> (i32, i32) {
       }
       if start < c {
         if let Some(symbol) = symbol {
-          let num = std::str::from_utf8(&l[start..c]).unwrap().parse().unwrap();
+          let num = l[start..c].iter().fold(0, |n, c| n * 10 + (c - b'0') as usize);
           symbols.entry(symbol).or_insert(Vec::new()).push(num);
         }
       }
