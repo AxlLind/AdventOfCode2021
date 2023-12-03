@@ -28,7 +28,7 @@ fn main(input: &str) -> (usize, usize) {
       c += 1;
     }
   }
-  let p1 = symbols.values().flat_map(|v| v).sum();
+  let p1 = symbols.values().flatten().sum();
   let p2 = symbols.iter()
     .filter(|(&(_,_,s),v)| s == '*' && v.len() == 2)
     .map(|(_,v)| v[0] * v[1])
