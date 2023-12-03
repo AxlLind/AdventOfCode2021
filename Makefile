@@ -8,14 +8,14 @@ TODAY := $(shell date +%y%m%d)
 inputs/%.in:
 	./fetch.sh $*
 
-src/bin/%.rs: inputs/%.in
+src/bin/%.rs:
 	echo "\n"                                       >> $@
 	echo "#[aoc::main($*)]"                         >> $@
 	echo "fn main(input: &str) -> (usize, usize) {" >> $@
 	echo "  (0, 0)"                                 >> $@
 	echo "}"                                        >> $@
 
-$(DAYS): %: src/bin/%.rs
+$(DAYS): %: src/bin/%.rs inputs/%.in
 	cargo run --release --bin $*
 
 all:
