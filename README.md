@@ -3,8 +3,9 @@ Solutions to AoC 2023 in Rust :crab:
 
 ## Usage
 ```sh
-cargo run --release --bin DAY # run a specific day
-cargo run --release           # run all days
+make      # run todays day
+make DAY  # run a specific day
+make all  # run all days
 ```
 
 ## Other years
