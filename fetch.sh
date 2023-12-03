@@ -21,6 +21,7 @@ fi
 mkdir -p "$SCRIPT_DIR/inputs"
 
 curl -s "https://adventofcode.com/2023/day/${1#0}/input" \
+    --fail \
     --cookie "session=$AOC_SESSION" \
     -A "Bash script at $(git remote -v | awk 'NR==1{print $2}')" \
     | tee "$SCRIPT_DIR/inputs/$1.in"
