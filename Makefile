@@ -23,8 +23,8 @@ all:
 
 help:
 	@echo 'usage: make [TARGET..]'
-	@echo 'Makefile used to setup and run aoc'
+	@echo 'Makefile used to download input, setup files, and run aoc.'
 	@echo
-	@echo 'make           - run todays problem'
+	@echo 'make           - run todays solution'
 	@echo 'make [01..25]  - run a specific days solution'
 	@echo 'make all       - run all days solutions'
