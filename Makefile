@@ -9,7 +9,7 @@ inputs/%.in:
 	./fetch.sh $*
 
 src/bin/%.rs: inputs/%.in
-	echo -e "\n\n"                                   > $@
+	echo "\n"                                       >> $@
 	echo "#[aoc::main($*)]"                         >> $@
 	echo "fn main(input: &str) -> (usize, usize) {" >> $@
 	echo "  (0, 0)"                                 >> $@
