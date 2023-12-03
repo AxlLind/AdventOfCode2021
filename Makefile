@@ -3,6 +3,7 @@ TODAY := $(shell date +%y%m%d)
 
 # if we're in the AOC month, set default goal to today's problem
 .DEFAULT_GOAL := $(if $(filter $(TODAY),$(DAYS:%=2312%)),$(TODAY:2312%=%),help)
+.PHONY: $(DAYS) all help
 
 inputs/%.in:
 	./fetch.sh $*
@@ -14,12 +15,10 @@ src/bin/%.rs: inputs/%.in
 	echo "  (0, 0)"                                 >> $@
 	echo "}"                                        >> $@
 
-.PHONY: $(DAYS)
 $(DAYS): %: src/bin/%.rs
 	cargo run --release --bin $*
 
-.PHONY: run-all
-run-all:
+all:
 	cargo run --release
 
 help:
@@ -28,4 +27,4 @@ help:
 	@echo
 	@echo 'make           - run todays problem'
 	@echo 'make [01..25]  - run a specific days solution'
-	@echo 'make run-all   - run all days solutions'
+	@echo 'make all       - run all days solutions'
