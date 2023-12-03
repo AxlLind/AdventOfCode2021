@@ -7,7 +7,7 @@ make       # run todays day
 make $DAY  # run a specific day, e.g 01
 make all   # run all days
 
-# or directly with cargo, if you prefer
+# directly with cargo, if you prefer
 cargo run --release --bin $DAY  # run a specific day, e.g 01
 cargo run --release             # run all days
 ```

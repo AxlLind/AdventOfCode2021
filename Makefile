@@ -16,15 +16,15 @@ src/bin/%.rs:
 	echo "}"                                        >> $@
 
 $(DAYS): %: src/bin/%.rs inputs/%.in
-	cargo run --release --bin $*
+	cargo run --quiet --release --bin $*
 
 all:
-	cargo run --release
+	cargo run --quiet --release
 
 help:
 	@echo 'usage: make [TARGET..]'
-	@echo 'Makefile used to download input, setup files, and run aoc.'
+	@echo 'Makefile used to download input, setup files, and run solutions.'
 	@echo
-	@echo 'make           - run todays solution'
-	@echo 'make [01..25]  - run a specific days solution'
-	@echo 'make all       - run all days solutions'
+	@echo 'make           - run todays'
+	@echo 'make [01..25]  - run a specific day'
+	@echo 'make all       - run all days'
