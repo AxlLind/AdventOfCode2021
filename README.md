@@ -3,7 +3,7 @@ Solutions to AoC 2023 in Rust :crab:
 
 ## Usage
 ```sh
-make       # run todays day
+make       # run todays
 make $DAY  # run a specific day, e.g 01
 make all   # run all days
 
