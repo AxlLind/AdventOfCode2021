@@ -1,5 +1,4 @@
 use proc_macro::TokenStream;
-use quote::quote;
 use syn::{parse_macro_input, Ident, LitInt, ItemFn};
 
 #[proc_macro_attribute]
@@ -10,7 +9,7 @@ pub fn main(args: TokenStream, input: TokenStream) -> TokenStream {
   let mut aoc_solution = parse_macro_input!(input as ItemFn);
   aoc_solution.sig.ident = Ident::new("aoc_solution", aoc_solution.sig.ident.span());
 
-  let tokens = quote! {
+  let tokens = quote::quote! {
     const INPUT: &str = include_str!(#input_path);
     #aoc_solution
     fn main() {
