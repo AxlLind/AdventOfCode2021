@@ -28,4 +28,4 @@ curl -s "https://adventofcode.com/2023/day/${1#0}/input"       \
   | tee "$TMPFILE"
 
 mkdir -p "$SCRIPT_DIR/inputs"
-mv "$tmpfile" "$SCRIPT_DIR/inputs/$1.in"
+mv "$TMPFILE" "$SCRIPT_DIR/inputs/$1.in"
