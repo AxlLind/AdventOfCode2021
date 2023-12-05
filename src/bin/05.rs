@@ -2,7 +2,7 @@ use itertools::Itertools;
 
 fn p1(seeds: Vec<usize>, layers: &[Vec<(usize, usize, usize)>]) -> usize {
   let locations = layers.iter().fold(seeds, |seeds, mappings|
-    seeds.iter().map(|&seed|
+    seeds.into_iter().map(|seed|
       mappings.iter()
         .find(|&&(_, src, range)| (src..src+range).contains(&seed))
         .map(|(dst, src, _)| dst + seed - src)
@@ -13,9 +13,9 @@ fn p1(seeds: Vec<usize>, layers: &[Vec<(usize, usize, usize)>]) -> usize {
 }
 
 fn p2(seeds: Vec<usize>, layers: &[Vec<(usize, usize, usize)>]) -> usize {
-  let seeds = seeds.iter()
+  let seeds = seeds.into_iter()
     .tuples()
-    .map(|(&a, len)| (a, a + len))
+    .map(|(a, len)| (a, a + len))
     .collect::<Vec<_>>();
   let locations = layers.iter().fold(seeds, |seeds, mappings|
     seeds.iter().flat_map(|&(start, end)| {
@@ -37,7 +37,7 @@ fn p2(seeds: Vec<usize>, layers: &[Vec<(usize, usize, usize)>]) -> usize {
       mapped
     }).collect()
   );
-  locations.iter().map(|&(s, _)| s).min().unwrap()
+  locations.iter().map(|r| r.0).min().unwrap()
 }
 
 #[aoc::main(05)]
