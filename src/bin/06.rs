@@ -4,9 +4,10 @@ use itertools::Itertools;
 // => w = (t +- sqrt(t^2 - 4 d)) / 2
 fn calc(times: &[usize], dists: &[usize]) -> usize {
   times.iter().zip(dists).map(|(&t, &d)| {
-    let diff = ((t*t - 4*d) as f64).sqrt() as usize;
-    let w = (t-diff) / 2;
-    diff + ((t - w) * w > d) as usize
+    let diff = ((t*t - 4*d) as f64).sqrt();
+    let l = (t as f64 - diff) / 2.0;
+    let h = (t as f64 + diff) / 2.0;
+    (h.floor() - l.ceil()) as usize + 1
   }).product()
 }
 
