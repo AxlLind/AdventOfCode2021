@@ -11,16 +11,26 @@ inputs/%.in:
 src/bin/%.rs:
 	DAY=$* envsubst < src/template.rs > $@
 
+#@ run a specific day, e.g 01
 $(DAYS): %: src/bin/%.rs inputs/%.in
 	cargo run --quiet --release --bin $*
 
+#@ run all days
 all:
 	cargo run --quiet --release
 
+#@ show this help text
 help:
 	@echo 'usage: make [TARGET..]'
-	@echo 'Makefile used to download input, setup files, and run solutions.'
+	@echo 'Makefile used to automatically download input, setup files, and run solutions.'
 	@echo
-	@echo 'make           - run todays'
-	@echo 'make [01..25]  - run a specific day'
-	@echo 'make all       - run all days'
+	@echo 'TARGET:'
+	@awk '{                                           \
+	  if (desc ~ /^#@ /)                              \
+	    printf "  %s%s\n", $$1, substr(desc, 4, 100); \
+	  desc = $$0                                      \
+	}' $(MAKEFILE_LIST) | column -t -s ':'
+ifneq ($(.DEFAULT_GOAL),help)
+	@echo
+	@echo "Type 'make' to automatically run today's solution."
+endif
