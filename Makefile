@@ -9,13 +9,7 @@ inputs/%.in:
 	./fetch.sh $*
 
 src/bin/%.rs:
-	@echo "Creating $@ from template..."
-	@echo ""                                         >> $@
-	@echo ""                                         >> $@
-	@echo "#[aoc::main($*)]"                         >> $@
-	@echo "fn main(input: &str) -> (usize, usize) {" >> $@
-	@echo "  (0, 0)"                                 >> $@
-	@echo "}"                                        >> $@
+	DAY=$* envsubst < src/template.rs > $@
 
 $(DAYS): %: src/bin/%.rs inputs/%.in
 	cargo run --quiet --release --bin $*
