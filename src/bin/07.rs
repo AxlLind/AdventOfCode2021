@@ -19,14 +19,8 @@ fn card_index(c: char, p2: bool) -> usize {
   }
 }
 
-fn card_key(cards: &str, p2: bool) -> (usize, usize) {
-  let counts_by_card = cards.chars().counts();
-  let counts = counts_by_card.iter()
-    .filter(|&(k,_)| *k != 'J' || !p2)
-    .map(|(_,v)| *v)
-    .collect::<Vec<_>>();
-  let jokers = if p2 {*counts_by_card.get(&'J').unwrap_or(&0)} else {0};
-  let card_type = match (*counts.iter().max().unwrap_or(&0), jokers) {
+fn get_hand_type(max_non_joker: usize, jokers: usize, counts: &[usize]) -> usize {
+  match (max_non_joker, jokers) {
     (a,b) if a + b == 5 => 6,
     (a,b) if a + b == 4 => 5,
     (3,0) => if counts.contains(&2) {4} else {3},
@@ -34,15 +28,25 @@ fn card_key(cards: &str, p2: bool) -> (usize, usize) {
       let pairs = counts.iter().filter(|&&v| v == 2).count();
       match (pairs, jokers) {
         (2,1) => 4,
-        (2,0) => 2,
         (1,1) => 3,
+        (2,0) => 2,
         _ => 1,
       }
     },
     (1,2) => 3,
     (1,1) => 1,
     _ => 0,
-  };
+  }
+}
+
+fn card_key(cards: &str, p2: bool) -> (usize, usize) {
+  let counts_by_card = cards.chars().counts();
+  let counts = counts_by_card.iter()
+    .filter(|&(k,_)| *k != 'J' || !p2)
+    .map(|(_,v)| *v)
+    .collect::<Vec<_>>();
+  let jokers = if p2 {*counts_by_card.get(&'J').unwrap_or(&0)} else {0};
+  let card_type = get_hand_type(*counts.iter().max().unwrap_or(&0), jokers, &counts);
   let idx = cards.chars().fold(0, |acc, c| (acc << 4) + card_index(c, p2));
   (card_type, idx)
 }
@@ -55,9 +59,9 @@ fn main(input: &str) -> (usize, usize) {
     let p2key = card_key(cards, true);
     (cards, bid.parse().unwrap(), p1key, p2key)
   }).collect::<Vec<_>>();
-  cards.sort_by_key(|&(_,_,key,_)| key);
-  let p1 = cards.iter().enumerate().map(|(rank, (_,bid,_,_))| (rank + 1) * bid).sum();
-  cards.sort_by_key(|&(_,_,_,key)| key);
-  let p2 = cards.iter().enumerate().map(|(rank, (_,bid,_,_))| (rank + 1) * bid).sum();
+  cards.sort_unstable_by_key(|&(_,_,key,_)| key);
+  let p1 = cards.iter().enumerate().map(|(i, (_,bid,_,_))| (i + 1) * bid).sum();
+  cards.sort_unstable_by_key(|&(_,_,_,key)| key);
+  let p2 = cards.iter().enumerate().map(|(i, (_,bid,_,_))| (i + 1) * bid).sum();
   (p1, p2)
 }
