@@ -39,7 +39,7 @@ fn get_hand_type(counts: &[usize], jokers: usize) -> usize {
   }
 }
 
-fn card_key(cards: &str, p2: bool) -> (usize, usize) {
+fn hand_strength(cards: &str, p2: bool) -> (usize, usize) {
   let counts_by_card = cards.chars().counts();
   let counts = counts_by_card.iter()
     .filter(|&(&k,_)| k != 'J' || !p2)
@@ -54,8 +54,8 @@ fn card_key(cards: &str, p2: bool) -> (usize, usize) {
 fn main(input: &str) -> (usize, usize) {
   let mut cards = input.split('\n').map(|l| {
     let (cards, bid) = l.split_once(' ').unwrap();
-    let p1key = card_key(cards, false);
-    let p2key = card_key(cards, true);
+    let p1key = hand_strength(cards, false);
+    let p2key = hand_strength(cards, true);
     (cards, bid.parse().unwrap(), p1key, p2key)
   }).collect::<Vec<_>>();
   cards.sort_unstable_by_key(|&(_,_,key,_)| key);
