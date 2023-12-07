@@ -19,8 +19,8 @@ fn card_index(c: char, p2: bool) -> usize {
   }
 }
 
-fn get_hand_type(max_non_joker: usize, jokers: usize, counts: &[usize]) -> usize {
-  match (max_non_joker, jokers) {
+fn get_hand_type(counts: &[usize], jokers: usize) -> usize {
+  match (*counts.iter().max().unwrap_or(&0), jokers) {
     (a,b) if a + b == 5 => 6,
     (a,b) if a + b == 4 => 5,
     (3,0) => if counts.contains(&2) {4} else {3},
@@ -42,13 +42,12 @@ fn get_hand_type(max_non_joker: usize, jokers: usize, counts: &[usize]) -> usize
 fn card_key(cards: &str, p2: bool) -> (usize, usize) {
   let counts_by_card = cards.chars().counts();
   let counts = counts_by_card.iter()
-    .filter(|&(k,_)| *k != 'J' || !p2)
-    .map(|(_,v)| *v)
+    .filter(|&(&k,_)| k != 'J' || !p2)
+    .map(|(_,&v)| v)
     .collect::<Vec<_>>();
   let jokers = if p2 {*counts_by_card.get(&'J').unwrap_or(&0)} else {0};
-  let card_type = get_hand_type(*counts.iter().max().unwrap_or(&0), jokers, &counts);
   let idx = cards.chars().fold(0, |acc, c| (acc << 4) + card_index(c, p2));
-  (card_type, idx)
+  (get_hand_type(&counts, jokers), idx)
 }
 
 #[aoc::main(07)]
