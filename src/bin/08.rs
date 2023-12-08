@@ -18,23 +18,23 @@ fn lcm(xs: impl Iterator<Item=usize>) -> usize {
   xs.fold(1, |ans, x| (x*ans) / gcd(x,ans))
 }
 
-fn solve(path: &[u8], graph: &HashMap<&[u8],(&[u8],&[u8])>, p2: bool) -> usize {
-  let mut nodes = graph.keys().filter(|k| k.ends_with(if p2 {b"A"} else {b"AAA"})).copied().collect::<Vec<_>>();
-  let mut ends = HashMap::new();
+fn steps(path: &[u8], graph: &HashMap<&[u8],(&[u8],&[u8])>, start: &[u8], p2: bool) -> usize {
   let mut t = 0;
+  let mut node = start;
   loop {
     let left = path[t % path.len()] == b'L';
-    for (i, node) in nodes.iter_mut().enumerate() {
-      *node = if left {graph[node].0} else {graph[node].1};
-      if node.ends_with(if p2 {b"Z"} else {b"ZZZ"}) {
-        ends.entry(i).or_insert(t+1);
-      }
-    }
-    if ends.len() == nodes.len() {
-      return lcm(ends.values().copied());
+    node = if left {graph[node].0} else {graph[node].1};
+    if node.ends_with(if p2 {b"Z"} else {b"ZZZ"}) {
+      return t+1;
     }
     t += 1;
   }
+}
+fn p2(path: &[u8], graph: &HashMap<&[u8],(&[u8],&[u8])>) -> usize {
+  let num_steps = graph.keys()
+    .filter(|k| k.ends_with(b"A"))
+    .map(|node| steps(path, graph, node, true));
+  lcm(num_steps)
 }
 
 #[aoc::main(08)]
@@ -44,6 +44,5 @@ fn main(input: &str) -> (usize, usize) {
     let l = l.as_bytes();
     (&l[0..3], (&l[7..10], &l[12..15]))
   }).collect::<HashMap<_,_>>();
-
-  (solve(path.as_bytes(), &graph, false), solve(path.as_bytes(), &graph, true))
+  (steps(path.as_bytes(), &graph, b"AAA", false), p2(path.as_bytes(), &graph))
 }
