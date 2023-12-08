@@ -17,9 +17,8 @@ fn gcd(a: usize, b: usize) -> usize {
 
 fn steps(path: &[u8], graph: &HashMap<&[u8],(&[u8],&[u8])>, start: &[u8], goal: &[u8]) -> usize {
   let mut node = start;
-  1 + (0..).find(|t| {
-    let left = path[t % path.len()] == b'L';
-    node = if left {graph[node].0} else {graph[node].1};
+  1 + path.iter().cycle().position(|&d| {
+    node = if d == b'L' {graph[node].0} else {graph[node].1};
     node.ends_with(goal)
   }).unwrap()
 }
