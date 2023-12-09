@@ -2,7 +2,7 @@ use itertools::Itertools;
 
 #[aoc::main(09)]
 fn main(input: &str) -> (isize, isize) {
-  input.split('\n').fold((0,0), |(p1, p2), l| {
+  input.split('\n').fold((0,0), |(p1,p2), l| {
     let xs = l.split_whitespace()
       .map(|w| w.parse::<isize>().unwrap())
       .collect::<Vec<_>>();
@@ -14,7 +14,9 @@ fn main(input: &str) -> (isize, isize) {
         .collect();
       v.push(xs);
     }
-    let (a,b) = v.iter().rev().fold((0,0), |(a,b), xs| (xs[xs.len()-1]+a, xs[0]-b));
+    let (a,b) = v.iter()
+      .rev()
+      .fold((0,0), |(a,b), xs| (xs[xs.len()-1] + a, xs[0] - b));
     (p1 + a, p2 + b)
   })
 }
