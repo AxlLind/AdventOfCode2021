@@ -6,22 +6,17 @@ fn find_loop(graph: &[Vec<[bool; 4]>], start: (usize, usize)) -> Option<HashSet<
   let mut seen = HashSet::new();
   loop {
     if !seen.insert((r,c)) {
-      break None;
+      break Some(seen);
     }
-    let (dr, dc, came_from) = match d {
-      0 => (-1, 0, 2),
-      1 => ( 0, 1, 3),
-      2 => ( 1, 0, 0),
-      3 => ( 0,-1, 1),
+    let came_from = match d {
+      0 => {r -= 1; 2},
+      1 => {c += 1; 3},
+      2 => {r += 1; 0},
+      3 => {c -= 1; 1},
       _ => unreachable!(),
     };
-    r = (r as isize + dr) as usize;
-    c = (c as isize + dc) as usize;
     if !graph[r][c][came_from] {
       break None;
-    }
-    if (r,c) == start {
-      break Some(seen);
     }
     d = (0..4).find(|&i| i != came_from && graph[r][c][i]).unwrap();
   }
@@ -36,7 +31,7 @@ fn connections(tile: u8) -> [bool; 4] {
     b'J' => [ true, false, false,  true],
     b'7' => [false, false,  true,  true],
     b'F' => [false,  true,  true, false],
-    _ => [false, false, false, false]
+    _    => [false, false, false, false],
   }
 }
 
@@ -61,9 +56,7 @@ fn main(input: &str) -> (usize, usize) {
     for c in 0..graph[0].len() {
       if !pipe_loop.contains(&(r,c)) {
         p2 += inside as usize;
-        continue;
-      }
-      if graph[r][c][0] {
+      } else if graph[r][c][0] {
         inside = !inside;
       }
     }
