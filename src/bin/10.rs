@@ -20,10 +20,10 @@ fn find_loop(graph: &[Vec<[bool; 4]>], start: (usize, usize)) -> Option<HashSet<
     if !graph[r][c][came_from] {
       break None;
     }
-    d = (0..4).find(|&i| i != came_from && graph[r][c][i])?;
     if (r,c) == start {
       break Some(seen);
     }
+    d = (0..4).find(|&i| i != came_from && graph[r][c][i]).unwrap();
   }
 }
 
@@ -43,15 +43,15 @@ fn connections(tile: u8) -> [bool; 4] {
 #[aoc::main(10)]
 fn main(input: &str) -> (usize, usize) {
   let mut start = (0,0);
-  let mut graph = input.split('\n').enumerate().map(|(r, line)| {
+  let mut graph = input.split('\n').enumerate().map(|(r, line)|
     line.bytes().enumerate().map(|(c, tile)| {
       if tile == b'S' {
         start = (r,c);
       }
       connections(tile)
     }).collect::<Vec<_>>()
-  }).collect::<Vec<_>>();
-  let pipe_loop = b"|-LJ7F".iter().find_map(|&start_tile| {
+  ).collect::<Vec<_>>();
+  let pipe_loop = "J|-L7F".bytes().find_map(|start_tile| {
     graph[start.0][start.1] = connections(start_tile);
     find_loop(&graph, start)
   }).unwrap();
@@ -60,7 +60,7 @@ fn main(input: &str) -> (usize, usize) {
     let mut inside = false;
     for c in 0..graph[0].len() {
       if !pipe_loop.contains(&(r,c)) {
-        p2 += if inside {1} else {0};
+        p2 += inside as usize;
         continue;
       }
       if graph[r][c][0] {
