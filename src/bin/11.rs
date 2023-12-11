@@ -1,6 +1,6 @@
 use itertools::Itertools;
 
-fn solve(universe: &Vec<Vec<u8>>, mut galaxies: Vec<(usize, usize)>, size: usize) -> usize {
+fn solve(universe: &Vec<&[u8]>, mut galaxies: Vec<(usize, usize)>, size: usize) -> usize {
   let (rows, cols) = (universe.len(), universe[0].len());
   let empty_rows = (0..rows).filter(|&r| universe[r].iter().all(|&c| c == b'.'));
   let empty_cols = (0..cols).filter(|&c| (0..rows).all(|r| universe[r][c] == b'.'));
@@ -23,7 +23,7 @@ fn solve(universe: &Vec<Vec<u8>>, mut galaxies: Vec<(usize, usize)>, size: usize
 #[aoc::main(11)]
 fn main(input: &str) -> (usize, usize) {
   let universe = input.split('\n')
-    .map(|l| l.as_bytes().to_vec())
+    .map(|l| l.as_bytes())
     .collect::<Vec<_>>();
   let galaxies = (0..universe.len())
     .cartesian_product(0..universe[0].len())
