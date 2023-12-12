@@ -2,51 +2,42 @@ use hashbrown::HashMap;
 use itertools::Itertools;
 
 fn possible_ways(cache: &mut HashMap<(usize, usize, usize), usize>, s: &[u8], within: Option<usize>, remaining: &[usize]) -> usize {
-  fn dp(cache: &mut HashMap<(usize, usize, usize), usize>, s: &[u8], within: Option<usize>, remaining: &[usize]) -> usize {
-    if s.is_empty() {
-      return match (within, remaining.len()) {
-        (None, 0) => 1,
-        (Some(x), 1) if x == remaining[0] => 1,
-        _ => 0
-      };
-    }
-    let possible = s.iter().filter(|&&c| c == b'#' || c == b'?').count();
-    let remaining_sum = remaining.iter().sum();
-    if possible + within.unwrap_or(0) < remaining_sum {
-      return 0;
-    }
-    if within.is_some() && remaining_sum == 0 {
-      return 0;
-    }
-    if s[0] == b'.' && within.is_some_and(|x| x != remaining[0]) {
-      return 0;
-    }
-    let mut possible = 0;
-    if matches!((s[0], within), (b'.', Some(_))) {
-      possible += possible_ways(cache, &s[1..], None, &remaining[1..]);
-    }
-    if matches!((s[0], within), (b'?', Some(x)) if x == remaining[0]) {
-      possible += possible_ways(cache, &s[1..], None, &remaining[1..]);
-    }
-    if matches!((s[0], within), (b'#' | b'?', Some(_))) {
-      possible += possible_ways(cache, &s[1..], within.map(|x| x+1), remaining);
-    }
-    if matches!((s[0], within), (b'#' | b'?', None)) {
-      possible += possible_ways(cache, &s[1..], Some(1), remaining);
-    }
-    if matches!((s[0], within), (b'.' | b'?', None)) {
-      possible += possible_ways(cache, &s[1..], None, remaining);
-    }
-    possible
+  if s.is_empty() {
+    return match (within, remaining.len()) {
+      (None, 0) => 1,
+      (Some(x), 1) if x == remaining[0] => 1,
+      _ => 0
+    };
+  }
+  if within.is_some() && remaining.is_empty() {
+    return 0;
   }
 
   let key = (s.len(), within.unwrap_or(0), remaining.len());
   if let Some(&x) = cache.get(&key) {
     return x;
   }
-  let possible = dp(cache, s, within, remaining);
-  cache.insert(key, possible);
-  possible
+
+  let ways = match (s[0], within) {
+    (b'.', Some(x)) if x != remaining[0] => 0,
+    (b'.', Some(_)) => possible_ways(cache, &s[1..], None, &remaining[1..]),
+    (b'.', None)    => possible_ways(cache, &s[1..], None, remaining),
+    (b'#', Some(_)) => possible_ways(cache, &s[1..], within.map(|x| x+1), remaining),
+    (b'#', None)    => possible_ways(cache, &s[1..], Some(1), remaining),
+    (b'?', Some(x)) => {
+      let mut ans = possible_ways(cache, &s[1..], within.map(|x| x+1), remaining);
+      if x == remaining[0] {
+        ans += possible_ways(cache, &s[1..], None, &remaining[1..])
+      }
+      ans
+    }
+    (b'?', None) =>
+      possible_ways(cache, &s[1..], Some(1), remaining) +
+      possible_ways(cache, &s[1..], None, remaining),
+    _ => unreachable!(),
+  };
+  cache.insert(key, ways);
+  ways
 }
 
 #[aoc::main(12)]
