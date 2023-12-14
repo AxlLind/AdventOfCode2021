@@ -1,19 +1,17 @@
 use hashbrown::HashMap;
 
 fn roll_north(map: &mut Vec<Vec<u8>>) {
-  loop {
-    let mut done = true;
+  let mut done = false;
+  while !done {
+    done = true;
     for r in 0..map.len() - 1 {
       for c in 0..map[0].len() {
-        if map[r][c] == b'.' && map[r+1][c] == b'O' {
+        if (map[r][c], map[r+1][c]) == (b'.', b'O') {
           map[r][c] = b'O';
           map[r+1][c] = b'.';
           done = false;
         }
       }
-    }
-    if done {
-      break;
     }
   }
 }
@@ -30,9 +28,7 @@ fn rotate(map: &Vec<Vec<u8>>) -> Vec<Vec<u8>> {
 
 #[aoc::main(14)]
 fn main(input: &str) -> (usize, usize) {
-  let mut map = input.split('\n').map(|l| {
-    l.as_bytes().to_vec()
-  }).collect::<Vec<_>>();
+  let mut map = input.split('\n').map(|l| l.as_bytes().to_vec()).collect();
   let mut seen = HashMap::new();
   for i in 1..1000000000 {
     for _ in 0..4 {
@@ -45,6 +41,12 @@ fn main(input: &str) -> (usize, usize) {
       }
     }
   }
-  let load = (0..map.len()).map(|r| (0..map[0].len()).filter(|&c| map[r][c] == b'O').map(|_| map.len() - r).sum::<usize>()).sum();
+  let load = (0..map.len())
+    .map(|r| (0..map[0].len())
+      .filter(|&c| map[r][c] == b'O')
+      .map(|_| map.len() - r)
+      .sum::<usize>()
+    )
+    .sum();
   (load, 0)
 }
