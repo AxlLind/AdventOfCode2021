@@ -6,7 +6,7 @@ fn roll_north(map: &mut Vec<Vec<u8>>) {
     done = true;
     for r in 0..map.len() - 1 {
       for c in 0..map[0].len() {
-        if (map[r][c], map[r+1][c]) == (b'.', b'O') {
+        if map[r+1][c] == b'O' && map[r][c] == b'.' {
           map[r][c] = b'O';
           map[r+1][c] = b'.';
           done = false;
