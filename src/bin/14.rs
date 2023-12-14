@@ -26,9 +26,25 @@ fn rotate(map: &Vec<Vec<u8>>) -> Vec<Vec<u8>> {
   newmap
 }
 
+fn load(map: &Vec<Vec<u8>>) -> usize {
+  (0..map.len())
+    .map(|r| (0..map[0].len())
+      .filter(|&c| map[r][c] == b'O')
+      .map(|_| map.len() - r)
+      .sum::<usize>()
+    )
+    .sum()
+}
+
 #[aoc::main(14)]
 fn main(input: &str) -> (usize, usize) {
-  let mut map = input.split('\n').map(|l| l.as_bytes().to_vec()).collect();
+  let mut map = input.split('\n').map(|l| l.as_bytes().to_vec()).collect::<Vec<_>>();
+  let p1 = {
+    let mut map = map.clone();
+    roll_north(&mut map);
+    load(&map)
+  };
+
   let mut seen = HashMap::new();
   for i in 1..1000000000 {
     for _ in 0..4 {
@@ -41,12 +57,5 @@ fn main(input: &str) -> (usize, usize) {
       }
     }
   }
-  let load = (0..map.len())
-    .map(|r| (0..map[0].len())
-      .filter(|&c| map[r][c] == b'O')
-      .map(|_| map.len() - r)
-      .sum::<usize>()
-    )
-    .sum();
-  (load, 0)
+  (p1, load(&map))
 }
