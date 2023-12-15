@@ -19,9 +19,9 @@ fn main(input: &str) -> (usize, usize) {
       _ => unreachable!(),
     }
   }
-  let p2 = (0..256)
-    .flat_map(|bucket| (0..map[bucket].len()).map(move |i| (bucket, i)))
-    .map(|(bucket, i)| (bucket + 1) * (i + 1) * map[bucket][i].1)
+  let p2 = (0..map.len())
+    .flat_map(|b| (0..map[b].len()).map(move |i| (b, i)))
+    .map(|(b, i)| (b + 1) * (i + 1) * map[b][i].1)
     .sum();
   (p1, p2)
 }
