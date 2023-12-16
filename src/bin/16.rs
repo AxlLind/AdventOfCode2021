@@ -1,12 +1,10 @@
-use hashbrown::HashMap;
-
 fn step(r: usize, c: usize, d: usize) -> (usize, usize, usize) {
   let (dr, dc) = [(-1,0),(0,1),(1,0),(0,-1)][d];
   ((r as isize + dr) as _, (c as isize + dc) as _, d)
 }
 
 fn energized_tiles(grid: &[&[u8]], start: (usize,usize,usize)) -> usize {
-  let mut seen = HashMap::<_,[_;4]>::new();
+  let mut seen = vec![vec![[false; 4]; grid[0].len()]; grid.len()];
   let mut beams = vec![start];
   while !beams.is_empty() {
     let mut new_beams = Vec::with_capacity(beams.capacity());
@@ -14,11 +12,10 @@ fn energized_tiles(grid: &[&[u8]], start: (usize,usize,usize)) -> usize {
       if r >= grid.len() || c >= grid[0].len() {
         continue;
       }
-      let seen_dir = seen.entry((r,c)).or_default();
-      if seen_dir[d] {
+      if seen[r][c][d] {
         continue;
       }
-      seen_dir[d] = true;
+      seen[r][c][d] = true;
       match (grid[r][c], d) {
         (b'.',   _) => new_beams.push(step(r,c,d)),
         (b'/',   _) => new_beams.push(step(r,c,[1,0,3,2][d])),
@@ -32,7 +29,7 @@ fn energized_tiles(grid: &[&[u8]], start: (usize,usize,usize)) -> usize {
     }
     beams = new_beams;
   }
-  seen.len()
+  seen.iter().flat_map(|row| row).filter(|x| x.iter().any(|&b| b)).count()
 }
 
 #[aoc::main(16)]
