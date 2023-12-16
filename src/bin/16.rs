@@ -19,12 +19,9 @@ fn energized_tiles(grid: &[&[u8]], start: (usize,usize,usize)) -> usize {
       match (grid[r][c], d) {
         (b'/',   _) => new_beams.push(step(r,c,[1,0,3,2][d])),
         (b'\\',  _) => new_beams.push(step(r,c,[3,2,1,0][d])),
-        (b'.',   _) => new_beams.push(step(r,c,d)),
-        (b'|', 0|2) => new_beams.push(step(r,c,d)),
-        (b'-', 1|3) => new_beams.push(step(r,c,d)),
-        (b'|',   _) => new_beams.extend([step(r,c,0), step(r,c,2)]),
-        (b'-',   _) => new_beams.extend([step(r,c,1), step(r,c,3)]),
-        _ => unreachable!(),
+        (b'|', 1|3) => new_beams.extend([step(r,c,0), step(r,c,2)]),
+        (b'-', 0|2) => new_beams.extend([step(r,c,1), step(r,c,3)]),
+        _           => new_beams.push(step(r,c,d)),
       }
     }
     beams = new_beams;
