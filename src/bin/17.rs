@@ -23,8 +23,11 @@ fn dijkstra(grid: &[&[u8]], minstep: isize, maxstep: isize) -> i64 {
           continue;
         }
         next_cost += (grid[rr][cc] - b'0') as i64;
+        if dist < minstep {
+          continue;
+        }
         let key = (rr, cc, (dr, dc));
-        if minstep <= dist && next_cost < *dists.get(&key).unwrap_or(&10000000) {
+        if next_cost < *dists.get(&key).unwrap_or(&i64::MAX) {
           dists.insert(key, next_cost);
           q.push((-next_cost, key));
         }
