@@ -3,7 +3,10 @@ Solutions to AoC 2023 in Rust :crab:
 
 ## Usage
 ```sh
-make       # run todays
+# add your session token to download inputs
+export AOC_SESSION=[value from session cookie]
+
+make       # run todays (if in december 2023)
 make $DAY  # run a specific day, e.g 01
 make all   # run all days
 
