@@ -1,9 +1,7 @@
-use itertools::Itertools;
-
 fn calc_area(instructions: impl Iterator<Item=(u8, isize)>) -> isize {
-  let mut points = Vec::from_iter([(0,0)]);
-  let (mut p, mut r, mut c) = (0,0,0);
+  let (mut a, mut r, mut c) = (0,0,0);
   for (d, n) in instructions {
+    let (rr, cc) = (r,c);
     match d {
       b'U' => r -= n,
       b'R' => c += n,
@@ -11,14 +9,9 @@ fn calc_area(instructions: impl Iterator<Item=(u8, isize)>) -> isize {
       b'L' => c -= n,
       _ => unreachable!()
     };
-    points.push((r,c));
-    p += n;
+    a += (c + cc) * (r - rr) + n;
   }
-  let a = points.iter()
-    .tuple_windows()
-    .map(|((r1,c1), (r2,c2))| (c2 + c1) * (r2 - r1))
-    .sum::<isize>();
-  (p + a) / 2 + 1
+  a / 2 + 1
 }
 
 #[aoc::main(18)]
