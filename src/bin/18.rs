@@ -1,19 +1,16 @@
 use itertools::Itertools;
 
 fn calc_area(instructions: impl Iterator<Item=(u8, isize)>) -> isize {
-  let mut points = Vec::new();
-  points.push((0,0));
-  let (mut p, mut r, mut c) = (0, 0,0);
+  let mut points = Vec::from_iter([(0,0)]);
+  let (mut p, mut r, mut c) = (0,0,0);
   for (d, n) in instructions {
-    let (dr, dc) = match d {
-      b'U' => (-1, 0),
-      b'R' => ( 0, 1),
-      b'D' => ( 1, 0),
-      b'L' => ( 0,-1),
+    match d {
+      b'U' => r -= n,
+      b'R' => c += n,
+      b'D' => r += n,
+      b'L' => c -= n,
       _ => unreachable!()
     };
-    r = r + dr * n;
-    c = c + dc * n;
     points.push((r,c));
     p += n;
   }
