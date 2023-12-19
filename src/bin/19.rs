@@ -36,32 +36,32 @@ fn count_accepted<'a>(workflows: &WorkFlows<'a>, curr: &'a str, mut x: Vec<usize
   for &(p, op, n, label) in &workflow.0 {
     match p {
       'x' => {
-        let xx = x.iter().filter(|&&val| if op == '<' {val < n} else {val > n}).copied().collect::<Vec<_>>();
+        let (xx, tmp): (Vec<_>, Vec<_>) = x.iter().partition(|&&val| if op == '<' {val < n} else {val > n});
         if !xx.is_empty() {
           ans += count_accepted(workflows, label, xx, m.clone(), a.clone(), s.clone());
         }
-        x = x.iter().filter(|&&val| !(if op == '<' {val < n} else {val > n})).copied().collect::<Vec<_>>()
+        x = tmp;
       }
       'm' => {
-        let mm = m.iter().filter(|&&val| if op == '<' {val < n} else {val > n}).copied().collect::<Vec<_>>();
+        let (mm, tmp): (Vec<_>, Vec<_>) = m.iter().partition(|&&val| if op == '<' {val < n} else {val > n});
         if !mm.is_empty() {
           ans += count_accepted(workflows, label, x.clone(), mm, a.clone(), s.clone());
         }
-        m = m.iter().filter(|&&val| !(if op == '<' {val < n} else {val > n})).copied().collect::<Vec<_>>()
+        m = tmp;
       }
       'a' => {
-        let aa = a.iter().filter(|&&val| if op == '<' {val < n} else {val > n}).copied().collect::<Vec<_>>();
+        let (aa, tmp): (Vec<_>, Vec<_>) = a.iter().partition(|&&val| if op == '<' {val < n} else {val > n});
         if !aa.is_empty() {
           ans += count_accepted(workflows, label, x.clone(), m.clone(), aa, s.clone());
         }
-        a = a.iter().filter(|&&val| !(if op == '<' {val < n} else {val > n})).copied().collect::<Vec<_>>()
+        a = tmp;
       }
       's' => {
-        let ss = s.iter().filter(|&&val| if op == '<' {val < n} else {val > n}).copied().collect::<Vec<_>>();
+        let (ss, tmp): (Vec<_>, Vec<_>) = s.iter().partition(|&&val| if op == '<' {val < n} else {val > n});
         if !ss.is_empty() {
           ans += count_accepted(workflows, label, x.clone(), m.clone(), a.clone(), ss);
         }
-        s = s.iter().filter(|&&val| !(if op == '<' {val < n} else {val > n})).copied().collect::<Vec<_>>()
+        s = tmp;
       }
       _ => unreachable!(),
     }
