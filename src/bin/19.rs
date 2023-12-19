@@ -1,16 +1,16 @@
 use hashbrown::HashMap;
 use itertools::Itertools;
 
-type WorkFlows<'a> = HashMap<&'a str, (Vec<(char, char, usize, &'a str)>, &'a str)>;
+type WorkFlows<'a> = HashMap<&'a str, (Vec<(char, bool, usize, &'a str)>, &'a str)>;
 
 fn filter_p1(workflows: &WorkFlows<'_>, vals: [usize; 4]) -> bool {
   let mut curr = "in";
   while curr != "A" && curr != "R" {
     let workflow = &workflows[curr];
     curr = workflow.0.iter()
-      .find(|&&(p, op, n, _)| {
+      .find(|&&(p, lt, n, _)| {
         let i = "xmas".chars().position(|c| c == p).unwrap();
-        if op == '<' {vals[i] < n} else {vals[i] > n}
+        if lt {vals[i] < n} else {vals[i] > n}
       })
       .map(|&(_, _, _, label)| label)
       .unwrap_or(workflow.1);
@@ -18,7 +18,7 @@ fn filter_p1(workflows: &WorkFlows<'_>, vals: [usize; 4]) -> bool {
   curr == "A"
 }
 
-fn count_accepted<'a>(workflows: &WorkFlows<'a>, curr: &'a str, mut ranges: [Vec<usize>; 4]) -> usize {
+fn count_accepted(workflows: &WorkFlows<'_>, curr: &str, mut ranges: [Vec<usize>; 4]) -> usize {
   if curr == "A" {
     return ranges.iter().map(|v| v.len()).product();
   }
@@ -27,14 +27,11 @@ fn count_accepted<'a>(workflows: &WorkFlows<'a>, curr: &'a str, mut ranges: [Vec
   }
   let mut ans = 0;
   let workflow = &workflows[curr];
-  for &(p, op, n, label) in &workflow.0 {
+  for &(p, lt, n, label) in &workflow.0 {
     let i = "xmas".chars().position(|c| c == p).unwrap();
-    let (r, tmp) = ranges[i].iter()
-      .partition(|&&val| if op == '<' {val < n} else {val > n});
     let mut newranges = ranges.clone();
-    newranges[i] = r;
+    (newranges[i], ranges[i]) = ranges[i].iter().partition(|&&val| if lt {val < n} else {val > n});
     ans += count_accepted(workflows, label, newranges);
-    ranges[i] = tmp;
   }
   ans += count_accepted(workflows, workflow.1, ranges);
   ans
@@ -48,9 +45,9 @@ fn main(input: &str) -> (usize, usize) {
     let (rest, label) = rest[0..rest.len()-1].split_at(rest.rfind(',').unwrap());
     let rules = rest.split(',').map(|rule| {
       let (rest, label) = rule.split_once(':').unwrap();
-      let op = if rest.contains('<') {'<'} else {'>'};
-      let (name, n) = rest.split_once(op).unwrap();
-      (name.as_bytes()[0] as char, op, n.parse::<usize>().unwrap(), label)
+      let lt = rest.contains('<');
+      let (name, n) = rest.split_once(if lt {'<'} else {'>'}).unwrap();
+      (name.as_bytes()[0] as char, lt, n.parse::<usize>().unwrap(), label)
     }).collect::<Vec<_>>();
     (name, (rules, &label[1..]))
   }).collect::<HashMap<_,_>>();
