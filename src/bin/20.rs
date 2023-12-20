@@ -31,35 +31,35 @@ fn main(input: &str) -> (usize, usize) {
       (&src[1..], (src.as_bytes()[0] as char, dests))
     }
   }).collect::<HashMap<_,_>>();
+
+  let mut rx_conjunction = "";
   let mut state = HashSet::new();
   let mut conjunctions = HashMap::<&str,  HashMap<&str, bool>>::new();
   for (&node, (_, connections)) in &g {
     for &n in connections {
-      let Some((tpe, _)) = g.get(n) else { continue };
-      if *tpe == '&' {
-        conjunctions.entry(n).or_default().insert(node, false);
+      match g.get(n) {
+        Some(('&', _)) => { conjunctions.entry(n).or_default().insert(node, false); },
+        Some(_) => {},
+        None => rx_conjunction = node,
       }
     }
   }
 
   let mut p1 = 0;
   let (mut l, mut h) = (0,0);
-  let mut cycles = [None; 4];
+  let mut cycles = conjunctions[rx_conjunction].iter()
+    .map(|(&node,_)| (node, None))
+    .collect::<HashMap<_,_>>();
+  let mut q = VecDeque::new();
   for t in 0.. {
     if t == 1000 {
       p1 = l * h;
     }
-    let mut q = VecDeque::from_iter([("broadcaster", "button", false)]);
+    q.push_back(("broadcaster", "button", false));
     while let Some((node, prev, high)) = q.pop_front() {
-      if high && node == "mf" {
-        let i = match prev {
-          "bh" => 0,
-          "jf" => 1,
-          "sh" => 2,
-          "mz" => 3,
-          _ => unreachable!(),
-        };
-        cycles[i] = cycles[i].or(Some(t + 1));
+      if high && node == rx_conjunction {
+        let v = cycles.get_mut(prev).unwrap();
+        *v = v.or(Some(t+1));
       }
       if high {
         h += 1;
@@ -67,31 +67,27 @@ fn main(input: &str) -> (usize, usize) {
         l += 1;
       }
       let Some((tpe, connections)) = g.get(node) else { continue };
-      let pulse = match tpe {
-        'b' => false,
-        '%' => {
-          if high {
-            continue;
-          }
-          let on = state.contains(node);
-          if on {
+      let pulse = match (tpe, high) {
+        ('%', true) => continue,
+        ('%', false) => {
+          let off = state.insert(node);
+          if !off {
             state.remove(node);
-          } else {
-            state.insert(node);
           }
-          !on
-        }
-        '&' => {
+          off
+        },
+        ('&', _) => {
           conjunctions.get_mut(node).unwrap().insert(prev, high);
           !conjunctions[node].values().all(|&b| b)
         }
+        ('b', _) => false,
         _ => unreachable!(),
       };
       q.extend(connections.iter().map(|&n| (n, node, pulse)));
     }
-    if cycles.iter().all(|o| o.is_some()) {
+    if cycles.values().all(|o| o.is_some()) {
       break;
     }
   }
-  (p1, lcm(cycles.iter().map(|o| o.unwrap())))
+  (p1, lcm(cycles.values().map(|o| o.unwrap())))
 }
