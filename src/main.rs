@@ -14,6 +14,7 @@ fn extract_microseconds(output: &str) -> Result<usize, Box<dyn Error>> {
 fn main() -> Result<(), Box<dyn Error>> {
   let days = fs::read_dir(concat!(env!("CARGO_MANIFEST_DIR"), "/src/bin/"))?
     .filter_map(|p| p.ok()?.path().file_stem()?.to_str().map(str::to_string))
+    .filter(|day| day.chars().all(|c| c.is_ascii_digit()))
     .sorted()
     .collect::<Vec<_>>();
   let mut total_time = 0;
