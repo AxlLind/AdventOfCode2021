@@ -70,23 +70,25 @@ fn main(input: &str) -> (usize, usize) {
       }
       if high && node == rx_conjunction {
         let v = cycles.get_mut(prev).unwrap();
-        *v = v.or(Some(t));
-        if cycles.values().all(|o| o.is_some()) {
-          break 'outer;
+        if v.is_none() {
+          *v = Some(t);
+          if cycles.values().all(|o| o.is_some()) {
+            break 'outer;
+          }
         }
       }
-      let Some(state) = state.get_mut(node) else { continue };
-      let pulse = match (state, high) {
-        (Node::FlipFlop(_), true) => continue,
-        (Node::FlipFlop(on), false) => {
+      let pulse = match state.get_mut(node) {
+        Some(Node::FlipFlop(_)) if high => continue,
+        Some(Node::FlipFlop(on)) => {
           *on = !*on;
           *on
         },
-        (Node::Conjunction(m), _) => {
+        Some(Node::Conjunction(m)) => {
           m.insert(prev, high);
           m.values().any(|&b| !b)
         }
-        (Node::Broadcaster, _) => false,
+        Some(Node::Broadcaster) => false,
+        None => continue,
       };
       q.extend(g[node].iter().map(|&n| (n, node, pulse)));
     }
