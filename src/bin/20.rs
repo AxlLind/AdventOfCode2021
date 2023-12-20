@@ -7,25 +7,6 @@ enum Node<'a> {
   Broadcaster,
 }
 
-fn gcd(a: usize, b: usize) -> usize {
-  match ((a, b), (a & 1, b & 1)) {
-    _ if a == b => a,
-    ((_, 0), _) => a,
-    ((0, _), _) => b,
-    (_, (0, 1) | (1, 0)) => gcd(a >> 1, b),
-    (_, (0, 0)) => gcd(a >> 1, b >> 1) << 1,
-    (_, (1, 1)) => {
-      let (a, b) = (a.min(b), a.max(b));
-      gcd((b - a) >> 1, a)
-    }
-    _ => unreachable!(),
-  }
-}
-
-fn lcm(vals: impl Iterator<Item=usize>) -> usize {
-  vals.fold(1, |ans, x| (x*ans) / gcd(x,ans))
-}
-
 #[aoc::main(20)]
 fn main(input: &str) -> (usize, usize) {
   let mut g = HashMap::new();
@@ -93,5 +74,5 @@ fn main(input: &str) -> (usize, usize) {
       q.extend(g[node].iter().map(|&n| (n, node, pulse)));
     }
   }
-  (p1[0] * p1[1], lcm(cycles.values().map(|o| o.unwrap())))
+  (p1[0] * p1[1], cycles.values().map(|o| o.unwrap()).product())
 }
