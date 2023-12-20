@@ -1,5 +1,11 @@
 use std::collections::VecDeque;
-use hashbrown::{HashMap, HashSet};
+use hashbrown::HashMap;
+
+enum Node<'a> {
+  FlipFlop(bool),
+  Conjunction(HashMap<&'a str, bool>),
+  Broadcaster,
+}
 
 fn gcd(a: usize, b: usize) -> usize {
   match ((a, b), (a & 1, b & 1)) {
@@ -22,31 +28,37 @@ fn lcm(vals: impl Iterator<Item=usize>) -> usize {
 
 #[aoc::main(20)]
 fn main(input: &str) -> (usize, usize) {
-  let g = input.split('\n').map(|l| {
+  let mut g = HashMap::new();
+  let mut state = HashMap::new();
+  for l in input.split('\n') {
     let (src, rest) = l.split_once(" -> ").unwrap();
-    let dests = rest.split(", ").collect::<Vec<_>>();
-    if src == "broadcaster" {
-      (src, ('b', dests))
-    } else {
-      (&src[1..], (src.as_bytes()[0] as char, dests))
-    }
-  }).collect::<HashMap<_,_>>();
+    let connections = rest.split(", ").collect::<Vec<_>>();
+    let (node, state_type) = match src.as_bytes()[0] as char {
+      '%' => (&src[1..], Node::FlipFlop(false)),
+      '&' => (&src[1..], Node::Conjunction(HashMap::new())),
+      'b' => (src,       Node::Broadcaster),
+      _ => unreachable!(),
+    };
+    g.insert(node, connections);
+    state.insert(node, state_type);
+  }
 
   let mut rx_conjunction = "";
-  let mut state = HashSet::new();
-  let mut conjunctions = HashMap::<_, HashMap<_,_>>::new();
-  for (&node, (_, connections)) in &g {
+  for (&node, connections) in &g {
     for &n in connections {
-      match g.get(n) {
-        Some(('&', _)) => { conjunctions.entry(n).or_default().insert(node, false); },
+      match state.get_mut(n) {
+        Some(Node::Conjunction(m)) => { m.insert(node, false); },
         Some(_) => {},
         None => rx_conjunction = node,
       }
     }
   }
-  let mut cycles = conjunctions[rx_conjunction].iter()
-    .map(|(&node,_)| (node, None))
-    .collect::<HashMap<_,_>>();
+  let mut cycles = match &state[rx_conjunction] {
+    Node::Conjunction(m) => m.iter()
+      .map(|(&node,_)| (node, None))
+      .collect::<HashMap<_,_>>(),
+    _ => unreachable!(),
+  };
 
   let mut p1 = [0,0];
   let mut q = VecDeque::new();
@@ -63,24 +75,20 @@ fn main(input: &str) -> (usize, usize) {
           break 'outer;
         }
       }
-      let Some((tpe, connections)) = g.get(node) else { continue };
-      let pulse = match (tpe, high) {
-        ('%', true) => continue,
-        ('%', false) => {
-          let off = state.insert(node);
-          if !off {
-            state.remove(node);
-          }
-          off
+      let Some(state) = state.get_mut(node) else { continue };
+      let pulse = match (state, high) {
+        (Node::FlipFlop(_), true) => continue,
+        (Node::FlipFlop(on), false) => {
+          *on = !*on;
+          *on
         },
-        ('&', _) => {
-          conjunctions.get_mut(node).unwrap().insert(prev, high);
-          conjunctions[node].values().any(|&b| !b)
+        (Node::Conjunction(m), _) => {
+          m.insert(prev, high);
+          m.values().any(|&b| !b)
         }
-        ('b', _) => false,
-        _ => unreachable!(),
+        (Node::Broadcaster, _) => false,
       };
-      q.extend(connections.iter().map(|&n| (n, node, pulse)));
+      q.extend(g[node].iter().map(|&n| (n, node, pulse)));
     }
   }
   (p1[0] * p1[1], lcm(cycles.values().map(|o| o.unwrap())))
