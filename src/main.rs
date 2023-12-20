@@ -19,6 +19,10 @@ fn main() -> Result<(), Box<dyn Error>> {
   let mut total_time = 0;
   for day in &days {
     let cmd = Command::new("cargo").args(["run", "--release", "--bin", day]).output()?;
+    if !cmd.status.success() {
+      println!("{}", String::from_utf8(cmd.stderr)?);
+      return Err(format!("Failed to compile day {day}!"))?;
+    }
     let output = String::from_utf8(cmd.stdout)?;
     println!("Day {}:\n{}", day, output);
     total_time += extract_microseconds(&output)?;
