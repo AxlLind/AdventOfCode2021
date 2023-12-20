@@ -14,7 +14,7 @@ src/bin/%.rs:
 $(DAYS): %: src/bin/%.rs inputs/%.in
 	cargo run --quiet --release --bin $*
 
-all:
+all: $(patsubst src/bin/%.rs,inputs/%.in,$(wildcard src/bin/*.rs))
 	cargo run --quiet --release
 
 help:
