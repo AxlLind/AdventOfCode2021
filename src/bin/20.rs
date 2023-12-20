@@ -34,7 +34,7 @@ fn main(input: &str) -> (usize, usize) {
 
   let mut rx_conjunction = "";
   let mut state = HashSet::new();
-  let mut conjunctions = HashMap::<&str,  HashMap<&str, bool>>::new();
+  let mut conjunctions = HashMap::<_, HashMap<_,_>>::new();
   for (&node, (_, connections)) in &g {
     for &n in connections {
       match g.get(n) {
@@ -44,27 +44,24 @@ fn main(input: &str) -> (usize, usize) {
       }
     }
   }
-
-  let mut p1 = 0;
-  let (mut l, mut h) = (0,0);
   let mut cycles = conjunctions[rx_conjunction].iter()
     .map(|(&node,_)| (node, None))
     .collect::<HashMap<_,_>>();
+
+  let mut p1 = [0,0];
   let mut q = VecDeque::new();
-  for t in 0.. {
-    if t == 1000 {
-      p1 = l * h;
-    }
+  'outer: for t in 1.. {
     q.push_back(("broadcaster", "button", false));
     while let Some((node, prev, high)) = q.pop_front() {
+      if t <= 1000 {
+        p1[high as usize] += 1;
+      }
       if high && node == rx_conjunction {
         let v = cycles.get_mut(prev).unwrap();
-        *v = v.or(Some(t+1));
-      }
-      if high {
-        h += 1;
-      } else {
-        l += 1;
+        *v = v.or(Some(t));
+        if cycles.values().all(|o| o.is_some()) {
+          break 'outer;
+        }
       }
       let Some((tpe, connections)) = g.get(node) else { continue };
       let pulse = match (tpe, high) {
@@ -78,16 +75,13 @@ fn main(input: &str) -> (usize, usize) {
         },
         ('&', _) => {
           conjunctions.get_mut(node).unwrap().insert(prev, high);
-          !conjunctions[node].values().all(|&b| b)
+          conjunctions[node].values().any(|&b| !b)
         }
         ('b', _) => false,
         _ => unreachable!(),
       };
       q.extend(connections.iter().map(|&n| (n, node, pulse)));
     }
-    if cycles.values().all(|o| o.is_some()) {
-      break;
-    }
   }
-  (p1, lcm(cycles.values().map(|o| o.unwrap())))
+  (p1[0] * p1[1], lcm(cycles.values().map(|o| o.unwrap())))
 }
