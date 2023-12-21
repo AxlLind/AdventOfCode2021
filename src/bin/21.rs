@@ -2,25 +2,22 @@ use hashbrown::HashSet;
 use itertools::Itertools;
 
 fn bfs(grid: &[&[u8]], start: (isize, isize), steps: usize) -> usize {
-  let mut positions = HashSet::from_iter([start]);
+  let mut pos = HashSet::from_iter([start]);
+  let mut new_pos = HashSet::new();
   for _ in 0..steps {
-    let mut new_positions = HashSet::new();
-    for &(r,c) in &positions {
+    new_pos.clear();
+    for &(r,c) in &pos {
       for (dr, dc) in [(-1,0),(1,0),(0,-1),(0,1)] {
         let (rr,cc) = (r + dr, c + dc);
-        let (mut rrr, mut ccc) = (rr,cc);
-        while rrr < 0 { rrr += grid.len() as isize };
-        while ccc < 0 { ccc += grid[0].len() as isize };
-        let Some(&tile) = grid.get(rrr as usize % grid.len()).and_then(|row| row.get(ccc as usize % grid[0].len())) else { continue };
-        if tile == b'#' {
-          continue;
+        let tile = grid[rr as usize % grid.len()][cc as usize % grid.len()];
+        if tile != b'#' {
+          new_pos.insert((rr,cc));
         }
-        new_positions.insert((rr,cc));
       }
     }
-    positions = new_positions;
+    (pos, new_pos) = (new_pos, pos);
   }
-  positions.len()
+  pos.len()
 }
 
 fn find_polynomial(grid: &[&[u8]], start: (isize, isize), n: usize) -> usize {
@@ -29,7 +26,7 @@ fn find_polynomial(grid: &[&[u8]], start: (isize, isize), n: usize) -> usize {
   let n3 = bfs(grid, start, n % grid.len() + grid.len()*2);
   let n = n / grid.len();
   let [a, b, c] = [n1, n2-n1, n3-n2];
-  return a + b * n + (n * (n-1)/2) * (c-b);
+  return a + b*n + (n * (n-1)/2) * (c-b);
 }
 
 #[aoc::main(21)]
