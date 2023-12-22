@@ -2,9 +2,7 @@ use hashbrown::{HashMap, HashSet};
 use itertools::Itertools;
 
 fn disintegrate_all(adjacent: &[(HashSet<usize>, HashSet<usize>)], falling: &mut HashSet<usize>, i: usize) {
-  if !falling.insert(i) {
-    return;
-  }
+  falling.insert(i);
   for &above in &adjacent[i].0 {
     if adjacent[above].1.iter().all(|x| falling.contains(x)) {
       disintegrate_all(adjacent, falling, above);
