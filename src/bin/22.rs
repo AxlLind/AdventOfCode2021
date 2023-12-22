@@ -12,14 +12,13 @@ fn disintegrate_all(adjacent: &[(HashSet<usize>, HashSet<usize>)], falling: &mut
 
 #[aoc::main(22)]
 fn main(input: &str) -> (usize, usize) {
-  let mut bricks = input.split('\n').map(|l| {
-    let (x1, y1, z1, x2, y2, z2) = l.split(|c: char| !c.is_ascii_digit())
+  let mut bricks = input.split('\n').map(|l|
+    l.split(|c: char| !c.is_ascii_digit())
       .map(|w| w.parse::<usize>().unwrap())
       .collect_tuple()
-      .unwrap();
-    (x1, y1, z1, x2, y2, z2)
-  }).collect::<Vec<_>>();
-  bricks.sort_by_key(|b| b.2);
+      .unwrap()
+  ).collect::<Vec<_>>();
+  bricks.sort_by_key(|&(_,_,z1,_,_,_)| z1);
 
   let mut adjacent = vec![(HashSet::new(), HashSet::new()); bricks.len()];
   let mut space = HashMap::new();
