@@ -22,9 +22,10 @@ fn disintegrate_all(
 #[aoc::main(22)]
 fn main(input: &str) -> (usize, usize) {
   let mut bricks = input.split('\n').enumerate().map(|(i,l)| {
-    let (a, b) = l.split_once('~').unwrap();
-    let (x1,y1,z1) = a.split(',').map(|w| w.parse().unwrap()).collect_tuple().unwrap();
-    let (x2,y2,z2) = b.split(',').map(|w| w.parse().unwrap()).collect_tuple().unwrap();
+    let (x1, y1, z1, x2, y2, z2) = l.split(|c: char| !c.is_ascii_digit())
+      .map(|w| w.parse().unwrap())
+      .collect_tuple()
+      .unwrap();
     (x1, y1, z1, x2, y2, z2, i)
   }).collect::<Vec<_>>();
   let mut grid = HashMap::new();
@@ -71,7 +72,7 @@ fn main(input: &str) -> (usize, usize) {
   for b in 0..bricks.len() {
     let mut falling = HashSet::new();
     disintegrate_all(&bricks, &mut falling, &above, &below, b);
-    p1 += if falling.len() == 1 {1} else {0};
+    p1 += (falling.len() == 1) as usize;
     p2 += falling.len() - 1;
   }
   (p1, p2)
