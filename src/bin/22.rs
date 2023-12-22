@@ -41,21 +41,20 @@ fn main(input: &str) -> (usize, usize) {
   while !done {
     done = true;
     for b in &mut bricks {
-      loop {
-        let (x1, y1, z1, x2, y2, z2, i) = *b;
-        if z1 == 1 {
-          break;
-        }
+      let (x1, y1, mut z1, x2, y2, mut z2, i) = *b;
+      while z1 > 1 {
         if (x1..=x2).cartesian_product(y1..=y2).any(|(x,y)| grid.contains_key(&(x,y,z1-1))) {
           break;
         }
-        *b = (x1, y1, z1-1, x2, y2, z2-1, i);
         for (x,y) in (x1..=x2).cartesian_product(y1..=y2) {
           grid.remove(&(x,y,z2));
           grid.insert((x,y,z1-1), i);
         }
+        z2 -= 1;
+        z1 -= 1;
         done = false;
       }
+      *b = (x1, y1, z1, x2, y2, z2, i);
     }
   }
   let mut above = HashMap::<_,HashSet<_>>::new();
