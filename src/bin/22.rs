@@ -25,8 +25,8 @@ fn main(input: &str) -> (usize, usize) {
 
   let mut adjacent = vec![(HashSet::new(), HashSet::new()); bricks.len()];
   let mut space = HashMap::new();
-  for (i, b) in bricks.iter_mut().enumerate() {
-    let (x1, y1, mut z1, x2, y2, mut z2) = *b;
+  for i in 0..bricks.len() {
+    let (x1, y1, mut z1, x2, y2, mut z2) = bricks[i];
     while z1 > 1 && (x1..=x2).cartesian_product(y1..=y2).all(|(x,y)| !space.contains_key(&(x,y,z1-1))) {
       z2 -= 1;
       z1 -= 1;
@@ -40,7 +40,7 @@ fn main(input: &str) -> (usize, usize) {
         adjacent[i].1.insert(j);
       }
     }
-    *b = (x1, y1, z1, x2, y2, z2);
+    bricks[i] = (x1, y1, z1, x2, y2, z2);
   }
 
   let mut falling = HashSet::new();
