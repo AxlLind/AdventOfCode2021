@@ -1,7 +1,7 @@
 use hashbrown::{HashMap, HashSet};
 use itertools::Itertools;
 
-fn if_disintegrated(
+fn disintegrate_all(
   bricks: &[(usize, usize, usize, usize, usize, usize, usize)],
   falling: &mut HashSet<usize>,
   above: &HashMap<usize, HashSet<usize>>,
@@ -14,7 +14,7 @@ fn if_disintegrated(
   let Some(parents) = above.get(&brick) else { return };
   for &parent in parents {
     if below[&parent].iter().all(|x| falling.contains(x)) {
-      if_disintegrated(bricks, falling, above, below, parent);
+      disintegrate_all(bricks, falling, above, below, parent);
     }
   }
 }
@@ -23,8 +23,8 @@ fn if_disintegrated(
 fn main(input: &str) -> (usize, usize) {
   let mut bricks = input.split('\n').enumerate().map(|(i,l)| {
     let (a, b) = l.split_once('~').unwrap();
-    let (x1,y1,z1) = a.split(',').map(|w| w.parse::<usize>().unwrap()).collect_tuple().unwrap();
-    let (x2,y2,z2) = b.split(',').map(|w| w.parse::<usize>().unwrap()).collect_tuple().unwrap();
+    let (x1,y1,z1) = a.split(',').map(|w| w.parse().unwrap()).collect_tuple().unwrap();
+    let (x2,y2,z2) = b.split(',').map(|w| w.parse().unwrap()).collect_tuple().unwrap();
     (x1, y1, z1, x2, y2, z2, i)
   }).collect::<Vec<_>>();
   let mut grid = HashMap::new();
@@ -37,33 +37,25 @@ fn main(input: &str) -> (usize, usize) {
       }
     }
   }
-  loop {
-    let mut done = true;
+  let mut done = false;
+  while !done {
+    done = true;
     for b in &mut bricks {
-      let mut can_fall = true;
-      while can_fall {
+      loop {
         let (x1, y1, z1, x2, y2, z2, i) = *b;
         if z1 == 1 {
           break;
         }
+        if (x1..=x2).cartesian_product(y1..=y2).any(|(x,y)| grid.contains_key(&(x,y,z1-1))) {
+          break;
+        }
+        *b = (x1, y1, z1-1, x2, y2, z2-1, i);
         for (x,y) in (x1..=x2).cartesian_product(y1..=y2) {
-          if grid.contains_key(&(x,y,z1-1)) {
-            can_fall = false;
-            break;
-          }
+          grid.remove(&(x,y,z2));
+          grid.insert((x,y,z1-1), i);
         }
-        if can_fall {
-          *b = (x1, y1, z1-1, x2, y2, z2-1, i);
-          for (x,y) in (x1..=x2).cartesian_product(y1..=y2) {
-            grid.remove(&(x,y,z2));
-            grid.insert((x,y,z1-1), i);
-          }
-          done = false;
-        }
+        done = false;
       }
-    }
-    if done {
-      break;
     }
   }
   let mut above = HashMap::<_,HashSet<_>>::new();
@@ -79,7 +71,7 @@ fn main(input: &str) -> (usize, usize) {
   let (mut p1, mut p2) = (0, 0);
   for b in 0..bricks.len() {
     let mut falling = HashSet::new();
-    if_disintegrated(&bricks, &mut falling, &above, &below, b);
+    disintegrate_all(&bricks, &mut falling, &above, &below, b);
     p1 += if falling.len() == 1 {1} else {0};
     p2 += falling.len() - 1;
   }
