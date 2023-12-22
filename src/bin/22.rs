@@ -2,9 +2,9 @@ use hashbrown::{HashMap, HashSet};
 use itertools::Itertools;
 
 fn disintegrate_all(
-  falling: &mut HashSet<usize>,
   above: &HashMap<usize, HashSet<usize>>,
   below: &HashMap<usize, HashSet<usize>>,
+  falling: &mut HashSet<usize>,
   brick: usize
 ) {
   if !falling.insert(brick) {
@@ -13,7 +13,7 @@ fn disintegrate_all(
   let Some(parents) = above.get(&brick) else { return };
   for &parent in parents {
     if below[&parent].iter().all(|x| falling.contains(x)) {
-      disintegrate_all(falling, above, below, parent);
+      disintegrate_all(above, below, falling, parent);
     }
   }
 }
@@ -28,17 +28,17 @@ fn main(input: &str) -> (usize, usize) {
     (x1, y1, z1, x2, y2, z2)
   }).collect::<Vec<_>>();
   bricks.sort_by_key(|b| b.2);
-  let mut grid = HashMap::new();
+  let mut space = HashMap::new();
   for (i, b) in bricks.iter_mut().enumerate() {
     let (x1, y1, mut z1, x2, y2, mut z2) = *b;
-    while z1 > 1 && (x1..=x2).cartesian_product(y1..=y2).all(|(x,y)| !grid.contains_key(&(x,y,z1-1))) {
+    while z1 > 1 && (x1..=x2).cartesian_product(y1..=y2).all(|(x,y)| !space.contains_key(&(x,y,z1-1))) {
       z2 -= 1;
       z1 -= 1;
     }
     for x in x1..=x2 {
       for y in y1..=y2 {
         for z in z1..=z2 {
-          grid.insert((x,y,z), i);
+          space.insert((x,y,z), i);
         }
       }
     }
@@ -48,7 +48,7 @@ fn main(input: &str) -> (usize, usize) {
   let mut below = HashMap::<_,HashSet<_>>::new();
   for (i, &(x1, y1, z1, x2, y2, _)) in bricks.iter().enumerate() {
     for (x,y) in (x1..=x2).cartesian_product(y1..=y2) {
-      if let Some(&j) = grid.get(&(x,y,z1-1)) {
+      if let Some(&j) = space.get(&(x,y,z1-1)) {
         above.entry(j).or_default().insert(i);
         below.entry(i).or_default().insert(j);
       }
@@ -57,7 +57,7 @@ fn main(input: &str) -> (usize, usize) {
   let (mut p1, mut p2) = (0, 0);
   for b in 0..bricks.len() {
     let mut falling = HashSet::new();
-    disintegrate_all(&mut falling, &above, &below, b);
+    disintegrate_all(&above, &below, &mut falling, b);
     p1 += (falling.len() == 1) as usize;
     p2 += falling.len() - 1;
   }
