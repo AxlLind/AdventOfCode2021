@@ -1,19 +1,13 @@
 use hashbrown::{HashMap, HashSet};
 use itertools::Itertools;
 
-fn disintegrate_all(
-  above: &HashMap<usize, HashSet<usize>>,
-  below: &HashMap<usize, HashSet<usize>>,
-  falling: &mut HashSet<usize>,
-  brick: usize
-) {
-  if !falling.insert(brick) {
+fn disintegrate_all(adjacent: &[(HashSet<usize>, HashSet<usize>)], falling: &mut HashSet<usize>, i: usize) {
+  if !falling.insert(i) {
     return;
   }
-  let Some(parents) = above.get(&brick) else { return };
-  for &parent in parents {
-    if below[&parent].iter().all(|x| falling.contains(x)) {
-      disintegrate_all(above, below, falling, parent);
+  for &above in &adjacent[i].0 {
+    if adjacent[above].1.iter().all(|x| falling.contains(x)) {
+      disintegrate_all(adjacent, falling, above);
     }
   }
 }
@@ -35,29 +29,24 @@ fn main(input: &str) -> (usize, usize) {
       z2 -= 1;
       z1 -= 1;
     }
-    for x in x1..=x2 {
-      for y in y1..=y2 {
-        for z in z1..=z2 {
-          space.insert((x,y,z), i);
-        }
-      }
-    }
+    let positions = (x1..=x2).cartesian_product(y1..=y2).cartesian_product(z1..=z2);
+    space.extend(positions.map(|((x,y),z)| ((x,y,z),i)));
     *b = (x1, y1, z1, x2, y2, z2);
   }
-  let mut above = HashMap::<_,HashSet<_>>::new();
-  let mut below = HashMap::<_,HashSet<_>>::new();
+  let mut adjacent = vec![(HashSet::new(), HashSet::new()); bricks.len()];
   for (i, &(x1, y1, z1, x2, y2, _)) in bricks.iter().enumerate() {
     for (x,y) in (x1..=x2).cartesian_product(y1..=y2) {
       if let Some(&j) = space.get(&(x,y,z1-1)) {
-        above.entry(j).or_default().insert(i);
-        below.entry(i).or_default().insert(j);
+        adjacent[j].0.insert(i);
+        adjacent[i].1.insert(j);
       }
     }
   }
   let (mut p1, mut p2) = (0, 0);
+  let mut falling = HashSet::new();
   for b in 0..bricks.len() {
-    let mut falling = HashSet::new();
-    disintegrate_all(&above, &below, &mut falling, b);
+    falling.clear();
+    disintegrate_all(&adjacent, &mut falling, b);
     p1 += (falling.len() == 1) as usize;
     p2 += falling.len() - 1;
   }
