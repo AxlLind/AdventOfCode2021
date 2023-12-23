@@ -52,11 +52,11 @@ fn solve(grid: &[&[u8]], part2: bool) -> usize {
     let neighbors = graph.remove(&(r,c)).unwrap();
     let (r1,c1,d1) = neighbors[0];
     let (r2,c2,d2) = neighbors[1];
-    let n1 = graph.entry((r1,c1)).or_default();
+    let n1 = graph.get_mut(&(r1,c1)).unwrap();
     if let Some(i) = n1.iter().position(|&(rr,cc,_)| (rr,cc) == (r,c)) {
       n1[i] = (r2,c2,d1+d2);
     }
-    let n2 = graph.entry((r2,c2)).or_default();
+    let n2 = graph.get_mut(&(r2,c2)).unwrap();
     if let Some(i) = n2.iter().position(|&(rr,cc,_)| (rr,cc) == (r,c)) {
       n2[i] = (r1,c1,d1+d2);
     }
