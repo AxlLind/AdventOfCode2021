@@ -19,7 +19,7 @@ if [[ -z "${AOC_SESSION-""}" ]]; then
 fi
 
 TMPFILE=$(mktemp)
-trap "rm -f '$TMPFILE'" EXIT
+trap 'rm -f "$TMPFILE"' EXIT
 
 curl "https://adventofcode.com/2023/day/${1#0}/input"          \
   -s --fail --cookie "session=$AOC_SESSION"                    \
