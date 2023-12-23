@@ -1,9 +1,9 @@
+#![allow(clippy::type_complexity)]
 use hashbrown::HashMap;
 use itertools::Itertools;
 
 const NEIGHBORS: &[(isize,isize)] = &[(-1,0),(0,1),(1,0),(0,-1)];
 
-#[allow(clippy::type_complexity)]
 fn dfs(
   graph: &HashMap<(usize,usize), Vec<(usize,usize,usize)>>,
   seen: &mut Vec<Vec<bool>>,
