@@ -1,4 +1,5 @@
 use hashbrown::HashMap;
+use itertools::Itertools;
 
 const NEIGHBORS: &[(isize,isize)] = &[(-1,0),(0,1),(1,0),(0,-1)];
 
@@ -25,26 +26,24 @@ fn dfs(
 
 fn solve(grid: &[&[u8]], part2: bool) -> usize {
   let mut graph = HashMap::<_,Vec<_>>::new();
-  for r in 0..grid.len() {
-    for c in 0..grid[0].len() {
-      let neighbors: &[_] = match grid[r][c] {
-        b'#' => continue,
-        _ if part2 => NEIGHBORS,
-        b'.' => NEIGHBORS,
-        b'^' => &NEIGHBORS[0..][..1],
-        b'>' => &NEIGHBORS[1..][..1],
-        b'v' => &NEIGHBORS[2..][..1],
-        b'<' => &NEIGHBORS[3..][..1],
-        _ => unreachable!(),
-      };
-      let e = graph.entry((r,c)).or_default();
-      for (dr, dc) in neighbors {
-        let rr = (r as isize + dr) as usize;
-        let cc = (c as isize + dc) as usize;
-        let Some(&tile) = grid.get(rr).and_then(|row| row.get(cc)) else {continue};
-        if tile != b'#' {
-          e.push((rr,cc,1));
-        }
+  for (r,c) in (0..grid.len()).cartesian_product(0..grid[0].len()) {
+    let neighbors: &[_] = match grid[r][c] {
+      b'#' => continue,
+      _ if part2 => NEIGHBORS,
+      b'.' => NEIGHBORS,
+      b'^' => &NEIGHBORS[0..][..1],
+      b'>' => &NEIGHBORS[1..][..1],
+      b'v' => &NEIGHBORS[2..][..1],
+      b'<' => &NEIGHBORS[3..][..1],
+      _ => unreachable!(),
+    };
+    let e = graph.entry((r,c)).or_default();
+    for (dr, dc) in neighbors {
+      let rr = (r as isize + dr) as usize;
+      let cc = (c as isize + dc) as usize;
+      let Some(&tile) = grid.get(rr).and_then(|row| row.get(cc)) else {continue};
+      if tile != b'#' {
+        e.push((rr,cc,1));
       }
     }
   }
