@@ -48,7 +48,11 @@ fn solve(grid: &[&[u8]], part2: bool) -> usize {
       }
     }
   }
-  while let Some((&(r,c), _)) = graph.iter().find(|(_,n)| n.len() == 2) {
+  let corridors = graph.iter()
+    .filter(|(_,n)| n.len() == 2)
+    .map(|(&node,_)| node)
+    .collect::<Vec<_>>();
+  for (r,c) in corridors {
     let neighbors = graph.remove(&(r,c)).unwrap();
     let (r1,c1,d1) = neighbors[0];
     let (r2,c2,d2) = neighbors[1];
