@@ -1,5 +1,7 @@
 use hashbrown::HashMap;
 
+const NEIGHBORS: &[(isize,isize)] = &[(-1,0),(0,1),(1,0),(0,-1)];
+
 fn dfs(
   graph: &HashMap<(usize,usize), Vec<(usize,usize,usize)>>,
   seen: &mut Vec<Vec<bool>>,
@@ -27,12 +29,12 @@ fn solve(grid: &[&[u8]], part2: bool) -> usize {
     for c in 0..grid[0].len() {
       let neighbors: &[_] = match grid[r][c] {
         b'#' => continue,
-        _ if part2 => &[(-1, 0), (1, 0), (0, -1), (0, 1)],
-        b'.' => &[(-1, 0), (1, 0), (0, -1), (0, 1)],
-        b'^' => &[(-1, 0)],
-        b'>' => &[( 0, 1)],
-        b'v' => &[( 1, 0)],
-        b'<' => &[( 0,-1)],
+        _ if part2 => NEIGHBORS,
+        b'.' => NEIGHBORS,
+        b'^' => &NEIGHBORS[0..][..1],
+        b'>' => &NEIGHBORS[1..][..1],
+        b'v' => &NEIGHBORS[2..][..1],
+        b'<' => &NEIGHBORS[3..][..1],
         _ => unreachable!(),
       };
       let e = graph.entry((r,c)).or_default();
