@@ -1,4 +1,5 @@
 use hashbrown::HashMap;
+use itertools::Itertools;
 
 fn roll_north(map: &mut Vec<Vec<u8>>) {
   let mut done = false;
@@ -18,15 +19,13 @@ fn roll_north(map: &mut Vec<Vec<u8>>) {
 
 fn rotate(map: &Vec<Vec<u8>>) -> Vec<Vec<u8>> {
   let mut newmap = vec![vec![0; map.len()]; map[0].len()];
-  for r in 0..map.len() {
-    for c in 0..map[0].len() {
-      newmap[c][map.len() - 1 - r] = map[r][c];
-    }
+  for (r,c) in (0..map.len()).cartesian_product(0..map[0].len()) {
+    newmap[c][map.len() - 1 - r] = map[r][c];
   }
   newmap
 }
 
-fn load(map: &Vec<Vec<u8>>) -> usize {
+fn total_load(map: &Vec<Vec<u8>>) -> usize {
   (0..map.len())
     .map(|r| (0..map[0].len())
       .filter(|&c| map[r][c] == b'O')
@@ -42,7 +41,7 @@ fn main(input: &str) -> (usize, usize) {
   let p1 = {
     let mut map = map.clone();
     roll_north(&mut map);
-    load(&map)
+    total_load(&map)
   };
 
   let mut seen = HashMap::new();
@@ -57,5 +56,5 @@ fn main(input: &str) -> (usize, usize) {
       }
     }
   }
-  (p1, load(&map))
+  (p1, total_load(&map))
 }

@@ -26,7 +26,7 @@ fn energized_tiles(grid: &[&[u8]], start: (usize,usize,usize)) -> usize {
     }
     beams = new_beams;
   }
-  seen.iter().flat_map(|row| row).filter(|x| x.iter().any(|&b| b)).count()
+  seen.iter().flatten().filter(|x| x.iter().any(|&b| b)).count()
 }
 
 #[aoc::main(16)]
