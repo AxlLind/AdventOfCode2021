@@ -21,12 +21,12 @@ fn bfs(grid: &[&[u8]], start: (isize, isize), steps: usize) -> usize {
 }
 
 fn find_polynomial(grid: &[&[u8]], start: (isize, isize), n: usize) -> usize {
-  let n1 = bfs(grid, start, n % grid.len() + grid.len()*0);
-  let n2 = bfs(grid, start, n % grid.len() + grid.len()*1);
+  let n1 = bfs(grid, start, n % grid.len());
+  let n2 = bfs(grid, start, n % grid.len() + grid.len());
   let n3 = bfs(grid, start, n % grid.len() + grid.len()*2);
   let n = n / grid.len();
   let [a, b, c] = [n1, n2-n1, n3-n2];
-  return a + b*n + (n * (n-1)/2) * (c-b);
+  a + b*n + (n * (n-1)/2) * (c-b)
 }
 
 #[aoc::main(21)]
