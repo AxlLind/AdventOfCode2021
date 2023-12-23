@@ -42,12 +42,12 @@ fn solve(grid: &[&[u8]], part2: bool) -> usize {
     for (dr, dc) in neighbors {
       let rr = (r as isize + dr) as usize;
       let cc = (c as isize + dc) as usize;
-      let Some(&tile) = grid.get(rr).and_then(|row| row.get(cc)) else {continue};
-      if tile != b'#' {
+      if grid.get(rr).and_then(|row| row.get(cc)).is_some_and(|&t| t != b'#') {
         e.push((rr,cc,1));
       }
     }
   }
+
   let corridors = graph.iter()
     .filter(|(_,n)| n.len() == 2)
     .map(|(&node,_)| node)
@@ -65,6 +65,7 @@ fn solve(grid: &[&[u8]], part2: bool) -> usize {
       n2[i] = (r1,c1,d1+d2);
     }
   }
+
   dfs(&graph, &mut vec![vec![false; grid[0].len()]; grid.len()], (0,1)).unwrap()
 }
 
