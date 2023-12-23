@@ -4,15 +4,17 @@ fn dfs(
   graph: &HashMap<(usize,usize), Vec<(usize,usize,usize)>>,
   seen: &mut Vec<Vec<bool>>,
   (r,c): (usize,usize),
-) -> usize {
+) -> Option<usize> {
   if r == seen.len() - 1 {
-    return 0;
+    return Some(0);
   }
-  let mut max_dist = 0;
+  let mut max_dist = None;
   for &(rr, cc, d) in &graph[&(r,c)] {
     if !seen[rr][cc] {
       seen[rr][cc] = true;
-      max_dist = max_dist.max(d + dfs(graph, seen, (rr, cc)));
+      if let Some(dist) = dfs(graph, seen, (rr, cc)) {
+        max_dist = Some(max_dist.unwrap_or(0).max(d+dist))
+      }
       seen[rr][cc] = false;
     }
   }
@@ -59,7 +61,7 @@ fn solve(grid: &[&[u8]], part2: bool) -> usize {
       n2[i] = (r1,c1,d1+d2);
     }
   }
-  dfs(&graph, &mut vec![vec![false; grid[0].len()]; grid.len()], (0,1))
+  dfs(&graph, &mut vec![vec![false; grid[0].len()]; grid.len()], (0,1)).unwrap()
 }
 
 #[aoc::main(23)]
