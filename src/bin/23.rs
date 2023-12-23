@@ -25,16 +25,14 @@ fn solve(grid: &[&[u8]], part2: bool) -> usize {
   let mut graph = HashMap::<_,Vec<_>>::new();
   for r in 0..grid.len() {
     for c in 0..grid[0].len() {
-      if grid[r][c] == b'#' {
-        continue;
-      }
       let neighbors: &[_] = match grid[r][c] {
-        _ if part2 => &[(-1,0),(1,0),(0,-1),(0,1)],
-        b'.' => &[(-1,0),(1,0),(0,-1),(0,1)],
-        b'^' => &[(-1,0)],
-        b'>' => &[(0,1)],
-        b'v' => &[(1,0)],
-        b'<' => &[(0,-1)],
+        b'#' => continue,
+        _ if part2 => &[(-1, 0), (1, 0), (0, -1), (0, 1)],
+        b'.' => &[(-1, 0), (1, 0), (0, -1), (0, 1)],
+        b'^' => &[(-1, 0)],
+        b'>' => &[( 0, 1)],
+        b'v' => &[( 1, 0)],
+        b'<' => &[( 0,-1)],
         _ => unreachable!(),
       };
       let e = graph.entry((r,c)).or_default();
