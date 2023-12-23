@@ -27,7 +27,7 @@ fn dfs(
 fn solve(grid: &[&[u8]], part2: bool) -> usize {
   let mut graph = HashMap::<_,Vec<_>>::new();
   for (r,c) in (0..grid.len()).cartesian_product(0..grid[0].len()) {
-    let neighbors: &[_] = match grid[r][c] {
+    let neighbors = match grid[r][c] {
       b'#' => continue,
       _ if part2 => NEIGHBORS,
       b'.' => NEIGHBORS,
