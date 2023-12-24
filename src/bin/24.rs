@@ -29,13 +29,11 @@ fn find_intersections(lines: &[((f64,f64,f64),(f64,f64,f64))]) -> usize {
 fn part2(lines: &[((f64,f64,f64),(f64,f64,f64))]) -> i64 {
   let ctx = z3::Context::new(&z3::Config::new());
   let s = z3::Solver::new(&ctx);
-  let [fx,fy,fz] = ["fx", "fy", "fz"].map(|v| Int::new_const(&ctx, v));
-  let [fdx,fdy,fdz] = ["fdx", "fdy", "fdz"].map(|v| Int::new_const(&ctx, v));
+  let [fx,fy,fz,fdx,fdy,fdz] = ["fx","fy","fz","fdx","fdy","fdz"].map(|v| Int::new_const(&ctx, v));
 
   let zero = Int::from_i64(&ctx, 0);
   for (i, &((x,y,z), (dx,dy,dz))) in lines.iter().enumerate() {
-    let [x,y,z] = [x,y,z].map(|v| Int::from_i64(&ctx, v as _));
-    let [dx,dy,dz] = [dx,dy,dz].map(|v| Int::from_i64(&ctx, v as _));
+    let [x,y,z,dx,dy,dz] = [x,y,z,dx,dy,dz].map(|v| Int::from_i64(&ctx, v as _));
     let t = Int::new_const(&ctx, format!("t{i}"));
     s.assert(&t.ge(&zero));
     s.assert(&((&x + &dx * &t)._eq(&(&fx + &fdx * &t))));
