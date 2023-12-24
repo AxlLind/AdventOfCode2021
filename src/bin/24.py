@@ -3,13 +3,13 @@ from z3 import Int, Solver
 
 # TODO: Port this to Rust somehow??
 
-inp = Path("./inputs/24.in").read_text().strip()
+inp = (Path(__file__).parent / '..' / '..' / 'inputs' / '24.in').read_text().strip()
 lines = []
 for l in inp.splitlines():
     a, b = l.split(' @ ')
-    x, y, z = [int(w) for w in a.split(', ')]
-    dx, dy, dz = [int(w) for w in b.split(', ')]
-    lines.append(([x,y,z], [dx,dy,dz]))
+    pos = [int(w) for w in a.split(', ')]
+    vel = [int(w) for w in b.split(', ')]
+    lines.append((pos, vel))
 
 fx,  fy,  fz  = Int("fx"),  Int("fy"),  Int("fz")
 fdx, fdy, fdz = Int("fdx"), Int("fdy"), Int("fdz")
