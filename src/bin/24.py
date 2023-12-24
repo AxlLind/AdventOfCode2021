@@ -1,7 +1,7 @@
 from pathlib import Path
-from z3 import If, Int, Solver
+from z3 import Int, Solver
 
-inp = Path("./inputs/24.in").read_text().strip()
+# TODO: Port this to Rust somehow??
 
 def parse(inp):
     lines = []
@@ -13,16 +13,18 @@ def parse(inp):
     return lines
 
 def part2(lines):
-    fx,fy,fz,opt = Int("fx"), Int("fy"), Int("fz"), Solver()
-    fdx,fdy,fdz = Int("fdx"), Int("fdy"), Int("fdz")
+    fx,  fy,  fz  = Int("fx"),  Int("fy"),  Int("fz")
+    fdx, fdy, fdz = Int("fdx"), Int("fdy"), Int("fdz")
+    s = Solver()
     for i, ((x,y,z), (dx,dy,dz)) in enumerate(lines):
         t = Int(f"t{i}")
-        opt.add(t >= 0)
-        opt.add(x + dx * t == fx + fdx * t)
-        opt.add(y + dy * t == fy + fdy * t)
-        opt.add(z + dz * t == fz + fdz * t)
-    assert str(opt.check()) == 'sat'
-    return opt.model().eval(fx + fy + fz)
+        s.add(t >= 0)
+        s.add(x + dx * t == fx + fdx * t)
+        s.add(y + dy * t == fy + fdy * t)
+        s.add(z + dz * t == fz + fdz * t)
+    assert str(s.check()) == 'sat'
+    return s.model().eval(fx + fy + fz)
 
+inp = Path("./inputs/24.in").read_text().strip()
 lines = parse(inp)
 print(part2(lines))
