@@ -1,6 +1,6 @@
 use itertools::Itertools;
 
-fn intersects((x1,y1,dx1,dy1): (f64,f64,f64,f64), (x2,y2,dx2,dy2): (f64,f64,f64,f64)) -> Option<(f64, f64)> {
+fn intersection((x1,y1,dx1,dy1): (f64,f64,f64,f64), (x2,y2,dx2,dy2): (f64,f64,f64,f64)) -> Option<(f64, f64)> {
   let m1 = dy1 / dx1;
   let m2 = dy2 / dx2;
   if (m2 - m1).abs() < f64::EPSILON {
@@ -12,21 +12,16 @@ fn intersects((x1,y1,dx1,dy1): (f64,f64,f64,f64), (x2,y2,dx2,dy2): (f64,f64,f64,
 }
 
 fn find_intersections(lines: &[((f64,f64,f64),(f64,f64,f64))], start: f64, end: f64) -> usize {
-  let mut intersections = 0;
-  for (&((x1,y1,_),(dx1,dy1,_)),&((x2,y2,_),(dx2,dy2,_))) in lines.iter().tuple_combinations() {
-    if let Some((x,y)) = intersects((x1,y1,dx1,dy1), (x2,y2,dx2,dy2)) {
-      if (dx1 < 0.0 && x > x1) || (dx1 > 0.0 && x < x1){
-        continue;
+  lines.iter()
+    .tuple_combinations()
+    .filter(|(&((x1,y1,_),(dx1,dy1,_)), &((x2,y2,_),(dx2,dy2,_)))| {
+      let Some((x,y)) = intersection((x1,y1,dx1,dy1), (x2,y2,dx2,dy2)) else { return false };
+      if dx1.signum() != (x-x1).signum() || dx2.signum() != (x-x2).signum() {
+        return false;
       }
-      if (dx2 < 0.0 && x > x2) || (dx2 > 0.0 && x < x2){
-        continue;
-      }
-      if (start..=end).contains(&x) && (start..=end).contains(&y) {
-        intersections += 1;
-      }
-    }
-  }
-  intersections
+      (start..=end).contains(&x) && (start..=end).contains(&y)
+    })
+    .count()
 }
 
 #[aoc::main(24)]
