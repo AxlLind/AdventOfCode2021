@@ -21,19 +21,20 @@ fn main(input: &str) -> (usize, char) {
     for b in rest.split(' ') {
       graph.entry(a).or_default().insert(b);
       graph.entry(b).or_default().insert(a);
-      let (x,y) = if a < b {(a,b)} else {(b,a)};
-      edges.insert((x,y));
+      edges.insert(if a < b {(a,b)} else {(b,a)});
     }
   }
+
   let mut dot = String::from("graph {\n");
   for (a,b) in edges.iter().sorted() {
-    dot += &format!("{} -- {}\n", a, b);
+    dot += &format!("  {} -- {};\n", a, b);
   }
   dot += "}";
+  // Run the following to visualize the graph:
+  //   dot -Tsvg -Kneato out.dot > out.svg
+  // Manually find the three edges.
   std::fs::write("out.dot", dot).unwrap();
-  println!("Run the following to visualize the graph:");
-  println!("dot -Tsvg -Kneato out.dot > out.svg");
-  println!("Manually find the three edges.");
+
   for (a,b) in [("qdp", "jxx"), ("zbr", "vsx"), ("mlp", "qqq")] {
     graph.get_mut(a).unwrap().remove(b);
     graph.get_mut(b).unwrap().remove(a);
