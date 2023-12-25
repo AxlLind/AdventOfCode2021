@@ -1,5 +1,5 @@
 #![allow(clippy::type_complexity)]
-use z3::ast::{Ast, Int};
+use z3::ast::{Ast, Int, Real};
 use itertools::Itertools;
 
 fn part1(lines: &[((f64,f64,f64),(f64,f64,f64))]) -> usize {
@@ -21,15 +21,15 @@ fn part1(lines: &[((f64,f64,f64),(f64,f64,f64))]) -> usize {
     .count()
 }
 
-fn part2(lines: &[((f64,f64,f64),(f64,f64,f64))]) -> i64 {
+fn part2(lines: &[((f64,f64,f64),(f64,f64,f64))]) -> usize {
   let ctx = z3::Context::new(&z3::Config::new());
   let s = z3::Solver::new(&ctx);
-  let [fx,fy,fz,fdx,fdy,fdz] = ["fx","fy","fz","fdx","fdy","fdz"].map(|v| Int::new_const(&ctx, v));
+  let [fx,fy,fz,fdx,fdy,fdz] = ["fx","fy","fz","fdx","fdy","fdz"].map(|v| Real::new_const(&ctx, v));
 
-  let zero = Int::from_i64(&ctx, 0);
+  let zero = Int::from_i64(&ctx, 0).to_real();
   for (i, &((x,y,z), (dx,dy,dz))) in lines.iter().enumerate() {
-    let [x,y,z,dx,dy,dz] = [x,y,z,dx,dy,dz].map(|v| Int::from_i64(&ctx, v as _));
-    let t = Int::new_const(&ctx, format!("t{i}"));
+    let [x,y,z,dx,dy,dz] = [x,y,z,dx,dy,dz].map(|v| Int::from_i64(&ctx, v as _).to_real());
+    let t = Real::new_const(&ctx, format!("t{i}"));
     s.assert(&t.ge(&zero));
     s.assert(&((&x + &dx * &t)._eq(&(&fx + &fdx * &t))));
     s.assert(&((&y + &dy * &t)._eq(&(&fy + &fdy * &t))));
@@ -37,11 +37,11 @@ fn part2(lines: &[((f64,f64,f64),(f64,f64,f64))]) -> i64 {
   }
   assert_eq!(s.check(), z3::SatResult::Sat);
   let res = s.get_model().unwrap().eval(&(&fx + &fy + &fz), true).unwrap();
-  res.as_i64().unwrap()
+  res.to_string().strip_suffix(".0").unwrap().parse().unwrap()
 }
 
 #[aoc::main(24)]
-fn main(input: &str) -> (usize, i64) {
+fn main(input: &str) -> (usize, usize) {
   let lines = input.split('\n').map(|l| {
     let (a,b) = l.split_once(" @ ").unwrap();
     let (x,y,z) = a.split(", ").map(|w| w.parse::<f64>().unwrap()).collect_tuple().unwrap();
