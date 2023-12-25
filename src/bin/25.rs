@@ -2,17 +2,12 @@ use hashbrown::{HashMap, HashSet};
 use itertools::Itertools;
 
 fn component_size(graph: &HashMap<&str, HashSet<&str>>, a: &str) -> usize {
-  let mut seen = HashSet::new();
-  let mut s = vec![a];
+  let (mut seen, mut s) = (HashSet::new(), vec![a]);
   while let Some(x) = s.pop() {
     if !seen.insert(x) {
       continue;
     }
-    for b in &graph[x] {
-      if !seen.contains(b) {
-        s.push(b);
-      }
-    }
+    s.extend(&graph[x]);
   }
   seen.len()
 }
@@ -31,7 +26,7 @@ fn main(input: &str) -> (usize, char) {
     }
   }
   let mut dot = String::from("graph {\n");
-  for (a,b) in &edges {
+  for (a,b) in edges.iter().sorted() {
     dot += &format!("{} -- {}\n", a, b);
   }
   dot += "}";
