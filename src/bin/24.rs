@@ -1,3 +1,4 @@
+#![allow(clippy::type_complexity)]
 use z3::ast::{Ast, Int};
 use itertools::Itertools;
 
