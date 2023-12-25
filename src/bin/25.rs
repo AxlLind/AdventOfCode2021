@@ -4,10 +4,9 @@ use itertools::Itertools;
 fn component_size(graph: &HashMap<&str, HashSet<&str>>, a: &str) -> usize {
   let (mut seen, mut s) = (HashSet::new(), vec![a]);
   while let Some(x) = s.pop() {
-    if !seen.insert(x) {
-      continue;
+    if seen.insert(x) {
+      s.extend(&graph[x]);
     }
-    s.extend(&graph[x]);
   }
   seen.len()
 }
