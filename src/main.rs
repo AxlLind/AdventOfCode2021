@@ -22,7 +22,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let cmd = Command::new("cargo").args(["run", "--release", "--bin", day]).output()?;
     if !cmd.status.success() {
       println!("{}", String::from_utf8(cmd.stderr)?);
-      return Err(format!("Failed to compile day {day}!"))?;
+      return Err(format!("Failed to compile day {day}!").into());
     }
     let output = String::from_utf8(cmd.stdout)?;
     println!("Day {}:\n{}", day, output);
