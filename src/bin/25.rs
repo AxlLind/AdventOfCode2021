@@ -1,27 +1,24 @@
 use std::collections::VecDeque;
 use hashbrown::{HashMap, HashSet};
 
-fn mincut_edmond_karp(g: &HashMap<&str, HashSet<&str>>, s: &str, t: &str, cut: i64) -> Option<usize> {
+fn mincut_edmond_karp(g: &HashMap<&str, HashSet<&str>>, s: &str, t: &str) -> Option<usize> {
   let mut flow = HashMap::new();
-  let mut pred = HashMap::new();
-  let mut queue = VecDeque::new();
   let mut f = 0;
-  while f <= cut {
-    pred.clear();
-    queue.clear();
-    queue.push_back(s);
+  while f <= 3 {
+    let mut pred = HashMap::new();
+    let mut queue = VecDeque::from_iter([s]);
     let mut seen_vertices = 0;
     while let Some(cur) = queue.pop_front() {
       if pred.contains_key(t) {
         break;
       }
-      seen_vertices += 1;
       for &next in &g[cur] {
         if next != s && !pred.contains_key(next) && *flow.get(&(cur, next)).unwrap_or(&0) < 1 {
           pred.insert(next, cur);
           queue.push_back(next);
         }
       }
+      seen_vertices += 1;
     }
     if !pred.contains_key(t) {
       if seen_vertices == g.len() {
@@ -58,5 +55,5 @@ fn main(input: &str) -> (usize, char) {
     }
   }
   let &start = graph.keys().next().unwrap();
-  (graph.keys().find_map(|k| mincut_edmond_karp(&graph, start, k, 3)).unwrap(), '🎄')
+  (graph.keys().find_map(|k| mincut_edmond_karp(&graph, start, k)).unwrap(), '🎄')
 }
