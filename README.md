@@ -24,3 +24,8 @@ cargo run --release             # run all days
 - [2017](https://github.com/AxlLind/AdventOfCode2017/) in Haskell λ
 - [2016](https://github.com/AxlLind/AdventOfCode2016/) in OCaml :camel:
 - [2015](https://github.com/AxlLind/AdventOfCode2015/) in Clojure λ
+
+## Leaderboard
+Getting up at 5:50 every day is tough. Life got in the way a few times. Best placement this year was 111. Went really well this year, especially towards the end.
+
+![leaderboard](./leaderboard.png)
