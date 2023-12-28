@@ -1,23 +1,32 @@
-fn parse_game(line: &str) -> Option<(usize, usize)> {
-  let (game_id, game) = line.trim_start_matches("Game ").split_once(':')?;
-  let (mut r, mut g, mut b, mut possible) = (0, 0, 0, true);
-  for action in game.split([';', ',']) {
-    let (n, color) = action.trim().split_once(' ')?;
-    let n = n.parse().ok()?;
-    match color.as_bytes()[0] {
-      b'r' => {possible &= n <= 12; r = r.max(n)},
-      b'g' => {possible &= n <= 13; g = g.max(n)},
-      b'b' => {possible &= n <= 14; b = b.max(n)},
-      _ => unreachable!(),
-    }
-  }
-  Some((if possible {game_id.parse().ok()?} else {0}, r * g * b))
-}
-
 #[aoc::main(02)]
 fn main(input: &str) -> (usize, usize) {
-  input.split('\n').fold((0, 0), |(p1, p2), line| {
-    let (a, b) = parse_game(line).unwrap();
-    (p1 + a, p2 + b)
-  })
+  let games = input.split('\n').map(|l| {
+    let (game_id, game) = l.trim_start_matches("Game ").split_once(':').unwrap();
+    let colors = game.split([';', ',']).map(|w| {
+      let (n, color) = w.trim().split_once(' ').unwrap();
+      (n.parse().unwrap(), color.as_bytes()[0])
+    }).collect::<Vec<_>>();
+    (game_id.parse().unwrap(), colors)
+  }).collect::<Vec<_>>();
+
+  let p1 = games.iter().filter(|(_, actions)| {
+    actions.iter().all(|&(n,c)| match c {
+      b'r' => n <= 12,
+      b'g' => n <= 13,
+      b'b' => n <= 14,
+      _ => unreachable!(),
+    })
+  }).map(|(id,_)| id).sum();
+
+  let p2 = games.iter().map(|(_,actions)| {
+    let (r,g,b) = actions.iter().fold((0,0,0), |(r,g,b), &(n,c)| match c {
+      b'r' => (r.max(n), g, b),
+      b'g' => (r, g.max(n), b),
+      b'b' => (r, g, b.max(n)),
+      _ => unreachable!(),
+    });
+    r * g * b
+  }).sum();
+
+  (p1, p2)
 }
