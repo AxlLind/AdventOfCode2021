@@ -22,9 +22,7 @@ fn solve(universe: &Vec<&[u8]>, mut galaxies: Vec<(usize, usize)>, size: usize) 
 
 #[aoc::main(11)]
 fn main(input: &str) -> (usize, usize) {
-  let universe = input.split('\n')
-    .map(|l| l.as_bytes())
-    .collect::<Vec<_>>();
+  let universe = input.split('\n').map(str::as_bytes).collect::<Vec<_>>();
   let galaxies = (0..universe.len())
     .cartesian_product(0..universe[0].len())
     .filter(|&(r,c)| universe[r][c] == b'#')
