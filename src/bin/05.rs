@@ -1,6 +1,6 @@
 use itertools::Itertools;
 
-fn p1(seeds: Vec<usize>, layers: &[Vec<(usize, usize, usize)>]) -> usize {
+fn part1(seeds: Vec<usize>, layers: &[Vec<(usize, usize, usize)>]) -> usize {
   let locations = layers.iter().fold(seeds, |seeds, mappings|
     seeds.into_iter().map(|seed|
       mappings.iter()
@@ -12,7 +12,7 @@ fn p1(seeds: Vec<usize>, layers: &[Vec<(usize, usize, usize)>]) -> usize {
   *locations.iter().min().unwrap()
 }
 
-fn p2(seeds: Vec<usize>, layers: &[Vec<(usize, usize, usize)>]) -> usize {
+fn part2(seeds: Vec<usize>, layers: &[Vec<(usize, usize, usize)>]) -> usize {
   let seeds = seeds.into_iter()
     .tuples()
     .map(|(a, len)| (a, a + len))
@@ -55,5 +55,5 @@ fn main(input: &str) -> (usize, usize) {
         .unwrap()
     ).collect::<Vec<_>>()
   ).collect::<Vec<_>>();
-  (p1(seeds.clone(), &layers), p2(seeds, &layers))
+  (part1(seeds.clone(), &layers), part2(seeds, &layers))
 }
