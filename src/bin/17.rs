@@ -20,7 +20,7 @@ fn dijkstra(grid: &[&[u8]], minstep: isize, maxstep: isize) -> i64 {
         let rr = (r as isize + dr * dist) as usize;
         let cc = (c as isize + dc * dist) as usize;
         if rr >= grid.len() || cc >= grid[0].len() {
-          continue;
+          break;
         }
         next_cost += (grid[rr][cc] - b'0') as i64;
         if dist < minstep {
