@@ -19,12 +19,15 @@ fn main(input: &str) -> (usize, usize) {
   }).map(|(id,_)| id).sum();
 
   let p2 = games.iter().map(|(_,actions)| {
-    let (r,g,b) = actions.iter().fold((0,0,0), |(r,g,b), &(n,c)| match c {
-      b'r' => (r.max(n), g, b),
-      b'g' => (r, g.max(n), b),
-      b'b' => (r, g, b.max(n)),
-      _ => unreachable!(),
-    });
+    let (mut r, mut g, mut b) = (0,0,0);
+    for &(n, c) in actions {
+      match c {
+        b'r' => r = r.max(n),
+        b'g' => g = g.max(n),
+        b'b' => b = b.max(n),
+        _ => unreachable!(),
+      }
+    }
     r * g * b
   }).sum();
 
