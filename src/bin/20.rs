@@ -12,15 +12,14 @@ fn main(input: &str) -> (usize, usize) {
   let mut g = HashMap::new();
   let mut state = HashMap::new();
   for l in input.split('\n') {
-    let (src, rest) = l.split_once(" -> ").unwrap();
-    let connections = rest.split(", ").collect::<Vec<_>>();
-    let (node, state_type) = match src.as_bytes()[0] as char {
-      '%' => (&src[1..], Node::FlipFlop(false)),
-      '&' => (&src[1..], Node::Conjunction(HashMap::new())),
-      'b' => (src,       Node::Broadcaster),
+    let (src, connections) = l.split_once(" -> ").unwrap();
+    let (node, state_type) = match src.as_bytes()[0] {
+      b'%' => (&src[1..], Node::FlipFlop(false)),
+      b'&' => (&src[1..], Node::Conjunction(HashMap::new())),
+      b'b' => (src,       Node::Broadcaster),
       _ => unreachable!(),
     };
-    g.insert(node, connections);
+    g.insert(node, connections.split(", ").collect::<Vec<_>>());
     state.insert(node, state_type);
   }
 
@@ -34,11 +33,9 @@ fn main(input: &str) -> (usize, usize) {
       }
     }
   }
-  let mut cycles = match &state[rx_conjunction] {
-    Node::Conjunction(m) => m.iter()
-      .map(|(&node,_)| (node, None))
-      .collect::<HashMap<_,_>>(),
-    _ => unreachable!(),
+  let mut cycles = {
+    let Node::Conjunction(m) = &state[rx_conjunction] else { panic!() };
+    m.keys().map(|&node| (node, None)).collect::<HashMap<_,_>>()
   };
 
   let mut p1 = [0,0];
