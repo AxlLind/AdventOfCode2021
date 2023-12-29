@@ -1,11 +1,10 @@
-#![allow(clippy::type_complexity)]
 use z3::ast::{Ast, Int, Real};
 use itertools::Itertools;
 
-fn part1(lines: &[((f64,f64,f64),(f64,f64,f64))]) -> usize {
-  lines.iter()
+fn part1(hailstones: &[(f64,f64,f64,f64,f64,f64)]) -> usize {
+  hailstones.iter()
     .tuple_combinations()
-    .filter(|(&((x1,y1,_),(dx1,dy1,_)), &((x2,y2,_),(dx2,dy2,_)))| {
+    .filter(|(&(x1,y1,_,dx1,dy1,_), &(x2,y2,_,dx2,dy2,_))| {
       let m1 = dy1 / dx1;
       let m2 = dy2 / dx2;
       if (m2 - m1).abs() <= f64::EPSILON {
@@ -21,13 +20,12 @@ fn part1(lines: &[((f64,f64,f64),(f64,f64,f64))]) -> usize {
     .count()
 }
 
-fn part2(lines: &[((f64,f64,f64),(f64,f64,f64))]) -> usize {
+fn part2(hailstones: &[(f64,f64,f64,f64,f64,f64)]) -> usize {
   let ctx = z3::Context::new(&z3::Config::new());
   let s = z3::Solver::new(&ctx);
   let [fx,fy,fz,fdx,fdy,fdz] = ["fx","fy","fz","fdx","fdy","fdz"].map(|v| Real::new_const(&ctx, v));
-
   let zero = Int::from_i64(&ctx, 0).to_real();
-  for (i, &((x,y,z), (dx,dy,dz))) in lines.iter().enumerate() {
+  for (i, &(x,y,z,dx,dy,dz)) in hailstones.iter().take(3).enumerate() {
     let [x,y,z,dx,dy,dz] = [x,y,z,dx,dy,dz].map(|v| Int::from_i64(&ctx, v as _).to_real());
     let t = Real::new_const(&ctx, format!("t{i}"));
     s.assert(&t.ge(&zero));
@@ -42,11 +40,11 @@ fn part2(lines: &[((f64,f64,f64),(f64,f64,f64))]) -> usize {
 
 #[aoc::main(24)]
 fn main(input: &str) -> (usize, usize) {
-  let lines = input.split('\n').map(|l| {
-    let (a,b) = l.split_once(" @ ").unwrap();
-    let (x,y,z) = a.split(", ").map(|w| w.parse::<f64>().unwrap()).collect_tuple().unwrap();
-    let (dx,dy,dz) = b.split(", ").map(|w| w.trim().parse::<f64>().unwrap()).collect_tuple().unwrap();
-    ((x,y,z), (dx,dy,dz))
-  }).collect::<Vec<_>>();
-  (part1(&lines), part2(&lines))
+  let hailstones = input.split('\n').map(|l|
+    l.split(['@', ','])
+      .map(|w| w.trim().parse::<f64>().unwrap())
+      .collect_tuple()
+      .unwrap()
+  ).collect::<Vec<_>>();
+  (part1(&hailstones), part2(&hailstones))
 }
