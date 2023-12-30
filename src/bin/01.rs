@@ -15,8 +15,10 @@ fn digit_sum(w: &[u8], part_two: bool) -> usize {
 
 #[aoc::main(01)]
 fn main(input: &str) -> (usize, usize) {
-  let lines = input.split('\n').map(str::as_bytes).collect::<Vec<_>>();
-  let p1 = lines.iter().map(|line| digit_sum(line, false)).sum();
-  let p2 = lines.iter().map(|line| digit_sum(line, true)).sum();
+  let (mut p1, mut p2) = (0,0);
+  for l in input.split('\n') {
+    p1 += digit_sum(l.as_bytes(), false);
+    p2 += digit_sum(l.as_bytes(), true);
+  }
   (p1, p2)
 }
