@@ -11,6 +11,7 @@ clj -M src/DAY.clj
 ```
 
 ## Other years
+- [2023](https://github.com/AxlLind/AdventOfCode2023/) in Rust :crab:
 - [2022](https://github.com/AxlLind/AdventOfCode2022/) in Rust :crab:
 - [2021](https://github.com/AxlLind/AdventOfCode2021/) in Rust :crab:
 - [2020](https://github.com/AxlLind/AdventOfCode2020/) in Rust :crab:
