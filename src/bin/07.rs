@@ -53,11 +53,11 @@ fn main(input: &str) -> (usize, usize) {
     let (cards, bid) = l.split_once(' ').unwrap();
     let p1key = hand_strength(cards, false);
     let p2key = hand_strength(cards, true);
-    (cards, bid.parse().unwrap(), p1key, p2key)
+    (bid.parse().unwrap(), p1key, p2key)
   }).collect::<Vec<_>>();
-  cards.sort_unstable_by_key(|&(_,_,key,_)| key);
-  let p1 = cards.iter().enumerate().map(|(i, (_,bid,_,_))| (i + 1) * bid).sum();
-  cards.sort_unstable_by_key(|&(_,_,_,key)| key);
-  let p2 = cards.iter().enumerate().map(|(i, (_,bid,_,_))| (i + 1) * bid).sum();
+  cards.sort_unstable_by_key(|&(_,k,_)| k);
+  let p1 = cards.iter().enumerate().map(|(i, (bid,_,_))| (i + 1) * bid).sum();
+  cards.sort_unstable_by_key(|&(_,_,k)| k);
+  let p2 = cards.iter().enumerate().map(|(i, (bid,_,_))| (i + 1) * bid).sum();
   (p1, p2)
 }
