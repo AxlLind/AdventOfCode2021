@@ -5,26 +5,23 @@ fn step(r: usize, c: usize, d: usize) -> (usize, usize, usize) {
 
 fn energized_tiles(grid: &[&[u8]], start: (usize,usize,usize)) -> usize {
   let mut seen = vec![vec![[false; 4]; grid[0].len()]; grid.len()];
-  let mut beams = vec![start];
+  let (mut beams, mut new_beams) = (vec![start], vec![]);
   while !beams.is_empty() {
-    let mut new_beams = Vec::with_capacity(beams.capacity());
-    for (r,c,d) in beams {
-      if r >= grid.len() || c >= grid[0].len() {
-        continue;
-      }
-      if seen[r][c][d] {
+    new_beams.clear();
+    for &(r,c,d) in &beams {
+      if r >= grid.len() || c >= grid[0].len() || seen[r][c][d] {
         continue;
       }
       seen[r][c][d] = true;
       match (grid[r][c], d) {
-        (b'/',   _) => new_beams.push(step(r,c,[1,0,3,2][d])),
-        (b'\\',  _) => new_beams.push(step(r,c,[3,2,1,0][d])),
         (b'|', 1|3) => new_beams.extend([step(r,c,0), step(r,c,2)]),
         (b'-', 0|2) => new_beams.extend([step(r,c,1), step(r,c,3)]),
+        (b'/',   _) => new_beams.push(step(r,c,[1,0,3,2][d])),
+        (b'\\',  _) => new_beams.push(step(r,c,[3,2,1,0][d])),
         _           => new_beams.push(step(r,c,d)),
       }
     }
-    beams = new_beams;
+    (beams, new_beams) = (new_beams, beams);
   }
   seen.iter().flatten().filter(|x| x.iter().any(|&b| b)).count()
 }
