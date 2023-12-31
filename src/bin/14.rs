@@ -7,12 +7,12 @@ fn roll_north(map: &mut Vec<Vec<u8>>) {
       if map[r+1][c] != b'O' {
         continue;
       }
-      for dr in 0..=r {
-        if map[r-dr][c] != b'.' {
+      for rr in (0..=r).rev() {
+        if map[rr][c] != b'.' {
           break;
         }
-        map[r-dr][c] = b'O';
-        map[r+1-dr][c] = b'.';
+        map[rr][c] = b'O';
+        map[rr+1][c] = b'.';
       }
     }
   }
