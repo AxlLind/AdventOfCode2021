@@ -18,21 +18,16 @@ fn roll_north(map: &mut Vec<Vec<u8>>) {
   }
 }
 
-fn rotate(map: &Vec<Vec<u8>>) -> Vec<Vec<u8>> {
-  let mut newmap = vec![vec![0; map.len()]; map[0].len()];
+fn rotate(map: &mut Vec<Vec<u8>>, tmpmap: &mut Vec<Vec<u8>>) {
   for (r,c) in (0..map.len()).cartesian_product(0..map[0].len()) {
-    newmap[c][map.len() - 1 - r] = map[r][c];
+    tmpmap[c][map.len() - 1 - r] = map[r][c];
   }
-  newmap
+  std::mem::swap(map, tmpmap);
 }
 
 fn total_load(map: &Vec<Vec<u8>>) -> usize {
   (0..map.len())
-    .map(|r| (0..map[0].len())
-      .filter(|&c| map[r][c] == b'O')
-      .map(|_| map.len() - r)
-      .sum::<usize>()
-    )
+    .map(|r| (map.len() - r) * map[r].iter().filter(|&&t| t == b'O').count())
     .sum()
 }
 
@@ -45,11 +40,12 @@ fn main(input: &str) -> (usize, usize) {
     total_load(&map)
   };
 
+  let mut tmpmap = vec![vec![0; map.len()]; map[0].len()];
   let mut seen = HashMap::new();
   for i in 1..1000000000 {
     for _ in 0..4 {
       roll_north(&mut map);
-      map = rotate(&map);
+      rotate(&mut map, &mut tmpmap);
     }
     if let Some(seen_at) = seen.insert(map.clone(), i) {
       if (1000000000 - i) % (i - seen_at) == 0 {
