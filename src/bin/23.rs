@@ -1,25 +1,18 @@
-#![allow(clippy::type_complexity)]
 use hashbrown::HashMap;
 use itertools::Itertools;
 
-const NEIGHBORS: &[(isize,isize)] = &[(-1,0),(0,1),(1,0),(0,-1)];
-
-fn dfs(
-  graph: &HashMap<(usize,usize), Vec<(usize,usize,usize)>>,
-  seen: &mut Vec<Vec<bool>>,
-  (r,c): (usize,usize),
-) -> Option<usize> {
-  if r == seen.len() - 1 {
+fn dfs(graph: &[Vec<(usize,usize)>], seen: &mut [bool], goal: usize, curr: usize) -> Option<usize> {
+  if curr == goal {
     return Some(0);
   }
   let mut max_dist = None;
-  for &(rr, cc, d) in &graph[&(r,c)] {
-    if !seen[rr][cc] {
-      seen[rr][cc] = true;
-      if let Some(dist) = dfs(graph, seen, (rr, cc)) {
+  for &(next, d) in &graph[curr] {
+    if !seen[next] {
+      seen[next] = true;
+      if let Some(dist) = dfs(graph, seen, goal, next) {
         max_dist = Some(max_dist.unwrap_or(0).max(d+dist))
       }
-      seen[rr][cc] = false;
+      seen[next] = false;
     }
   }
   max_dist
@@ -28,6 +21,7 @@ fn dfs(
 fn solve(grid: &[&[u8]], part2: bool) -> usize {
   let mut graph = HashMap::<_,Vec<_>>::new();
   for (r,c) in (0..grid.len()).cartesian_product(0..grid[0].len()) {
+    const NEIGHBORS: &[(isize,isize)] = &[(-1,0),(0,1),(1,0),(0,-1)];
     let neighbors = match grid[r][c] {
       b'#' => continue,
       _ if part2 => NEIGHBORS,
@@ -48,6 +42,7 @@ fn solve(grid: &[&[u8]], part2: bool) -> usize {
     }
   }
 
+  // edge contraction (i.e contract maze corridors)
   let corridors = graph.iter()
     .filter(|(_,n)| n.len() == 2)
     .map(|(&node,_)| node)
@@ -66,7 +61,15 @@ fn solve(grid: &[&[u8]], part2: bool) -> usize {
     }
   }
 
-  dfs(&graph, &mut vec![vec![false; grid[0].len()]; grid.len()], (0,1)).unwrap()
+  // convert: (r,c) hashmap -> index vector
+  let indexes = graph.keys().enumerate().map(|(i,pos)| (pos,i)).collect::<HashMap<_,_>>();
+  let mut idx_graph = vec![Vec::new(); graph.len()];
+  for (pos, neighbors) in &graph {
+    idx_graph[indexes[pos]] = neighbors.iter().map(|&(r,c,d)| (indexes[&(r,c)],d)).collect();
+  }
+
+  let goal = indexes[&(grid.len()-1, grid[0].len()-2)];
+  dfs(&idx_graph, &mut vec![false; idx_graph.len()], goal, indexes[&(0,1)]).unwrap()
 }
 
 #[aoc::main(23)]
