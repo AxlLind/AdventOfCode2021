@@ -2,17 +2,16 @@ use hashbrown::HashMap;
 use itertools::Itertools;
 
 fn roll_north(map: &mut Vec<Vec<u8>>) {
-  for r in 0..map.len() - 1 {
-    for c in 0..map[0].len() {
-      if map[r+1][c] != b'O' {
-        continue;
-      }
-      for dr in 0..r {
-        if map[r-dr][c] != b'.' {
-          break;
+  let mut done = false;
+  while !done {
+    done = true;
+    for r in 0..map.len() - 1 {
+      for c in 0..map[0].len() {
+        if map[r+1][c] == b'O' && map[r][c] == b'.' {
+          map[r][c] = b'O';
+          map[r+1][c] = b'.';
+          done = false;
         }
-        map[r-dr][c] = b'O';
-        map[r+1-dr][c] = b'.';
       }
     }
   }
