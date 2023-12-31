@@ -25,7 +25,7 @@ fn part2(hailstones: &[(f64,f64,f64,f64,f64,f64)]) -> usize {
   let s = z3::Solver::new(&ctx);
   let [fx,fy,fz,fdx,fdy,fdz] = ["fx","fy","fz","fdx","fdy","fdz"].map(|v| Real::new_const(&ctx, v));
   let zero = Int::from_i64(&ctx, 0).to_real();
-  for (i, &(x,y,z,dx,dy,dz)) in hailstones.iter().take(3).enumerate() {
+  for (i, &(x,y,z,dx,dy,dz)) in hailstones[..3].iter().enumerate() {
     let [x,y,z,dx,dy,dz] = [x,y,z,dx,dy,dz].map(|v| Int::from_i64(&ctx, v as _).to_real());
     let t = Real::new_const(&ctx, format!("t{i}"));
     s.assert(&t.ge(&zero));
