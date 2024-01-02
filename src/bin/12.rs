@@ -43,15 +43,17 @@ fn possible_ways(cache: &mut HashMap<(usize, usize, usize), usize>, s: &[u8], wi
 #[aoc::main(12)]
 fn main(input: &str) -> (usize, usize) {
   let mut cache = HashMap::new();
-  input.split('\n').map(|l| {
+  let (mut p1, mut p2) = (0,0);
+  for l in input.split('\n') {
     let (vents, rest) = l.split_once(' ').unwrap();
     let nums = rest.split(',').map(|w| w.parse::<usize>().unwrap()).collect::<Vec<_>>();
+    cache.clear();
+    p1 += possible_ways(&mut cache, vents.as_bytes(), None, &nums);
+
     let new_vents = (0..5).map(|_| vents).join("?");
     let new_nums = (0..5).flat_map(|_| &nums).copied().collect::<Vec<_>>();
     cache.clear();
-    let p1 = possible_ways(&mut cache, vents.as_bytes(), None, &nums);
-    cache.clear();
-    let p2 = possible_ways(&mut cache, new_vents.as_bytes(), None, &new_nums);
-    (p1,p2)
-  }).fold((0,0), |(p1,p2), (a,b)| (p1+a, p2+b))
+    p2 += possible_ways(&mut cache, new_vents.as_bytes(), None, &new_nums);
+  }
+  (p1,p2)
 }
