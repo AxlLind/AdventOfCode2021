@@ -1,14 +1,13 @@
 use hashbrown::HashMap;
-use itertools::Itertools;
 
 #[aoc::main(01)]
 fn main(input: &str) -> (i64, i64) {
-    let xs = input.split('\n').map(|l| {
+    let (mut l1, mut l2): (Vec<_>, Vec<_>) = input.split('\n').map(|l| {
         let (a, b) = l.split_once(' ').unwrap();
         (a.trim().parse::<i64>().unwrap(), b.trim().parse::<i64>().unwrap())
-    }).collect::<Vec<_>>();
-    let l1 = xs.iter().map(|&(a, _)| a).sorted().collect::<Vec<_>>();
-    let l2 = xs.iter().map(|&(_, b)| b).sorted().collect::<Vec<_>>();
+    }).unzip();
+    l1.sort();
+    l2.sort();
 
     let mut count = HashMap::new();
     for &b in &l2 {
