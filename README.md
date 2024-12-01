@@ -15,7 +15,9 @@ cargo run --release --bin $DAY  # run a specific day, e.g 01
 cargo run --release             # run all days
 ```
 
-## Other years
+## All years
+- [2024](https://github.com/AxlLind/AdventOfCode2024/) in Rust :crab:
+- [2023](https://github.com/AxlLind/AdventOfCode2023/) in Rust :crab:
 - [2022](https://github.com/AxlLind/AdventOfCode2022/) in Rust :crab:
 - [2021](https://github.com/AxlLind/AdventOfCode2021/) in Rust :crab:
 - [2020](https://github.com/AxlLind/AdventOfCode2020/) in Rust :crab:
