@@ -1,6 +1,20 @@
 [package]
-name = "AdventOfCode2024"
+name = "aoc"
 version = "0.1.0"
+authors = ["Axel Lindeberg"]
 edition = "2021"
+default-run = "aoc"
+
+[lib]
+proc-macro = true
+
+[profile.dev]
+overflow-checks = false
 
 [dependencies]
+itertools = "0.12"
+hashbrown = "0.14"
+
+# lib proc-macro dependencies
+syn = { version = "2.0", features = ["full"] }
+quote = "1.0"
