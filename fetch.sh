@@ -21,7 +21,7 @@ fi
 TMPFILE=$(mktemp)
 trap 'rm -f "$TMPFILE"' EXIT
 
-curl "https://adventofcode.com/2023/day/${1#0}/input"          \
+curl "https://adventofcode.com/2024/day/${1#0}/input"          \
   -s --fail --cookie "session=$AOC_SESSION"                    \
   -A "Bash script at $(git remote -v | awk 'NR==1{print $2}')" \
   | tee "$TMPFILE"
