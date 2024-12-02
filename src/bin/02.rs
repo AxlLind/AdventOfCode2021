@@ -17,10 +17,11 @@ fn is_any_safe(x: &[i64]) -> bool {
 
 #[aoc::main(02)]
 fn main(input: &str) -> (usize, usize) {
-    let xs = input.split('\n').map(|l| {
-        l.split(' ').map(|w| w.parse().unwrap()).collect::<Vec<_>>()
-    }).collect::<Vec<_>>();
-    let p1 = xs.iter().filter(|x| is_safe(x)).count();
-    let p2 = xs.iter().filter(|x| is_any_safe(x)).count();
+    let (mut p1, mut p2) = (0, 0);
+    for l in input.lines() {
+        let x = l.split(' ').map(|w| w.parse().unwrap()).collect::<Vec<_>>();
+        if is_safe(&x) { p1 += 1 }
+        if is_any_safe(&x) { p2 += 1 }
+    }
     (p1, p2)
 }
