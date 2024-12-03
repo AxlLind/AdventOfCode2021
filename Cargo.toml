@@ -14,8 +14,8 @@ overflow-checks = false
 [dependencies]
 itertools = "0.13"
 hashbrown = "0.15"
+regex = "1.11"
 
 # lib proc-macro dependencies
 syn = { version = "2.0", features = ["full"] }
 quote = "1.0"
-regex = "1.11.1"
