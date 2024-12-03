@@ -9,12 +9,10 @@ fn main(input: &str) -> (usize, usize) {
             "do()" => ok = true,
             "don't()" => ok = false,
             x => {
-                let (a, b) = x.strip_prefix("mul(").unwrap().strip_suffix(')').unwrap().split_once(',').unwrap();
+                let (a, b) = x[4..x.len()-1].split_once(',').unwrap();
                 let i = a.parse::<usize>().unwrap() * b.parse::<usize>().unwrap();
                 p1 += i;
-                if ok {
-                    p2 += i;
-                }
+                if ok { p2 += i }
             }
         }
     }
