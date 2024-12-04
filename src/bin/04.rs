@@ -25,11 +25,10 @@ fn main(input: &str) -> (usize, usize) {
     let (mut p1, mut p2) = (0, 0);
     for r in 0..m.len() {
         for c in 0..m[0].len() {
-            if m[r][c] == b'X' {
-                p1 += find_xmas(&m, r, c);
-            }
-            if m[r][c] == b'A' {
-                p2 += find_x_mas(&m, r, c);
+            match m[r][c] {
+                b'X' => p1 += find_xmas(&m, r, c),
+                b'A' => p2 += find_x_mas(&m, r, c),
+                _ => {},
             }
         }
     }
