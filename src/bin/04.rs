@@ -13,10 +13,10 @@ fn find_xmas(m: &[&[u8]], r: usize, c: usize) -> usize {
         .count()
 }
 
-fn find_x_mas(m: &[&[u8]], r: usize, c: usize) -> usize {
+fn find_x_mas(m: &[&[u8]], r: usize, c: usize) -> bool {
     let w1 = [get(m, r-1, c-1), get(m, r+1, c+1)];
     let w2 = [get(m, r-1, c+1), get(m, r+1, c-1)];
-    ((&w1 == b"MS" || &w1 == b"SM") && (&w2 == b"MS" || &w2 == b"SM")) as _
+    (&w1 == b"MS" || &w1 == b"SM") && (&w2 == b"MS" || &w2 == b"SM")
 }
 
 #[aoc::main(04)]
@@ -27,7 +27,7 @@ fn main(input: &str) -> (usize, usize) {
         for c in 0..m[0].len() {
             match m[r][c] {
                 b'X' => p1 += find_xmas(&m, r, c),
-                b'A' => p2 += find_x_mas(&m, r, c),
+                b'A' => p2 += find_x_mas(&m, r, c) as usize,
                 _ => {},
             }
         }
