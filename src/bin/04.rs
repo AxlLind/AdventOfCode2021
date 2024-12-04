@@ -16,7 +16,7 @@ fn find_xmas(m: &[&[u8]], r: usize, c: usize) -> usize {
 fn find_x_mas(m: &[&[u8]], r: usize, c: usize) -> bool {
     let w1 = [get(m, r-1, c-1), get(m, r+1, c+1)];
     let w2 = [get(m, r-1, c+1), get(m, r+1, c-1)];
-    (&w1 == b"MS" || &w1 == b"SM") && (&w2 == b"MS" || &w2 == b"SM")
+    [w1, w2].iter().all(|w| w == b"MS" || w == b"SM")
 }
 
 #[aoc::main(04)]
