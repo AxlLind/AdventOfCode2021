@@ -3,15 +3,14 @@ fn get(m: &[&[u8]], r: usize, c: usize) -> u8 {
 }
 
 fn find_xmas(m: &[&[u8]], r: usize, c: usize) -> usize {
-    let mut res = 0;
-    for (dr, dc) in [(0, -1), (-1, 0), (0, 1), (1, 0), (1,1), (-1,1), (1,-1), (-1,-1)] {
-        let ok = (1..4).all(|i| {
-            let (rr, cc) = (r + (dr * i) as usize, c + (dc * i) as usize);
-            get(m, rr, cc) == b"XMAS"[i as usize]
-        });
-        res += ok as usize;
-    }
-    res
+    [(0, -1), (-1, 0), (0, 1), (1, 0), (1,1), (-1,1), (1,-1), (-1,-1)].iter()
+        .filter(|(dr, dc)|
+            (1..4).all(|i| {
+                let (rr, cc) = (r + (dr * i) as usize, c + (dc * i) as usize);
+                get(m, rr, cc) == b"XMAS"[i as usize]
+            })
+        )
+        .count()
 }
 
 fn find_x_mas(m: &[&[u8]], r: usize, c: usize) -> usize {
