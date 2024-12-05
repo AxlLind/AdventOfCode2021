@@ -1,17 +1,5 @@
 use hashbrown::{HashMap, HashSet};
 
-fn is_ordered(orderings: &HashMap<usize, HashSet<usize>>, page: &[usize]) -> bool {
-    let mut ok = true;
-    for (i, x) in page.iter().enumerate() {
-        for y in &page[i+1..] {
-            if orderings[x].contains(y) {
-                ok = false;
-            }
-        }
-    }
-    ok
-}
-
 #[aoc::main(05)]
 fn main(input: &str) -> (usize, usize) {
     let (s1, s2) = input.split_once("\n\n").unwrap();
@@ -26,7 +14,7 @@ fn main(input: &str) -> (usize, usize) {
 
     let (mut p1, mut p2) = (0, 0);
     for mut p in pages {
-        if is_ordered(&orderings, &p) {
+        if p.is_sorted_by(|a, b| orderings[b].contains(a)) {
             p1 += p[p.len() / 2];
         } else {
             p.sort_by(|a, b| orderings[b].contains(a).cmp(&true));
