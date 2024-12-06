@@ -2,9 +2,9 @@ use hashbrown::HashMap;
 
 #[aoc::main(01)]
 fn main(input: &str) -> (i64, i64) {
-    let (mut l1, mut l2): (Vec<_>, Vec<_>) = input.split('\n').map(|l| {
-        let (a, b) = l.split_once(' ').unwrap();
-        (a.trim().parse::<i64>().unwrap(), b.trim().parse::<i64>().unwrap())
+    let (mut l1, mut l2): (Vec<_>, Vec<_>) = input.lines().map(|l| {
+        let (a, b) = l.split_once("   ").unwrap();
+        (a.parse::<i64>().unwrap(), b.parse::<i64>().unwrap())
     }).unzip();
     l1.sort();
     l2.sort();
