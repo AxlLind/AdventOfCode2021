@@ -1,4 +1,4 @@
-use hashbrown::HashSet;
+use itertools::Itertools;
 
 fn find_start(m: &[Vec<u8>]) -> (usize, usize) {
     for r in 0..m.len() {
@@ -11,17 +11,21 @@ fn find_start(m: &[Vec<u8>]) -> (usize, usize) {
     unreachable!()
 }
 
-fn walk(m: &[Vec<u8>], mut r: usize, mut c: usize) -> Option<HashSet<(usize, usize)>> {
-    let mut seen = HashSet::new();
+fn walk(m: &[Vec<u8>], mut r: usize, mut c: usize) -> Option<Vec<(usize, usize)>> {
+    let mut seen = vec![vec![[false; 4]; m[0].len()]; m.len()];
     let mut d = 0;
     loop {
-        if !seen.insert((r, c, d)) {
+        if seen[r][c][d] {
             return None;
         }
+        seen[r][c][d] = true;
         let (dr, dc) = [(-1,0), (0,1), (1,0), (0, -1)][d];
         let (rr, cc) = (r + dr as usize, c + dc as usize);
         if !(0..m.len()).contains(&rr) || !(0..m[0].len()).contains(&cc) {
-            return Some(seen.iter().map(|&(r, c, _)| (r, c)).collect());
+            let visited = (0..m.len()).cartesian_product(0..m[0].len())
+                .filter(|&(r, c)| seen[r][c].iter().any(|&b| b))
+                .collect();
+            return Some(visited);
         }
         if m[rr][cc] == b'#' {
             d = (d + 1) % 4;
