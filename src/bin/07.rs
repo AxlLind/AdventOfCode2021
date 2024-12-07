@@ -17,10 +17,10 @@ fn main(input: &str) -> (i64, i64) {
 
     let (mut p1, mut p2) = (0, 0);
     for (n, ns) in ops {
-        if is_valid(n, &ns, 0, false) {
+        if is_valid(n, &ns[1..], ns[0], false) {
             p1 += n;
             p2 += n;
-        } else if is_valid(n, &ns, 0, true) {
+        } else if is_valid(n, &ns[1..], ns[0], true) {
             p2 += n;
         }
     }
