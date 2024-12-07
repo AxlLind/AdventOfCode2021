@@ -1,20 +1,10 @@
-fn is_valid(target: i64, ns: &[i64], n: i64, part_two: bool) -> bool {
+fn is_valid(target: i64, ns: &[i64], n: i64, p2: bool) -> bool {
     if ns.is_empty() || n > target {
         return n == target;
     }
-    if is_valid(target, &ns[1..], n + ns[0], part_two) {
-        return true;
-    }
-    if is_valid(target, &ns[1..], n * ns[0], part_two) {
-        return true;
-    }
-    if part_two {
-        let n = n * 10i64.pow(ns[0].ilog10() + 1) + ns[0];
-        if is_valid(target, &ns[1..], n, part_two) {
-            return true;
-        }
-    }
-    false
+    (p2 && is_valid(target, &ns[1..], n * 10i64.pow(ns[0].ilog10() + 1) + ns[0], p2))
+        || is_valid(target, &ns[1..], n + ns[0], p2)
+        || is_valid(target, &ns[1..], n * ns[0], p2)
 }
 
 #[aoc::main(07)]
