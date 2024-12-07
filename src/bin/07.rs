@@ -1,15 +1,15 @@
-fn is_valid(target: i64, ns: &[(i64, &str)], n: i64, part_two: bool) -> bool {
+fn is_valid(target: i64, ns: &[i64], n: i64, part_two: bool) -> bool {
     if ns.is_empty() || n > target {
         return n == target;
     }
-    if is_valid(target, &ns[1..], n + ns[0].0, part_two) {
+    if is_valid(target, &ns[1..], n + ns[0], part_two) {
         return true;
     }
-    if is_valid(target, &ns[1..], n * ns[0].0, part_two) {
+    if is_valid(target, &ns[1..], n * ns[0], part_two) {
         return true;
     }
     if part_two {
-        let n = (n.to_string() + ns[0].1).parse::<i64>().unwrap();
+        let n = n * 10i64.pow(ns[0].ilog10() + 1) + ns[0];
         if is_valid(target, &ns[1..], n, part_two) {
             return true;
         }
@@ -21,7 +21,7 @@ fn is_valid(target: i64, ns: &[(i64, &str)], n: i64, part_two: bool) -> bool {
 fn main(input: &str) -> (i64, i64) {
     let ops = input.lines().map(|l| {
         let (n, rest) = l.split_once(": ").unwrap();
-        let ns = rest.split(' ').map(|w| (w.parse().unwrap(), w)).collect::<Vec<(i64, _)>>();
+        let ns = rest.split(' ').map(|w| w.parse().unwrap()).collect::<Vec<_>>();
         (n.parse::<i64>().unwrap(), ns)
     });
 
