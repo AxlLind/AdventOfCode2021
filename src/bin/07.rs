@@ -19,10 +19,9 @@ fn main(input: &str) -> (i64, i64) {
     for (n, ns) in ops {
         if is_valid(n, &ns[1..], ns[0], false) {
             p1 += n;
-            p2 += n;
         } else if is_valid(n, &ns[1..], ns[0], true) {
             p2 += n;
         }
     }
-    (p1, p2)
+    (p1, p1 + p2)
 }
