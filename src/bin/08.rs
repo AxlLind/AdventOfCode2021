@@ -1,7 +1,7 @@
 use hashbrown::{HashMap, HashSet};
 use itertools::Itertools;
 
-fn add_node(grid: &[&[u8]], r1: usize, c1: usize, r2: usize, c2: usize, antinodes: &mut HashSet<(usize, usize)>, part_one: bool) {
+fn add_node(grid: &[&[u8]], antinodes: &mut HashSet<(usize, usize)>, (r1, c1): (usize, usize), (r2, c2): (usize, usize), part_one: bool) {
     let (dr, dc) = (r2 - r1, c2 - c1);
     let mut c = c2 + dc;
     let mut r = r2 + dr;
@@ -34,11 +34,11 @@ fn main(input: &str) -> (usize, usize) {
     let mut p1 = HashSet::new();
     let mut p2 = HashSet::new();
     for v in nodes.values() {
-        for (&(r1, c1), &(r2, c2)) in v.iter().tuple_combinations() {
-            add_node(&grid, r1, c1, r2, c2, &mut p1, true);
-            add_node(&grid, r2, c2, r1, c1, &mut p1, true);
-            add_node(&grid, r1, c1, r2, c2, &mut p2, false);
-            add_node(&grid, r2, c2, r1, c1, &mut p2, false);
+        for (&a, &b) in v.iter().tuple_combinations() {
+            add_node(&grid, &mut p1, a, b, true);
+            add_node(&grid, &mut p1, b, a, true);
+            add_node(&grid, &mut p2, a, b, false);
+            add_node(&grid, &mut p2, b, a, false);
         }
     }
     (p1.len(), p2.len())
