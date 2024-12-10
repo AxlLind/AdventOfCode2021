@@ -1,7 +1,7 @@
 use std::collections::VecDeque;
 use hashbrown::HashSet;
 
-fn score(g: &[&[u8]], r: usize, c: usize) -> Vec<(usize, usize)> {
+fn reachable_nines(g: &[&[u8]], r: usize, c: usize) -> Vec<(usize, usize)> {
     let mut q = VecDeque::from([(r, c)]);
     let mut seen = Vec::new();
     while let Some((r, c)) = q.pop_front() {
@@ -9,10 +9,8 @@ fn score(g: &[&[u8]], r: usize, c: usize) -> Vec<(usize, usize)> {
             seen.push((r, c));
             continue;
         }
-        let next = g[r][c] + 1;
-        let neighbours = [(r + 1, c), (r - 1, c), (r, c + 1), (r, c - 1)];
-        for (rr, cc) in neighbours {
-            if *g.get(rr).and_then(|row| row.get(cc)).unwrap_or(&b'0') == next {
+        for (rr, cc) in [(r+1, c), (r-1, c), (r, c+1), (r, c-1)] {
+            if *g.get(rr).and_then(|row| row.get(cc)).unwrap_or(&0) == g[r][c] + 1 {
                 q.push_back((rr, cc));
             }
         }
@@ -27,9 +25,9 @@ fn main(input: &str) -> (usize, usize) {
     for r in 0..g.len() {
         for c in 0..g[0].len() {
             if g[r][c] == b'0' {
-                let seen = score(&g, r, c);
+                let seen = reachable_nines(&g, r, c);
+                p1 += seen.iter().collect::<HashSet<_>>().len();
                 p2 += seen.len();
-                p1 += seen.into_iter().collect::<HashSet<_>>().len();
             }
         }
     }
