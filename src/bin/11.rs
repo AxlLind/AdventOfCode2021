@@ -5,15 +5,12 @@ fn update(old_stones: &HashMap<i64, usize>) -> HashMap<i64, usize> {
     for (&s, &v) in old_stones {
         match s {
             0 => *stones.entry(1).or_default() += v,
-            _ => {
-                let digits = s.ilog10() + 1;
-                if digits % 2 == 0 {
-                    *stones.entry(s % 10i64.pow(digits / 2)).or_default() += v;
-                    *stones.entry(s / 10i64.pow(digits / 2)).or_default() += v;
-                } else {
-                    *stones.entry(s * 2024).or_default() += v
-                }
+            s if s.ilog10() % 2 == 1 => {
+                let m = 10i64.pow((s.ilog10() + 1) / 2);
+                *stones.entry(s % m).or_default() += v;
+                *stones.entry(s / m).or_default() += v;
             }
+            _ => *stones.entry(s * 2024).or_default() += v,
         }
     }
     stones
