@@ -21,7 +21,9 @@ fn update(old_stones: &HashMap<i64, usize>) -> HashMap<i64, usize> {
 
 #[aoc::main(11)]
 fn main(input: &str) -> (usize, usize) {
-    let mut stones = input.split_whitespace().map(|w| (w.parse::<i64>().unwrap(), 1)).collect::<HashMap<i64, usize>>();
+    let mut stones = input.split(' ')
+        .map(|w| (w.parse().unwrap(), 1))
+        .collect::<HashMap<_, _>>();
     let mut p1 = 0;
     for i in 0..75 {
         if i == 25 {
