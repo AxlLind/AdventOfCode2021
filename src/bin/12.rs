@@ -1,20 +1,20 @@
 use std::collections::VecDeque;
 use hashbrown::HashSet;
 
-fn is_neighbour(g: &[&[u8]], chr: u8, r: usize, c: usize) -> bool {
-    *g.get(r).and_then(|row| row.get(c)).unwrap_or(&0) == chr
+macro_rules! neighbours {
+    ($g:ident, $r:expr, $c:expr) => {
+        [($r+1, $c), ($r-1, $c), ($r, $c+1), ($r, $c-1)].iter()
+            .copied()
+            .filter(|&(rr, cc)| *$g.get(rr).and_then(|row| row.get(cc)).unwrap_or(&0) == $g[$r][$c])
+    };
 }
 
 fn perimiter(g: &[&[u8]], a: &HashSet<(usize, usize)>) -> usize {
-    a.iter().map(|&(r, c)|
-        [(r+1, c), (r-1, c), (r, c+1), (r, c-1)].iter()
-            .filter(|&&(rr, cc)| !is_neighbour(g, g[r][c], rr, cc))
-            .count()
-    ).sum()
+    a.iter().map(|&(r, c)| 4 - neighbours!(g, r, c).count()).sum()
 }
 
 fn sides(a: &HashSet<(usize, usize)>) -> usize {
-    let mut seen = HashSet::new();
+    let mut s = HashSet::new();
     for &(r, c) in a {
         for (dr, dc) in [(-1, 0), (0, 1), (1, 0), (0, -1)] {
             if a.contains(&(r + dr as usize, c + dc as usize)) {
@@ -25,22 +25,20 @@ fn sides(a: &HashSet<(usize, usize)>) -> usize {
                 rr += dc as usize;
                 cc += dr as usize;
             }
-            seen.insert((rr, cc, dr, dc));
+            s.insert((rr, cc, dr, dc));
         }
     }
-    seen.len()
+    s.len()
 }
 
 fn find_shape(g: &[&[u8]], r: usize, c: usize, seen: &mut HashSet<(usize, usize)>) -> HashSet<(usize, usize)> {
     let mut q = VecDeque::from([(r,c)]);
     let mut a = HashSet::from([(r,c)]);
     while let Some((r, c)) = q.pop_front() {
-        for (rr, cc) in [(r+1, c), (r-1, c), (r, c+1), (r, c-1)] {
-            if is_neighbour(g, g[r][c], rr, cc) {
-                if seen.insert((rr, cc)) {
-                    a.insert((rr, cc));
-                    q.push_back((rr, cc));
-                }
+        for (rr, cc) in neighbours!(g, r, c) {
+            if seen.insert((rr, cc)) {
+                a.insert((rr, cc));
+                q.push_back((rr, cc));
             }
         }
     }
