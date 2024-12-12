@@ -1,9 +1,16 @@
 use std::collections::VecDeque;
-
 use hashbrown::HashSet;
 
 fn is_neighbour(g: &[&[u8]], chr: u8, r: usize, c: usize) -> bool {
     *g.get(r).and_then(|row| row.get(c)).unwrap_or(&0) == chr
+}
+
+fn perimiter(g: &[&[u8]], a: &HashSet<(usize, usize)>) -> usize {
+    a.iter().map(|&(r, c)|
+        [(r+1, c), (r-1, c), (r, c+1), (r, c-1)].iter()
+            .filter(|&&(rr, cc)| !is_neighbour(g, g[r][c], rr, cc))
+            .count()
+    ).sum()
 }
 
 fn sides(a: &HashSet<(usize, usize)>) -> usize {
@@ -24,10 +31,9 @@ fn sides(a: &HashSet<(usize, usize)>) -> usize {
     seen.len()
 }
 
-fn flood(g: &[&[u8]], r: usize, c: usize, seen: &mut HashSet<(usize, usize)>) -> (usize, usize) {
+fn find_shape(g: &[&[u8]], r: usize, c: usize, seen: &mut HashSet<(usize, usize)>) -> HashSet<(usize, usize)> {
     let mut q = VecDeque::from([(r,c)]);
-    let mut a = HashSet::new();
-    a.insert((r, c));
+    let mut a = HashSet::from([(r,c)]);
     while let Some((r, c)) = q.pop_front() {
         for (rr, cc) in [(r+1, c), (r-1, c), (r, c+1), (r, c-1)] {
             if is_neighbour(g, g[r][c], rr, cc) {
@@ -38,30 +44,22 @@ fn flood(g: &[&[u8]], r: usize, c: usize, seen: &mut HashSet<(usize, usize)>) ->
             }
         }
     }
-    let mut perimiter = 0;
-    for &(r, c) in &a {
-        let ns = [(r+1, c), (r-1, c), (r, c+1), (r, c-1)];
-        perimiter += ns.iter().filter(|&&(rr, cc)| !is_neighbour(g, g[r][c], rr, cc)).count();
-    }
-    (
-        a.len() * perimiter,
-        a.len() * sides(&a),
-    )
+    a
 }
 
 #[aoc::main(12)]
 fn main(input: &str) -> (usize, usize) {
-    let grid = input.lines().map(|l| l.as_bytes()).collect::<Vec<_>>();
+    let g = input.lines().map(|l| l.as_bytes()).collect::<Vec<_>>();
     let mut seen = HashSet::new();
     let (mut p1, mut p2) = (0, 0);
-    for r in 0..grid.len() {
-        for c in 0..grid[0].len() {
+    for r in 0..g.len() {
+        for c in 0..g[0].len() {
             if seen.contains(&(r, c)) {
                 continue;
             }
-            let (a, b) = flood(&grid, r, c, &mut seen);
-            p1 += a;
-            p2 += b;
+            let a = find_shape(&g, r, c, &mut seen);
+            p1 += a.len() * perimiter(&g, &a);
+            p2 += a.len() * sides(&a);
         }
     }
     (p1, p2)
