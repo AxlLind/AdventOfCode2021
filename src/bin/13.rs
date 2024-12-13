@@ -1,3 +1,5 @@
+use itertools::Itertools;
+
 fn solve(x1: i64, x2: i64, y1: i64, y2: i64, z1: i64, z2: i64) -> i64 {
     let b = (z2 * x1 - z1 * x2) / (y2 * x1 - y1 * x2);
     let a = (z1 - b * y1) / x1;
@@ -9,23 +11,14 @@ fn solve(x1: i64, x2: i64, y1: i64, y2: i64, z1: i64, z2: i64) -> i64 {
 
 #[aoc::main(13)]
 fn main(input: &str) -> (i64, i64) {
-    let xs = input.split("\n\n").map(|l| {
-        let (a,rest) = l.split_once('\n').unwrap();
-        let (b, price) = rest.split_once('\n').unwrap();
-        let (x1, x2) = a["Button A: X+".len()..].split_once(", Y+").unwrap();
-        let (y1, y2) = b["Button B: X+".len()..].split_once(", Y+").unwrap();
-        let (z1, z2) = price["Prize: X=".len()..].split_once(", Y=").unwrap();
-        (
-            x1.parse().unwrap(),
-            x2.parse().unwrap(),
-            y1.parse().unwrap(),
-            y2.parse().unwrap(),
-            z1.parse().unwrap(),
-            z2.parse().unwrap(),
-        )
-    });
     let (mut p1, mut p2) = (0, 0);
-    for (x1, x2, y1, y2, z1, z2) in xs {
+    for l in input.split("\n\n") {
+        let (x1, x2, y1, y2, z1, z2) = l
+            .split(|c: char| !c.is_ascii_digit())
+            .filter(|w| !w.is_empty())
+            .map(|w| w.parse().unwrap())
+            .collect_tuple()
+            .unwrap();
         p1 += solve(x1, x2, y1, y2, z1, z2);
         p2 += solve(x1, x2, y1, y2, z1 + 10000000000000, z2 + 10000000000000);
     }
