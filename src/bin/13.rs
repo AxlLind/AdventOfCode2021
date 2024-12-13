@@ -1,7 +1,7 @@
 fn solve(x1: i64, x2: i64, y1: i64, y2: i64, z1: i64, z2: i64) -> i64 {
     let b = (z2 * x1 - z1 * x2) / (y2 * x1 - y1 * x2);
     let a = (z1 - b * y1) / x1;
-    if x1 * a + y1 * b != z1 || x2 * a + y2 * b != z2 {
+    if (x1 * a + y1 * b, x2 * a + y2 * b) != (z1, z2) {
         return 0;
     }
     a * 3 + b
