@@ -16,12 +16,12 @@ fn main(input: &str) -> (i64, i64) {
         let (y1, y2) = b["Button B: X+".len()..].split_once(", Y+").unwrap();
         let (z1, z2) = price["Prize: X=".len()..].split_once(", Y=").unwrap();
         (
-            x1.parse::<i64>().unwrap(),
-            x2.parse::<i64>().unwrap(),
-            y1.parse::<i64>().unwrap(),
-            y2.parse::<i64>().unwrap(),
-            z1.parse::<i64>().unwrap(),
-            z2.parse::<i64>().unwrap(),
+            x1.parse().unwrap(),
+            x2.parse().unwrap(),
+            y1.parse().unwrap(),
+            y2.parse().unwrap(),
+            z1.parse().unwrap(),
+            z2.parse().unwrap(),
         )
     });
     let (mut p1, mut p2) = (0, 0);
