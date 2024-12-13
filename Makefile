@@ -22,6 +22,6 @@ help:
 	@echo 'Automatically downloads input, sets up files, and runs solutions.'
 	@echo
 	@echo 'TARGET:'
-	@echo '  {01..25}  run a specific day, e.g 01'
+	@echo '  {01..25}  run a specific day'
 	@echo '  all       run all days'
 	@echo "During the AoC month 'make' will run the current day's solution"

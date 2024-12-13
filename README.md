@@ -7,7 +7,7 @@ Solutions to AoC 2024 in Rust :crab:
 export AOC_SESSION=[value from session cookie]
 
 make      # run todays (if in december 2024)
-make 01   # run a specific day, e.g 01-25
+make 01   # run a specific day
 make all  # run all days
 
 # directly with cargo, if you prefer
