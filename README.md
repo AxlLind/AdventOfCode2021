@@ -10,7 +10,8 @@ make      # run todays (if in december 2024)
 make 01   # run a specific day
 make all  # run all days
 
-# directly with cargo, if you prefer
+# or by hand, if you prefer
+./fetch.sh 01                 # fetch input for 01
 cargo run --release --bin 01  # run a specific day, e.g 01
 cargo run --release           # run all days
 ```
