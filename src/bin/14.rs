@@ -1,19 +1,16 @@
 use itertools::Itertools;
 
 fn safety_factor(robots: &[(i64, i64, i64, i64)]) -> usize {
-    let mut ans = 1;
-    for rr in [0, 101 / 2 + 1] {
-        for cc in [0, 103 / 2 + 1] {
-            let mut count = 0;
-            for &(r, c, _, _) in robots {
-                if r >= rr && r < rr + 101 / 2 && c >= cc && c < cc + 103 / 2 {
-                    count += 1;
-                }
-            }
-            ans *= count;
+    let mut sectors = [0; 4];
+    for &(r, c, _, _) in robots {
+        if r == 101 / 2 || c == 103 / 2 {
+            continue;
         }
+        let a = (r < 101 / 2) as usize;
+        let b = (c < 103 / 2) as usize;
+        sectors[a * 2 + b] += 1;
     }
-    ans
+    sectors.iter().product()
 }
 
 #[aoc::main(14)]
