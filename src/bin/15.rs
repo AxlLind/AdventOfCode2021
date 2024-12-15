@@ -29,15 +29,13 @@ fn solve(mut g: Vec<Vec<u8>>, insts: &str) -> usize {
                 _ => continue,
             }
         }
-        while !seen.is_empty() {
-            for (rr, cc) in seen.iter().copied().collect::<Vec<_>>() {
-                let (r2, c2) = (rr + dr as usize, cc + dc as usize);
-                if !seen.contains(&(r2, c2)) {
-                    g[r2][c2] = g[rr][cc];
-                    g[rr][cc] = b'.';
-                    seen.remove(&(rr, cc));
-                }
-            }
+        let boxes = seen.iter()
+            .sorted_by_key(|&&(rr, cc)| (c.abs_diff(cc), r.abs_diff(rr)))
+            .rev();
+        for &(rr, cc) in boxes {
+            let (r2, c2) = (rr + dr as usize, cc + dc as usize);
+            g[r2][c2] = g[rr][cc];
+            g[rr][cc] = b'.';
         }
         (r, c) = (r + dr as usize, c + dc as usize);
     }
