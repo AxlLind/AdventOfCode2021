@@ -30,7 +30,7 @@ fn solve(mut g: Vec<Vec<u8>>, insts: &str) -> usize {
             }
         }
         while !seen.is_empty() {
-            for (rr, cc) in seen.iter().copied().sorted() {
+            for (rr, cc) in seen.iter().copied().collect::<Vec<_>>() {
                 let (r2, c2) = (rr + dr as usize, cc + dc as usize);
                 if !seen.contains(&(r2, c2)) {
                     g[r2][c2] = g[rr][cc];
