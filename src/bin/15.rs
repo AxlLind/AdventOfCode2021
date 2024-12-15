@@ -3,16 +3,9 @@ use hashbrown::HashSet;
 use itertools::Itertools;
 
 fn solve(mut g: Vec<Vec<u8>>, insts: &str) -> usize {
-    let (mut r, mut c) = (0, 0);
-    for rr in 0..g.len() {
-        for cc in 0..g[0].len() {
-            if g[rr][cc] == b'@' {
-                g[rr][cc] = b'.';
-                (r, c) = (rr, cc);
-            }
-        }
-    }
-
+    let (mut r, mut c) = (0..g.len()).cartesian_product(0..g[0].len())
+        .find(|&(r, c)| g[r][c] == b'@')
+        .unwrap();
     'outer: for i in insts.bytes() {
         let (dr, dc) = match i {
             b'^' => (-1,  0),
@@ -21,7 +14,6 @@ fn solve(mut g: Vec<Vec<u8>>, insts: &str) -> usize {
             b'<' => ( 0, -1),
             _ => continue,
         };
-        let (rr, cc) = (r + dr as usize, c + dc as usize);
         let mut q = VecDeque::from([(r, c)]);
         let mut seen = HashSet::new();
         while let Some((rr, cc)) = q.pop_front() {
@@ -31,17 +23,9 @@ fn solve(mut g: Vec<Vec<u8>>, insts: &str) -> usize {
             let (r2, c2) = (rr + dr as usize, cc + dc as usize);
             match g[r2][c2] {
                 b'#' => continue 'outer,
-                b'O' => {
-                    q.push_back((r2, c2));
-                }
-                b'[' => {
-                    q.push_back((r2, c2));
-                    q.push_back((r2, c2 + 1));
-                }
-                b']' => {
-                    q.push_back((r2, c2));
-                    q.push_back((r2, c2 - 1));
-                }
+                b'O' => q.push_back((r2, c2)),
+                b'[' => q.extend([(r2, c2), (r2, c2 + 1)]),
+                b']' => q.extend([(r2, c2), (r2, c2 - 1)]),
                 _ => continue,
             }
         }
@@ -55,18 +39,12 @@ fn solve(mut g: Vec<Vec<u8>>, insts: &str) -> usize {
                 }
             }
         }
-        (r, c) = (rr, cc);
+        (r, c) = (r + dr as usize, c + dc as usize);
     }
-
-    let mut ans = 0;
-    for r in 0..g.len() {
-        for c in 0..g[0].len() {
-            if g[r][c] == b'O' || g[r][c] == b'[' {
-                ans += 100 * r + c;
-            }
-        }
-    }
-    ans
+    (0..g.len()).cartesian_product(0..g[0].len())
+        .filter(|&(r, c)| matches!(g[r][c], b'O' | b'['))
+        .map(|(r, c)| r * 100 + c)
+        .sum()
 }
 
 #[aoc::main(15)]
