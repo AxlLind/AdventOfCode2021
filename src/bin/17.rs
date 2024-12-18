@@ -32,13 +32,13 @@ fn main(input: &str) -> (String, i64) {
     let s = BV::new_const(&ctx, "s", 64);
     let (mut a, mut b, mut c) = (s.clone(), BV::from_i64(&ctx, 0, 64), BV::from_i64(&ctx, 0, 64));
     for x in [2,4,1,5,7,5,4,3,1,6,0,3,5,5,3,0] {
-        b = a.bvsmod(&BV::from_i64(&ctx, 8, 64));
+        b = &a & &BV::from_i64(&ctx, 7, 64);
         b = b ^ &BV::from_i64(&ctx, 5, 64);
-        c = a.bvsdiv(&(BV::from_i64(&ctx, 1, 64) << &b));
+        c = a.bvlshr(&b);
         b = b ^ c;
         b = b ^ &BV::from_i64(&ctx, 6, 64);
-        a = a.bvsdiv(&BV::from_i64(&ctx, 1 << 3, 64));
-        opt.assert(&(&b.bvsmod(&BV::from_i64(&ctx, 8, 64)))._eq(&BV::from_i64(&ctx, x, 64)));
+        a = a.bvlshr(&BV::from_i64(&ctx, 3, 64));
+        opt.assert(&(&b & &BV::from_i64(&ctx, 7, 64))._eq(&BV::from_i64(&ctx, x, 64)));
     }
     opt.assert(&(a._eq(&BV::from_i64(&ctx, 0, 64))));
     opt.minimize(&s);
