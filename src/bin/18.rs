@@ -1,24 +1,26 @@
 use std::collections::VecDeque;
-
-use hashbrown::HashSet;
 use itertools::Itertools;
 
-fn bfs(g: &[[bool; 71]]) -> Option<usize> {
+fn bfs(coords: &[(usize, usize)]) -> Option<usize> {
     let mut q = VecDeque::from([(70, 70, 0)]);
-    let mut seen = HashSet::new();
+    let mut seen = [[false; 71]; 71];
+    let mut g = [[false; 71]; 71];
+    for &(r, c) in coords {
+        g[r][c] = true;
+    }
     while let Some((r, c, n)) = q.pop_front() {
         if (r, c) == (0, 0) {
             return Some(n);
         }
-        if !seen.insert((r, c)) {
+        if seen[r][c] {
             continue;
         }
+        seen[r][c] = true;
         for (dr, dc) in [(0, -1), (0, 1), (-1, 0), (1, 0)] {
             let (rr, cc) = (r + dr as usize, c + dc as usize);
-            if g.get(rr).and_then(|row| row.get(cc)).copied().unwrap_or(true) {
-                continue;
+            if rr < 71 && cc < 71 && !g[rr][cc] {
+                q.push_back((rr, cc, n + 1));
             }
-            q.push_back((rr, cc, n + 1));
         }
     }
     None
@@ -26,22 +28,20 @@ fn bfs(g: &[[bool; 71]]) -> Option<usize> {
 
 #[aoc::main(18)]
 fn main(input: &str) -> (usize, String) {
-    let mut coords = input
-        .split(|c: char| !c.is_ascii_digit() && c != '-')
-        .filter(|w| !w.is_empty())
-        .map(|w| w.parse::<usize>().unwrap())
-        .tuples();
-    let mut g = [[false; 71]; 71];
-    for _ in 0..1024 {
-        let (r, c) = coords.next().unwrap();
-        g[r][c] = true;
-    }
-    let p1 = bfs(&g).unwrap();
-    for (r, c) in coords {
-        g[r][c] = true;
-        if bfs(&g).is_none() {
-            return (p1, format!("{r},{c}"));
+    let coords = input
+        .split(|c: char| !c.is_ascii_digit())
+        .filter_map(|w| w.parse().ok())
+        .tuples()
+        .collect::<Vec<_>>();
+    let (mut low, mut high) = (1024, coords.len());
+    while low <= high {
+        let mid = (low + high) / 2;
+        if bfs(&coords[..mid]).is_none() {
+            high = mid - 1;
+        } else {
+            low = mid + 1;
         }
     }
-    unreachable!()
+    let (r, c) = coords[high];
+    (bfs(&coords[..1024]).unwrap(), format!("{r},{c}"))
 }
