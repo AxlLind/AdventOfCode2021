@@ -30,47 +30,47 @@ fn calculate_cost(cache: &mut HashMap<(u8, u8, usize), usize>, goal: u8, prev_m:
         b'>' => (1, 2),
         _ => unreachable!(),
     };
-    let mut q = BinaryHeap::from([(0i64, start, b'A', 0)]);
+    let mut q = BinaryHeap::from([(0, start, b'A', 0)]);
     while let Some((d, (r, c), prev, out)) = q.pop() {
-        let d = -d;
-        if *PAD2.get(r).and_then(|row| row.get(c)).unwrap_or(&b' ') == b' ' {
-            continue;
-        }
+        let d = (-d) as usize;
         if out == goal {
-            cache.insert((goal, prev_m, pads), d as _);
-            return d as _;
+            cache.insert((goal, prev_m, pads), d);
+            return d;
         }
-        for &m in b"^<v>A" {
+        for &m in b"A^<v>" {
             let (rr, cc, x) = pad_move(r, c, m, PAD2);
+            if *PAD2.get(rr).and_then(|row| row.get(cc)).unwrap_or(&b' ') == b' ' {
+                continue;
+            }
             let x = x.unwrap_or(0);
             if x != 0 && x != goal {
                 continue;
             }
-            let d = d + calculate_cost(cache, m, prev, pads - 1) as i64;
-            q.push((-d, (rr, cc), m, x));
+            let d = d + calculate_cost(cache, m, prev, pads - 1);
+            q.push((-(d as i64), (rr, cc), m, x));
         }
     }
     unreachable!()
 }
 
 fn solve(cache: &mut HashMap<(u8, u8, usize), usize>, code: &[u8], pads: usize) -> usize {
-    let mut q = BinaryHeap::from([(0i64, (3, 2), b'A', 0)]);
+    let mut q = BinaryHeap::from([(0, (3, 2), b'A', 0)]);
     let mut seen = HashMap::new();
     while let Some((d, (r, c), prev, l)) = q.pop() {
-        let d = -d;
-        if *PAD1.get(r).and_then(|row| row.get(c)).unwrap_or(&b' ') == b' ' {
-            continue;
-        }
+        let d = (-d) as usize;
         if l == code.len() {
-            return d as _;
+            return d;
         }
         let k = ((r, c), prev, l);
         if seen.contains_key(&k) {
             continue;
         }
         seen.insert(k, d);
-        for &m in b"^<v>A" {
+        for &m in b"A^<v>" {
             let (rr, cc, x) = pad_move(r, c, m, PAD1);
+            if *PAD1.get(rr).and_then(|row| row.get(cc)).unwrap_or(&b' ') == b' ' {
+                continue;
+            }
             let mut l = l;
             if let Some(x) = x {
                 if x != code[l] {
@@ -78,8 +78,8 @@ fn solve(cache: &mut HashMap<(u8, u8, usize), usize>, code: &[u8], pads: usize) 
                 }
                 l += 1;
             }
-            let d = d + calculate_cost(cache, m, prev, pads) as i64;
-            q.push((-d, (rr, cc), m, l));
+            let d = d + calculate_cost(cache, m, prev, pads);
+            q.push((-(d as i64), (rr, cc), m, l));
         }
     }
     unreachable!()
