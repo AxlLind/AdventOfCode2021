@@ -14,15 +14,15 @@ fn bron_kerbosch<'a>(
         }
         return;
     }
-    for node in p.clone() {
-        let neighbours = &g[&node];
+    while let Some(n) = p.iter().copied().next() {
+        let neighbours = &g[n];
         let p2 = p.intersection(neighbours).copied().collect();
         let x2 = x.intersection(neighbours).copied().collect();
-        r.insert(node);
+        r.insert(n);
         bron_kerbosch(g, r, p2, x2, cliques);
-        r.remove(node);
-        p.remove(node);
-        x.insert(node);
+        r.remove(n);
+        p.remove(n);
+        x.insert(n);
     }
 }
 
