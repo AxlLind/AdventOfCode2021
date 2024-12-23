@@ -1,6 +1,0 @@
-/inputs/
-/target/
-Cargo.lock
-**/*.rs.bk
-*.swp
-/.vscode

@@ -1,3 +1,15 @@
+inputs/
+
+# rust things
+target/
+Cargo.lock
+**/*.rs.bk
+
+# python things
+__pycache__/
+*.py[cod]
+*$py.class
+
 # haskell things
 dist
 dist-*
@@ -22,8 +34,12 @@ cabal.project.local
 cabal.project.local~
 .HTF/
 .ghc.environment.*
-
-# ignore executables
 0?
 1?
 2?
+
+# ocaml things
+_build/
+*.byte
+*.native
+
