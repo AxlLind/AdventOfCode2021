@@ -7,24 +7,6 @@ See [timings.md](./timings.md) for execution time and output of each solution.
 
 Thanks again for another amazing year of AoC, especially the subreddit community and of course [@ericwastl](https://twitter.com/ericwastl)! Overall, I thought 2021 was one of the best years yet. The difficult was just right. Definitely harder than 2020 I thought but not more than 2019.
 
-## Usage
-```sh
-cargo run --release --bin DAY # run a specific day
-cargo run --release           # run all days
-```
-
-## All years
-- [2024](https://github.com/AxlLind/AdventOfCode2024/) in Rust :crab:
-- [2023](https://github.com/AxlLind/AdventOfCode2023/) in Rust :crab:
-- [2022](https://github.com/AxlLind/AdventOfCode2022/) in Rust :crab:
-- [2021](https://github.com/AxlLind/AdventOfCode2021/) in Rust :crab:
-- [2020](https://github.com/AxlLind/AdventOfCode2020/) in Rust :crab:
-- [2019](https://github.com/AxlLind/AdventOfCode2019/) in Rust :crab:
-- [2018](https://github.com/AxlLind/AdventOfCode2018/) in Python :snake:
-- [2017](https://github.com/AxlLind/AdventOfCode2017/) in Haskell λ
-- [2016](https://github.com/AxlLind/AdventOfCode2016/) in OCaml :camel:
-- [2015](https://github.com/AxlLind/AdventOfCode2015/) in Clojure λ
-
 ## Leaderboard placings
 The puzzles unlock at `06:00` in the morning in my timezone. This is the second year in a row I've set an alarm for `5:50` for 25 days in a row to complete for leaderboard placings (except day 11 when I overslept)!
 
