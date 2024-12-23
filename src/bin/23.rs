@@ -34,23 +34,22 @@ fn main(input: &str) -> (usize, String) {
         g.entry(a).or_default().insert(b);
         g.entry(b).or_default().insert(a);
     }
-    let mut components = HashSet::new();
+    let mut three_cliques = HashSet::new();
     for &n1 in g.keys() {
+        if !n1.starts_with('t') {
+            continue;
+        }
         for &n2 in &g[n1] {
             for &n3 in g[n1].intersection(&g[n2]) {
-                if n3 == n1 || n3 == n2 {
-                    continue;
-                }
                 let mut c = [n1, n2, n3];
                 c.sort();
-                components.insert(c);
+                three_cliques.insert(c);
             }
         }
     }
-    let p1 = components.iter().filter(|c| c.iter().any(|n| n.starts_with('t'))).count();
 
     let mut cliques = Vec::new();
     bron_kerbosch(&g, &mut HashSet::new(), g.keys().copied().collect(), HashSet::new(), &mut cliques);
     let p2 = cliques.iter().max_by_key(|c| c.len()).unwrap().iter().sorted().join(",");
-    (p1, p2)
+    (three_cliques.len(), p2)
 }
