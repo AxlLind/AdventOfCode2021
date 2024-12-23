@@ -5,11 +5,6 @@ Aside from some small things at university, this was pretty much my first time w
 
 My only gripe with Haskell is the very unreliable performance. Some functions that I would expect to compile down to a while loop take literally seconds to execute, while a Rust equivalent finishes in less than a millisecond. Sometimes adding a [bang pattern](https://downloads.haskell.org/~ghc/7.8.3/docs/html/users_guide/bang-patterns.html) would increase performance by 100x, why can't the compiler realize that? Sometimes transforming a naive recursive function with a counter into an `iterate fn !! count` would make it 10x slower. All of this was compiled with `-O`, so that was a bit disappointing. You probably learn to recognize performance pitfalls but to a newbie it was very unintuitive what will be fast and what will be slow in Haskell.
 
-## Usage
-```sh
-./run.sh DAY
-```
-
 ## All years
 - [2024](https://github.com/AxlLind/AdventOfCode2024/) in Rust :crab:
 - [2023](https://github.com/AxlLind/AdventOfCode2023/) in Rust :crab:
