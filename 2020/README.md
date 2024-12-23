@@ -10,4 +10,4 @@ See [timings.md](./timings.md) for the execution time of each solution.
 Thanks for another amazing year of AoC [@ericwastl](https://twitter.com/ericwastl) :christmas_tree:
 
 ## Leaderboard
-![leaderboard](./screenshots/leaderboard.png)
+![leaderboard](../imgs/leaderboard-2020.png)

@@ -6,7 +6,7 @@ It's december again, finally! So excited to do this again this year. Thought abo
 
 Very easy problem of course since it's day 1. Servers crashed just when I was about to submit! I think I got lucky because after a while I managed to submit my answer, and I got 54th place IN THE WORLD!!!
 
-![leaderboard](./screenshots/leaderboard-day1.png)
+![leaderboard](../imgs/leaderboard-2020-01.png)
 
 Solved using a double and triple for loop. Later cleaned it up and used `tuple-combinations` from the `itertools` crate. So both a fast (`1ms`) and clean solution.
 

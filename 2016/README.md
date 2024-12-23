@@ -25,4 +25,4 @@ Overall, I thought OCaml was an ok language. FP is really powerful and expressiv
 dune exec --release src/DAY.exe
 ```
 
-![end-screen](./end-screen.png)
+![end-screen](../imgs/end-screen-2016.png)

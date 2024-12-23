@@ -5,4 +5,4 @@ Having done both [2019](../2019) and [2020](../2020), I wanted to go back and do
 
 Only thing I did not like was the awful error messages. When you got an exception the top most call site would be reported, not where the actual exception occurred. How is that a thing? Overall, I was presently surprised by Clojure, after I got into it a bit. The language is so small and therefore quite simple. I also extensively used the `->>` threading macro, which was amazing for readability.
 
-![end-screen](./end-screen.png)
+![end-screen](../imgs/end-screen-2015.png)

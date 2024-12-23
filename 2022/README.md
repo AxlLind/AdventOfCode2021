@@ -8,4 +8,4 @@ For execution time of each solution, see [timings.md](./timings.md).
 ## Leaderboard
 This year I finally reached my goal of ending up on the leaderboard. On [day 19, part 1](./src/bin/19.rs) I got 25th in the world.
 
-![leaderboard placements](./leaderboard.png)
+![leaderboard](../imgs/leaderboard-2022.png)

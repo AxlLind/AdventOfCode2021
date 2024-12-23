@@ -18,4 +18,4 @@ for DAY in src/*.py; do
 done
 ```
 
-![endscreen](./endscreen.png)
+![end-screen](../imgs/end-screen-2018.png)

@@ -10,6 +10,6 @@ Thanks again for another amazing year of AoC, especially the subreddit community
 ## Leaderboard placings
 The puzzles unlock at `06:00` in the morning in my timezone. This is the second year in a row I've set an alarm for `5:50` for 25 days in a row to complete for leaderboard placings (except day 11 when I overslept)!
 
-Went very well this year compared to [last year](https://github.com/AxlLind/AdventOfCode2020/), top 1000 for `18/25` days. Set a new personal best of `153`!
+Went very well this year compared to [last year](../2020), top 1000 for `18/25` days. Set a new personal best of `153`!
 
-![leaderboard](./leaderboard.png)
+![leaderboard](../imgs/leaderboard-2021.png)
