@@ -1,20 +1,21 @@
 use hashbrown::HashMap;
 use itertools::Itertools;
 
-fn val<'a>(g: &HashMap<&'a str, (&'a str, &'a str, &'a str)>, s: &mut HashMap<&'a str, bool>, n: &'a str) {
-    if s.contains_key(n) {
-        return;
+fn val<'a>(g: &HashMap<&'a str, (&'a str, &'a str, &'a str)>, s: &mut HashMap<&'a str, bool>, n: &'a str) -> bool {
+    if let Some(&v) = s.get(n) {
+        return v;
     }
     let (a, op, b) = g[n];
-    val(g, s, a);
-    val(g, s, b);
+    let a = val(g, s, a);
+    let b = val(g, s, b);
     let v = match op {
-        "AND" => s[a] && s[b],
-        "XOR" => s[a] != s[b],
-        "OR"  => s[a] || s[b],
+        "AND" => a && b,
+        "XOR" => a != b,
+        "OR"  => a || b,
         _ => unreachable!(),
     };
     s.insert(n, v);
+    v
 }
 
 fn v(s: &HashMap<&str, bool>, p: char) -> usize {
@@ -34,13 +35,12 @@ fn v(s: &HashMap<&str, bool>, p: char) -> usize {
 #[aoc::main(24)]
 fn main(input: &str) -> (usize, &'static str) {
     let (s1, s2) = input.split_once("\n\n").unwrap();
-    let mut s_start = HashMap::new();
-    for l in s1.lines() {
-        let (a, x) = l.split_once(": ").unwrap();
-        s_start.insert(a, x == "1");
-    }
-    let mut s = s_start.clone();
+    let mut s = HashMap::new();
     let mut g = HashMap::new();
+    for l in s1.lines() {
+        let (n, v) = l.split_once(": ").unwrap();
+        s.insert(n, v == "1");
+    }
     for l in s2.lines() {
         let (a, op, b, _, c) = l.split(' ').collect_tuple().unwrap();
         g.insert(c, (a, op, b));
